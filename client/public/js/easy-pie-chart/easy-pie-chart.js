@@ -13,7 +13,13 @@
 }(this, function(a) {
     var b = function(a, b) {
         var c, d = document.createElement("canvas");
-        a.appendChild(d),
+        
+        // Append canvas inside the .round-chart element instead of 'a'
+        var roundChart = a.querySelector('.round-chart');  // Find the .round-chart div inside 'a'
+        if (roundChart) {
+            roundChart.appendChild(d);  // Append canvas to .round-chart
+        }
+
         "object" == typeof G_vmlCanvasManager && G_vmlCanvasManager.initElement(d);
         var e = d.getContext("2d");
         d.width = d.height = b.size;
@@ -163,8 +169,7 @@
         }
         ,
         this.enableAnimation = function() {
-            return e.animate.enabled = !0,
-            this
+            return e.animate.enabled = !0
         }
         ,
         g()
