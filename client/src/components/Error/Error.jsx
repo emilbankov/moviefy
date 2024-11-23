@@ -19,10 +19,7 @@ export default function Error() {
                             <div className="error-404 text-center">
                                 <img className="img-fluid" src="images/bg/404.png" alt="logo" />
                                 <h2>Oops! page not found</h2>
-                                <p>
-                                    The page you are looking for might have been removed had its name
-                                    changed or is temporarily unavailable.
-                                </p>
+                                <p>The page you’re looking for may have been removed, renamed, or is temporarily unavailable.</p>
                                 <a href="index.html" className="btn btn-primary">
                                     <i className="fa-solid fa-chevron-left" />
                                     Back to Home
