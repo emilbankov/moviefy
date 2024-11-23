@@ -1218,6 +1218,10 @@ textarea.form-control {
     box-shadow: none;
 }
 
+input[type="search"]::-webkit-search-cancel-button:hover {
+    cursor: pointer;
+}
+
 .search ul li a {
     color: #ffffff;
     display: -webkit-box;

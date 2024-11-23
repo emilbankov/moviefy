@@ -3,7 +3,7 @@ import { useEffect } from "react";
 function Header() {
     return (
         <>
-            <header className="header header-style-02 header-sticky">
+            <header className="header header-style-01 header-sticky">
                 <nav className="navbar navbar-static-top navbar-expand-lg">
                     <div className="container main-header position-relative">
                         <button type="button" className="navbar-toggler" data-bs-toggle="collapse"
