@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 export default function Footer() {
     return (
         <>
@@ -6,9 +8,9 @@ export default function Footer() {
                     <div className="container">
                         <div className="row align-items-center">
                             <div className="col-sm-3">
-                                <a className="footer-logo" href="index.html">
+                                <Link className="footer-logo" to="/">
                                     <img className="img-fluid" src="images/logo.png" alt="logo" />
-                                </a>
+                                </Link>
                             </div>
                             <div className="col-sm-9 text-sm-end mt-3 mt-sm-0">
                                 <a href="#"><img className="img-fluid me-3 my-2" src="images/google-pay.jpg" alt="#" /></a>
@@ -34,11 +36,11 @@ export default function Footer() {
                                     <div className="footer-link">
                                         <h4 className="footer-title">Explore More</h4>
                                         <ul className="list-unstyled mb-0">
-                                            <li><a href="#">Shows</a></li>
-                                            <li><a href="#">Movies</a></li>
-                                            <li><a href="#">Sports</a></li>
-                                            <li><a href="#">Live TV</a></li>
-                                            <li><a href="#">Premium</a></li>
+                                            <li><Link to="/series">Shows</Link></li>
+                                            <li><Link to="/movies">Movies</Link></li>
+                                            <li><Link to="/sports">Sports</Link></li>
+                                            <li><Link to="/live-tv">Live TV</Link></li>
+                                            <li><Link to="/premium">Premium</Link></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -46,11 +48,11 @@ export default function Footer() {
                                     <div className="footer-link">
                                         <h4 className="footer-title">Company</h4>
                                         <ul className="list-unstyled mb-0">
-                                            <li><a href="#">About Us</a></li>
-                                            <li><a href="#">Careers</a></li>
-                                            <li><a href="#">Advertise With Us</a></li>
-                                            <li><a href="#">Contact US</a></li>
-                                            <li><a href="#">FAQ</a></li>
+                                            <li><Link to="/about">About Us</Link></li>
+                                            <li><Link to="/careers">Careers</Link></li>
+                                            <li><Link to="/advertise">Advertise With Us</Link></li>
+                                            <li><Link to="/contact">Contact US</Link></li>
+                                            <li><Link to="/faq">FAQ</Link></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -59,18 +61,18 @@ export default function Footer() {
                                         <h4 className="footer-title">Shows & Movies by Genres</h4>
                                         <div className="footer-menu d-flex">
                                             <ul className="list-unstyled mb-0">
-                                                <li><a href="#">Drama Shows</a></li>
-                                                <li><a href="#">Comedy Shows</a></li>
-                                                <li><a href="#">Animation</a></li>
-                                                <li><a href="#">Reality Shows</a></li>
-                                                <li><a href="#">Romantic Shows</a></li>
+                                                <li><Link to="/drama">Drama Shows</Link></li>
+                                                <li><Link to="/comedy">Comedy Shows</Link></li>
+                                                <li><Link to="/animation">Animation</Link></li>
+                                                <li><Link to="/reality">Reality Shows</Link></li>
+                                                <li><Link to="/romantic">Romantic Shows</Link></li>
                                             </ul>
                                             <ul className="list-unstyled mb-0">
-                                                <li><a href="#">Action Movies</a></li>
-                                                <li><a href="#">Drama Movies</a></li>
-                                                <li><a href="#">Romantic Movies</a></li>
-                                                <li><a href="#">Comedy Movies</a></li>
-                                                <li><a href="#">Horror Movies</a></li>
+                                                <li><Link to="/action">Action Movies</Link></li>
+                                                <li><Link to="/drama">Drama Movies</Link></li>
+                                                <li><Link to="/romantic">Romantic Movies</Link></li>
+                                                <li><Link to="/comedy">Comedy Movies</Link></li>
+                                                <li><Link to="/horror">Horror Movies</Link></li>
                                             </ul>
                                         </div>
                                     </div>
@@ -117,7 +119,7 @@ export default function Footer() {
                                 <div className="col-md-12">
                                     <p className="mb-0"> &copy; Copyright <span id="copyright">
                                         <script>document.getElementById('copyright').appendChild(document.createTextNode(new Date().getFullYear()))</script>
-                                    </span> <a href="index.html"> 4K Star </a> All Rights Reserved</p>
+                                    </span> <Link to="/"> 4K Star </Link> All Rights Reserved</p>
                                 </div>
                             </div>
                         </div>
