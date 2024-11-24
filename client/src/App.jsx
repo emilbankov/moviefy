@@ -17,29 +17,34 @@ import Account from './components/Account/Account'
 import Error from './components/Error/Error'
 import PrivacyPolicy from './components/Privacy Policy/PrivacyPolicy'
 import TermsConditions from './components/Terms Conditions/TermsConditions'
+import ScriptLoader from './utils/ScriptLoader'
+import Loader from './components/Loader/Loader'
 
 function App() {
     return (
         <body className='bg-dark'>
             <Header />
             <Search />
+            {/* <Loader /> */}
 
-            <Routes>
-                <Route path='/' element={<Home />} />
-                <Route path='/most-popular' element={<MostPopular />} />
-                <Route path='/movies' element={<Movies />} />
-                <Route path='/movie-details' element={<MovieDetails />} />
-                <Route path='/series' element={<Series />} />
-                <Route path='/series-details' element={<SeriesDetails />} />
-                <Route path='/about' element={<About />} />
-                <Route path='/pricing' element={<Pricing />} />
-                <Route path='/contact' element={<Contact />} />
-                <Route path='/login-register' element={<LoginRegister />} />
-                <Route path='/account' element={<Account />} />
-                <Route path='/error' element={<Error />} />
-                <Route path='/privacy-policy' element={<PrivacyPolicy />} />
-                <Route path='/terms-and-conditions' element={<TermsConditions />} />
-            </Routes>
+            <ScriptLoader>
+                <Routes>
+                    <Route path='/' element={<Home />} />
+                    <Route path='/most-popular' element={<MostPopular />} />
+                    <Route path='/movies' element={<Movies />} />
+                    <Route path='/movie-details' element={<MovieDetails />} />
+                    <Route path='/series' element={<Series />} />
+                    <Route path='/series-details' element={<SeriesDetails />} />
+                    <Route path='/about' element={<About />} />
+                    <Route path='/pricing' element={<Pricing />} />
+                    <Route path='/contact' element={<Contact />} />
+                    <Route path='/login-register' element={<LoginRegister />} />
+                    <Route path='/account' element={<Account />} />
+                    <Route path='/error' element={<Error />} />
+                    <Route path='/privacy-policy' element={<PrivacyPolicy />} />
+                    <Route path='/terms-and-conditions' element={<TermsConditions />} />
+                </Routes>
+            </ScriptLoader>
 
             <Footer />
         </body>

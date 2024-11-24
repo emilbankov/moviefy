@@ -8365,3 +8365,39 @@ button {
         margin-left: 10px;
     }
 }
+
+/* Camera Loader */
+@keyframes rotate {
+    from {
+        transform: rotate(0);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 200px;
+    z-index: 1000;
+}
+
+.loader__container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.loader__film {
+    position: absolute;
+    top: -30px;
+    left: 0;
+    display: flex;
+}
+
+.loader__film-img {
+    animation: rotate 1.5s linear infinite;
+}
