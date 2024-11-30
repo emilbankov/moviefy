@@ -8381,7 +8381,8 @@ button {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 200px;
+    margin-top: 375px;
+    margin-bottom: 125px;
     z-index: 1000;
 }
 
