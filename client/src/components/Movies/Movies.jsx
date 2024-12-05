@@ -1920,7 +1920,6 @@ export default function Movies() {
                     </div>
                 </div>
             </section>
-            Oscar Winners --&gt;
             <section className="space-sm-pb bg-dark overflow-hidden">
                 <div className="container-fluid">
                     <div className="row">
