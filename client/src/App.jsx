@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
-import ScriptLoader from './utils/ScriptLoader';
 
 import Header from './components/Header/Header';
 import Search from './components/Search/Search';
@@ -27,44 +26,43 @@ function App() {
 
     useEffect(() => {
         setLoading(true);
-        const randomDelay = Math.random() * 0.4 + 0.2; 
+        const randomDelay = Math.random() * 0.4 + 0.2;
         const timer = setTimeout(() => {
             setLoading(false);
         }, randomDelay * 1000);
-    
+
         return () => clearTimeout(timer);
     }, [location]);
-    
-    
+
+
 
     return (
         <body className='bg-dark'>
             <Header />
             <Search />
 
-            <ScriptLoader>
-                {loading && <Loader />}
+            {loading && <Loader />}
 
-                <div style={{ display: loading ? 'none' : 'block' }}>
-                    <Routes>
-                        <Route path='/' element={<Home />} />
-                        <Route path='/most-popular' element={<MostPopular />} />
-                        <Route path='/movies' element={<Movies />} />
-                        <Route path='/movie-details' element={<MovieDetails />} />
-                        <Route path='/series' element={<Series />} />
-                        <Route path='/series-details' element={<SeriesDetails />} />
-                        <Route path='/about' element={<About />} />
-                        <Route path='/pricing' element={<Pricing />} />
-                        <Route path='/contact' element={<Contact />} />
-                        <Route path='/login-register' element={<LoginRegister />} />
-                        <Route path='/account' element={<Account />} />
-                        <Route path='/error' element={<Error />} />
-                        <Route path='/privacy-policy' element={<PrivacyPolicy />} />
-                        <Route path='/terms-and-conditions' element={<TermsConditions />} />
-                    </Routes>
-                </div>
-            </ScriptLoader>
+            <div style={{ display: loading ? 'none' : 'block' }}>
+                <Routes>
+                    <Route path='/' element={<Home />} />
+                    <Route path='/most-popular' element={<MostPopular />} />
+                    <Route path='/movies' element={<Movies />} />
+                    <Route path='/movie-details' element={<MovieDetails />} />
+                    <Route path='/series' element={<Series />} />
+                    <Route path='/series-details' element={<SeriesDetails />} />
+                    <Route path='/about' element={<About />} />
+                    <Route path='/pricing' element={<Pricing />} />
+                    <Route path='/contact' element={<Contact />} />
+                    <Route path='/login-register' element={<LoginRegister />} />
+                    <Route path='/account' element={<Account />} />
+                    <Route path='/error' element={<Error />} />
+                    <Route path='/privacy-policy' element={<PrivacyPolicy />} />
+                    <Route path='/terms-and-conditions' element={<TermsConditions />} />
+                </Routes>
+            </div>
 
+            <div id="snow-container"></div>
             <Footer />
         </body>
     );
