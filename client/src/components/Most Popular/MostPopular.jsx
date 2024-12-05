@@ -12,13 +12,13 @@ export default function MostPopular() {
                     const pieChartWidth = $elem.attr('data-width') || "4";
                     const pieChartColor = $elem.attr('data-color') || "#f6be00";
                     const pieChartTrackColor = $elem.attr('data-trackcolor') || "#fff";
-
+    
                     $elem.find('span, i').css({
                         'line-height': pieChartSize + 'px',
                         'width': pieChartSize + 'px',
                         'height': pieChartSize + 'px'
                     });
-
+    
                     $elem.appear(function () {
                         $elem.easyPieChart({
                             size: Number(pieChartSize),
@@ -36,25 +36,23 @@ export default function MostPopular() {
                 });
             }
         };
-
+    
         initPieChart();
-
+    
         return () => {
-            if ($.fn.appear) {
-                $.fn.appear.destroy();
-            }
-
             const $pieChart = $('.pie-chart-percentage');
             if ($pieChart.length) {
                 $pieChart.each(function () {
                     const $elem = $(this);
-                    $elem.easyPieChart('destroy');
-                    $elem.off();
+                    if ($.fn.easyPieChart) {
+                        $elem.easyPieChart('destroy');
+                    }
+                    $elem.off(); 
                 });
             }
         };
-    }, []);
-
+    }, []); 
+    
     return (
         <>
             <section className="banner banner-2 bg-holder" style={{ backgroundImage: 'url(images/banner/home-02/01.jpg)' }}>
