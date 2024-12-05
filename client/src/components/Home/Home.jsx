@@ -1009,7 +1009,7 @@ export default function Home() {
                     <div className="row">
                         <div className="col-md-12">
                             <div className="section-title">
-                                <h2 className="title">Recommended for you category </h2>
+                                <h2 className="title">Popular movie genres</h2>
                             </div>
                         </div>
                     </div>
@@ -1023,7 +1023,7 @@ export default function Home() {
                                         alt="#"
                                     />
                                     <h3 className="title">
-                                        <a href="movie.html">Movies</a>{" "}
+                                        <a href="movie.html">Horror</a>{" "}
                                     </h3>
                                     <div className="categories-content overlay-new">
                                         <div className="categories-content-inner">
@@ -1031,12 +1031,12 @@ export default function Home() {
                                                 <div className="icon">
                                                     <img
                                                         className="img-fluid"
-                                                        src="images/svg/animated-film.svg"
+                                                        src="images/svg/horror.svg"
                                                         alt="#"
                                                     />
                                                 </div>
                                                 <h3 className="categories-title">
-                                                    <a href="movie.html"> Movies</a>
+                                                    <a href="movie.html">Horror</a>
                                                 </h3>
                                             </div>
                                         </div>
@@ -1053,7 +1053,7 @@ export default function Home() {
                                         alt="#"
                                     />
                                     <h3 className="title">
-                                        <a href="web-series.html">Web Series</a>{" "}
+                                        <a href="web-series.html">Action</a>{" "}
                                     </h3>
                                     <div className="categories-content overlay-new">
                                         <div className="categories-content-inner">
@@ -1061,12 +1061,12 @@ export default function Home() {
                                                 <div className="icon">
                                                     <img
                                                         className="img-fluid"
-                                                        src="images/svg/web-series.svg"
+                                                        src="images/svg/action.svg"
                                                         alt="#"
                                                     />
                                                 </div>
                                                 <h3 className="categories-title">
-                                                    <a href="web-series.html">Web Series</a>
+                                                    <a href="web-series.html">Action</a>
                                                 </h3>
                                             </div>
                                         </div>
@@ -1083,7 +1083,7 @@ export default function Home() {
                                         alt="#"
                                     />
                                     <h3 className="title">
-                                        <a href="#">Cartoons</a>
+                                        <a href="#">Drama</a>
                                     </h3>
                                     <div className="categories-content overlay-new">
                                         <div className="categories-content-inner">
@@ -1091,12 +1091,12 @@ export default function Home() {
                                                 <div className="icon">
                                                     <img
                                                         className="img-fluid"
-                                                        src="images/svg/cartoons.svg"
+                                                        src="images/svg/drama.svg"
                                                         alt="#"
                                                     />
                                                 </div>
                                                 <h3 className="categories-title">
-                                                    <a href="#">Cartoons</a>
+                                                    <a href="#">Drama</a>
                                                 </h3>
                                             </div>
                                         </div>
@@ -1113,7 +1113,7 @@ export default function Home() {
                                         alt="#"
                                     />
                                     <h3 className="title">
-                                        <a href="tv-show.html">TV Shows</a>{" "}
+                                        <a href="tv-show.html">Thriller</a>{" "}
                                     </h3>
                                     <div className="categories-content overlay-new">
                                         <div className="categories-content-inner">
@@ -1121,12 +1121,12 @@ export default function Home() {
                                                 <div className="icon">
                                                     <img
                                                         className="img-fluid"
-                                                        src="images/svg/television-tv.svg"
+                                                        src="images/svg/thriller.svg"
                                                         alt="#"
                                                     />
                                                 </div>
                                                 <h3 className="categories-title">
-                                                    <a href="tv-show.html">TV Shows</a>
+                                                    <a href="tv-show.html">Thriller</a>
                                                 </h3>
                                             </div>
                                         </div>
@@ -1134,7 +1134,187 @@ export default function Home() {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                        <div className="col-lg-3 col-md-6 mt-4 mt-md-0">
+                            <div className="movies-categories-iteam">
+                                <div className="categories-img">
+                                    <img
+                                        className="img-fluid"
+                                        src="images/movie/categories/03.jpg"
+                                        alt="#"
+                                    />
+                                    <h3 className="title">
+                                        <a href="#">Adventure</a>
+                                    </h3>
+                                    <div className="categories-content overlay-new">
+                                        <div className="categories-content-inner">
+                                            <div>
+                                                <div className="icon">
+                                                    <img
+                                                        className="img-fluid"
+                                                        src="images/svg/adventure.svg"
+                                                        alt="#"
+                                                    />
+                                                </div>
+                                                <h3 className="categories-title">
+                                                    <a href="#">Adventure</a>
+                                                </h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-lg-3 col-md-6 mt-4 mt-md-0">
+                            <div className="movies-categories-iteam">
+                                <div className="categories-img">
+                                    <img
+                                        className="img-fluid"
+                                        src="images/movie/categories/03.jpg"
+                                        alt="#"
+                                    />
+                                    <h3 className="title">
+                                        <a href="#">Crime</a>
+                                    </h3>
+                                    <div className="categories-content overlay-new">
+                                        <div className="categories-content-inner">
+                                            <div>
+                                                <div className="icon">
+                                                    <img
+                                                        className="img-fluid"
+                                                        src="images/svg/crime.svg"
+                                                        alt="#"
+                                                    />
+                                                </div>
+                                                <h3 className="categories-title">
+                                                    <a href="#">Crime</a>
+                                                </h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-lg-3 col-md-6">
+                            <div className="movies-categories-iteam mt-4 mt-sm-0 mt-md-4">
+                                <div className="categories-img">
+                                    <img
+                                        className="img-fluid"
+                                        src="images/movie/categories/02.jpg"
+                                        alt="#"
+                                    />
+                                    <h3 className="title">
+                                        <a href="web-series.html">Comedy</a>{" "}
+                                    </h3>
+                                    <div className="categories-content overlay-new">
+                                        <div className="categories-content-inner">
+                                            <div>
+                                                <div className="icon">
+                                                    <img
+                                                        className="img-fluid"
+                                                        src="images/svg/comedy.svg"
+                                                        alt="#"
+                                                    />
+                                                </div>
+                                                <h3 className="categories-title">
+                                                    <a href="web-series.html">Comedy</a>
+                                                </h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-lg-3 col-md-6 mt-4 mt-md-0">
+                            <div className="movies-categories-iteam">
+                                <div className="categories-img">
+                                    <img
+                                        className="img-fluid"
+                                        src="images/movie/categories/03.jpg"
+                                        alt="#"
+                                    />
+                                    <h3 className="title">
+                                        <a href="#">Romance</a>
+                                    </h3>
+                                    <div className="categories-content overlay-new">
+                                        <div className="categories-content-inner">
+                                            <div>
+                                                <div className="icon">
+                                                    <img
+                                                        className="img-fluid"
+                                                        src="images/svg/romance.svg"
+                                                        alt="#"
+                                                    />
+                                                </div>
+                                                <h3 className="categories-title">
+                                                    <a href="#">Romance</a>
+                                                </h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-lg-3 col-md-6">
+                            <div className="movies-categories-iteam mt-4">
+                                <div className="categories-img">
+                                    <img
+                                        className="img-fluid"
+                                        src="images/movie/categories/04.jpg"
+                                        alt="#"
+                                    />
+                                    <h3 className="title">
+                                        <a href="tv-show.html">Fantasy</a>{" "}
+                                    </h3>
+                                    <div className="categories-content overlay-new">
+                                        <div className="categories-content-inner">
+                                            <div>
+                                                <div className="icon">
+                                                    <img
+                                                        className="img-fluid"
+                                                        src="images/svg/fantasy.svg"
+                                                        alt="#"
+                                                    />
+                                                </div>
+                                                <h3 className="categories-title">
+                                                    <a href="tv-show.html">Fantasy</a>
+                                                </h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-lg-3 col-md-6 mt-4 mt-md-0">
+                            <div className="movies-categories-iteam">
+                                <div className="categories-img">
+                                    <img
+                                        className="img-fluid"
+                                        src="images/movie/categories/03.jpg"
+                                        alt="#"
+                                    />
+                                    <h3 className="title">
+                                        <a href="#">Sci-Fi</a>
+                                    </h3>
+                                    <div className="categories-content overlay-new">
+                                        <div className="categories-content-inner">
+                                            <div>
+                                                <div className="icon">
+                                                    <img
+                                                        className="img-fluid"
+                                                        src="images/svg/sci-fi.svg"
+                                                        alt="#"
+                                                    />
+                                                </div>
+                                                <h3 className="categories-title">
+                                                    <a href="#">Sci-Fi</a>
+                                                </h3>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>         
                 </div>
             </section>
             <section
