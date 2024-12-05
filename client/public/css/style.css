@@ -8402,3 +8402,13 @@ button {
 .loader__film-img {
     animation: rotate 1.5s linear infinite;
 }
+
+.snowflake {
+    position: fixed;
+    color: #fff;
+    font-size: 1.5rem;
+    opacity: 0.9;
+    user-select: none;
+    pointer-events: none;
+    z-index: 100000;
+}
