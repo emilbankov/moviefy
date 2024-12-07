@@ -1,11 +1,36 @@
-import { Link } from 'react-router-dom'
+import React, { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 
-function Header() {
+const Header = () => {
+    const location = useLocation();
+    const [headerClass, setHeaderClass] = useState("header header-sticky");
+    const [containerClass, setContainerClass] = useState("container main-header position-relative");
+
+    useEffect(() => {
+        const { pathname } = location;
+
+        let baseHeaderClass = "header header-sticky";
+        let baseContainerClass = "container main-header position-relative";
+
+        if (pathname === "/") {
+            baseHeaderClass += " header-style-01";
+        } else if (pathname === "/most-popular") {
+            baseHeaderClass += " header-style-02";
+        } else if (pathname === "/movies-details" || pathname === "/series-details") {
+            baseHeaderClass += " header-transparent";
+        } else if (pathname === "/movies" || pathname === "/series") {
+            baseContainerClass = "container-fluid main-header position-relative";
+        }
+
+        setHeaderClass(baseHeaderClass);
+        setContainerClass(baseContainerClass);
+    }, [location]);
+
     return (
         <>
-            <header className="header header-style-01 header-sticky">
+            <header className={headerClass}>
                 <nav className="navbar navbar-static-top navbar-expand-lg">
-                    <div className="container main-header position-relative">
+                    <div className={containerClass}>
                         <button type="button" className="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"><i className="fas fa-align-left"></i></button>
                         <Link className="navbar-brand" to="/"><img className="img-fluid" src="images/logo.png" alt="logo" /></Link>
                         <div className="navbar-collapse collapse justify-content-end justify-content-lg-center">
