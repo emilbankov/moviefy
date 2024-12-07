@@ -3,7 +3,12 @@ import React, { useEffect } from 'react';
 
 export default function Footer() {
     const location = useLocation();
-     
+    const currentPath = location.pathname;
+
+    // Check for conditions to add the bg-secondary class and modify the container class
+    const isBgSecondary = ['/about', '/contact-us', '/movies', '/series'].includes(currentPath);
+    const isContainerFluid = ['/movies', '/series'].includes(currentPath);
+
     useEffect(() => {
         const existingScript = document.querySelector('script[src="/js/custom.js"]');
         if (existingScript) {
@@ -24,9 +29,9 @@ export default function Footer() {
 
     return (
         <>
-            <footer className="footer bg-dark">
+            <footer className={`footer ${isBgSecondary ? 'bg-secondary' : 'bg-dark'}`}>
                 <div className="min-footer">
-                    <div className="container">
+                    <div className={isContainerFluid ? 'container-fluid' : 'container'}>
                         <div className="row align-items-center">
                             <div className="col-sm-3">
                                 <Link className="footer-logo" to="/">
