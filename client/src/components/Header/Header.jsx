@@ -16,7 +16,7 @@ const Header = () => {
             baseHeaderClass += " header-style-01";
         } else if (pathname === "/most-popular") {
             baseHeaderClass += " header-style-02";
-        } else if (pathname === "/movies-details" || pathname === "/series-details") {
+        } else if (pathname === "/movie-details" || pathname === "/series-details") {
             baseHeaderClass += " header-transparent";
         } else if (pathname === "/movies" || pathname === "/series") {
             baseContainerClass = "container-fluid main-header position-relative";
