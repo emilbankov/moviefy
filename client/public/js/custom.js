@@ -285,15 +285,13 @@ NOTE: This file contains all scripts for the actual Template.
         if (siperslider.length > 0) {
             var swiperAnimation = new SwiperAnimation();
             var swiper = new Swiper(".swiper-container", {
-                init: true,
                 direction: "horizontal",
                 effect: "fade",
-                loop: true,
+                loop: false,
                 keyboard: {
                     enabled: true,
-                    onlyInViewport: true
+                    onlyInViewport: true,
                 },
-                // Navigation arrows
                 navigation: {
                     nextEl: '.swiper-button-next',
                     prevEl: '.swiper-button-prev',
@@ -304,16 +302,55 @@ NOTE: This file contains all scripts for the actual Template.
                 },
                 on: {
                     init: function () {
-                        swiperAnimation.init(this).animate();
+                        swiper.update();
+                        setTimeout(() => {
+                            swiperAnimation.init(this).animate();
+                        }, 100);
                     },
                     slideChange: function () {
-
                         swiperAnimation.init(this).animate();
                     }
                 }
             });
         }
-    }
+    };
+
+    // POTENZA.swiperAnimation = function () {
+    //     var siperslider = jQuery(".swiper-container");
+    //     if (siperslider.length > 0) {
+    //         var swiperAnimation = new SwiperAnimation();
+    //         var swiper = new Swiper(".swiper-container", {
+    //             init: true,
+    //             direction: "horizontal",
+    //             effect: "fade",
+    //             loop: true,
+    //             keyboard: {
+    //                 enabled: true,
+    //                 onlyInViewport: true
+    //             },
+    //             // Navigation arrows
+    //             navigation: {
+    //                 nextEl: '.swiper-button-next',
+    //                 prevEl: '.swiper-button-prev',
+    //             },
+    //             pagination: {
+    //                 el: '.swiper-pagination',
+    //                 clickable: true,
+    //             },
+    //             on: {
+    //                 init: function () {
+    //                     swiper.update();
+    //                     setTimeout(() => {
+    //                         swiperAnimation.init(this).animate();
+    //                     }, 100);
+    //                 },
+    //                 // slideChange: function () {
+    //                 //     swiperAnimation.init(this).animate();
+    //                 // }
+    //             }
+    //         });
+    //     }
+    // }
 
     // Single Slider
     POTENZA.singleslider = function () {

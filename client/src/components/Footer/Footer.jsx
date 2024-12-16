@@ -5,7 +5,6 @@ export default function Footer() {
     const location = useLocation();
     const currentPath = location.pathname;
 
-    // Check for conditions to add the bg-secondary class and modify the container class
     const isBgSecondary = ['/about', '/contact-us', '/movies', '/series'].includes(currentPath);
     const isContainerFluid = ['/movies', '/series'].includes(currentPath);
 

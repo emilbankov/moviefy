@@ -40,22 +40,9 @@
   <!-- Template Scripts -->
   <script src="/js/custom.js"></script>
   <script src="/js/active.js"></script>
-  
+
   <script>
-    particlesJS('snow-container', {
-      particles: {
-        number: { value: 100, density: { enable: true, value_area: 800 } },
-        size: { value: 3, random: true },
-        move: { direction: 'bottom', speed: 1 },
-        opacity: { value: 0.6, random: true }
-      },
-      interactivity: {
-        events: { onhover: { enable: false } }
-      }
-    });
-  </script>
-  <script>
-    const numberOfSnowflakes = 100; 
+    const numberOfSnowflakes = 100;
     for (let i = 0; i < numberOfSnowflakes; i++) {
       let snowflake = document.createElement('div');
       snowflake.classList.add('snowflake');
@@ -75,7 +62,7 @@
       `;
       document.head.appendChild(style);
     }
-  </script>  
+  </script>
 
   <script type="module" src="/src/main.jsx"></script>
 </body>
