@@ -3244,6 +3244,10 @@ button {
     color: #f6be00;
 }
 
+.banner-backdrop {
+    height: 231px;
+}
+
 .movies-categories .movies-info {
     position: absolute;
     bottom: 0;
