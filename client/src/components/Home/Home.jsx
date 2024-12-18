@@ -6,332 +6,143 @@ export default function Home() {
 
     useEffect(() => {
         moviesService.getBanner()
-            .then(result => console.log(result))
+            .then(result => setMovies(result))
             .catch(err => {
                 console.log(err);
             });
     }, []);
-    
+
+    useEffect(() => {
+        const existingScript = document.querySelector('script[src="/js/custom.js"]');
+        if (existingScript) {
+            document.body.removeChild(existingScript);
+        }
+
+        const script = document.createElement('script');
+        script.src = '/js/custom.js';
+        script.async = true;
+        document.body.appendChild(script);
+
+        return () => {
+            if (document.body.contains(script)) {
+                document.body.removeChild(script);
+            }
+        };
+    }, [movies.rest_movies]);
+
     return (
         <>
             <section className="banner banner-1 position-relative">
-                <div className="shape-01">
-                    <img
-                        className="img-fluid"
-                        src="images/banner/home-01/shape-01.png"
-                        alt="#"
-                    />
-                </div>
-                <div className="shape-02">
-                    <img
-                        className="img-fluid"
-                        src="images/banner/home-01/shape-02.png"
-                        alt="#"
-                    />
-                </div>
+                <div className="shape-01"><img className="img-fluid" src="images/banner/home-01/shape-01.png" alt="#" /></div>
+                <div className="shape-02"><img className="img-fluid" src="images/banner/home-01/shape-02.png" alt="#" /></div>
                 <div className="container">
-                    <div
-                        className="row banner-img"
-                        style={{ backgroundImage: "url(images/banner/home-01/01.png)" }}
-                    >
-                        <div className="col-xxl-6 col-xl-7 col-md-9 order-md-1 order-2">
-                            <div className="movie-details-info movies-info">
-                                <h1 className="title">Pan's Labyrinth</h1>
-                                <div className="d-flex">
-                                    <span className="year">1980 .</span>
-                                    <span className="time">1 hr 58 min</span>
+                    {movies.first_movie && (
+                        <div className="row banner-img" style={{ backgroundImage: `url(https://image.tmdb.org/t/p/original${movies.first_movie.backdrop_path || ''})` }}>
+                            <div className="col-xxl-6 col-xl-7 col-md-9 order-md-1 order-2">
+                                <div className="movie-details-info movies-info">
+                                    <h1 className="title">{movies.first_movie.title}</h1>
+                                    <div className="d-flex">
+                                        <span className="year">{movies.first_movie.release_date.split("-")[0]} .</span>
+                                        <span className="time">{Math.floor(movies.first_movie.runtime / 60)} hr {movies.first_movie.runtime % 60} min</span>
+                                    </div>
+                                    <div className="features">
+                                        <span className="review">R</span>
+                                        <span className="imdb"><img className="img-fluid" src="images/imdb-logo.png" alt="#" />{movies.first_movie.vote_average}</span>
+                                        <span className="bookmark save" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Bookmark" />
+                                        <span className="like" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Like" />
+                                        <span className="reting" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rating">
+                                            <i className="fa-regular fa-star" />
+                                        </span>
+                                    </div>
+                                    <p>{movies.first_movie.overview}</p>
+                                    <div className="author-info">
+                                        <div className="author-details">
+                                            <span className="author-designation">Directed By</span>
+                                            <span>{movies.first_movie.crew[0].name}</span>
+                                        </div>
+                                        <div className="author-details">
+                                            <span className="author-designation">Written By</span>
+                                            <span>{movies.first_movie.crew[1].name}</span>
+                                        </div>
+                                        <div className="author-details">
+                                            <span className="author-designation">Studio</span>
+                                            <span>{movies.first_movie.production_companies[0].name}</span>
+                                        </div>
+                                    </div>
+                                    <a href="https://www.youtube.com/watch?v=n_Cn8eFo7u8" className="btn btn-primary me-2 popup-youtube"><i className="fa-solid fa-play" />Play Now</a>
+                                    <a href="#" className="btn btn-light"><i className="fa-solid fa-circle-plus" />Add to List</a>
                                 </div>
-                                <div className="features">
-                                    <span className="review">R</span>
-                                    <span className="imdb">
-                                        <img className="img-fluid" src="images/imdb-logo.png" alt="#" />
-                                        3.4
-                                    </span>
-                                    <span
-                                        className="bookmark save"
-                                        data-bs-toggle="tooltip"
-                                        data-bs-placement="top"
-                                        data-bs-title="Bookmark"
-                                    />
-                                    <span
-                                        className="like"
-                                        data-bs-toggle="tooltip"
-                                        data-bs-placement="top"
-                                        data-bs-title="Like"
-                                    />
-                                    <span
-                                        className="reting"
-                                        data-bs-toggle="tooltip"
-                                        data-bs-placement="top"
-                                        data-bs-title="Rating"
+                            </div>
+                            <div className="col-xxl-2 col-xl-3 col-md-3 align-self-center order-md-2 order-1 justify-content-start justify-content-md-center d-flex">
+                                <div className="video">
+                                    <a
+                                        className="video-btn btn-animation popup-youtube"
+                                        href={`https://www.youtube.com/watch?v=${movies.first_movie.trailer}`}
                                     >
-                                        <i className="fa-regular fa-star" />
-                                    </span>
+                                        <i className="fa-solid fa-play" />
+                                    </a>
                                 </div>
-                                <p>
-                                    In the Falangist Spain of 1944, the bookish young stepdaughter of
-                                    a sadistic army officer escapes into an eerie but captivating
-                                    fantasy world.
-                                </p>
-                                <div className="author-info">
-                                    <div className="author-details">
-                                        <span className="author-designation">Directed By</span>
-                                        <span>Guillermo del Toro</span>
-                                    </div>
-                                    <div className="author-details">
-                                        <span className="author-designation">Written By </span>
-                                        <span>Anna Littlical</span>
-                                    </div>
-                                    <div className="author-details">
-                                        <span className="author-designation">Studio </span>
-                                        <span>Universal Pictures</span>
-                                    </div>
-                                </div>
-                                <a
-                                    href="https://www.youtube.com/watch?v=n_Cn8eFo7u8"
-                                    className="btn btn-primary me-2 popup-youtube"
+                            </div>
+                        </div>
+                    )}
+                    {movies.rest_movies && movies.rest_movies.length > 0 && (
+                        <div className="row">
+                            <div className="col-md-10 col-sm-9">
+                                <div
+                                    className="owl-carousel owl-nav-center"
+                                    data-nav-dots="false"
+                                    data-nav-arrow="false"
+                                    data-items={3}
+                                    data-xl-items={3}
+                                    data-lg-items={3}
+                                    data-md-items={2}
+                                    data-sm-items={2}
+                                    data-xs-items={1}
+                                    data-space={0}
+                                    data-autoheight="true"
+                                    data-autoplay="false"
+                                    data-loop="false"
                                 >
-                                    <i className="fa-solid fa-play" />
-                                    Play Now
-                                </a>
-                                <a href="#" className="btn btn-light">
-                                    <i className="fa-solid fa-circle-plus" />
-                                    Add to List
+                                    {movies.rest_movies.map((movie) => (
+                                        <div key={movie.id} className="item">
+                                            <div className="movies-categories movies-style-1">
+                                                <div className="movies-img banner-backdrop">
+                                                    <img
+                                                        className="img-fluid"
+                                                        src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
+                                                        alt={movie.title}
+                                                    />
+                                                    <div className="info-top">
+                                                        <div className="ms-auto">
+                                                            <a href="javascript:void(0)" className="like" />
+                                                            <a className="views" href="#"><i className="far fa-eye" /> 10K</a>
+                                                        </div>
+                                                    </div>
+                                                    <div className="movies-info">
+                                                        <div className="content">
+                                                            <h5><a className="title" href={`movie-single.html?id=${movie.id}`}>{movie.title}</a></h5>
+                                                            <a className="time" href="#"><i className="far fa-clock me-2" />{Math.floor(movie.runtime / 60)}hr : {movie.runtime % 60}mins</a>
+                                                        </div>
+                                                        <a className="play-btn popup-youtube" href={`https://www.youtube.com/watch?v=${movie.trailer}`}><i className="fa-solid fa-play" /></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="col-md-2 col-sm-3 align-self-center text-center py-4 py-sm-0">
+                                <a href="movie.html" className="btn btn-link text-dark text-uppercase">
+                                    See All <i className="fa-solid fa-arrow-right" />
                                 </a>
                             </div>
                         </div>
-                        <div className="col-xxl-2 col-xl-3 col-md-3 align-self-center order-md-2 order-1 justify-content-start justify-content-md-center d-flex">
-                            <div className="video">
-                                <a
-                                    className="video-btn btn-animation popup-youtube"
-                                    href="https://www.youtube.com/watch?v=n_Cn8eFo7u8"
-                                >
-                                    <i className="fa-solid fa-play" />
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="col-md-10 col-sm-9">
-                            <div
-                                className="owl-carousel owl-nav-center"
-                                data-nav-dots="false"
-                                data-nav-arrow="false"
-                                data-items={3}
-                                data-xl-items={3}
-                                data-lg-items={3}
-                                data-md-items={2}
-                                data-sm-items={2}
-                                data-xs-items={1}
-                                data-space={0}
-                                data-autoheight="true"
-                                data-autoplay="false"
-                                data-loop="false"
-                            >
-                                <div className="item">
-                                    <div className="movies-categories movies-style-1">
-                                        <div className="movies-img">
-                                            <img
-                                                className="img-fluid"
-                                                src="images/movie/10.jpg"
-                                                alt="#"
-                                            />
-                                            <div className="info-top">
-                                                <div className="ms-auto">
-                                                    <a href="javascript:void(0)" className="like" />
-                                                    <a className="views" href="#">
-                                                        <i className="far fa-eye" /> 10K
-                                                    </a>
-                                                </div>
-                                            </div>
-                                            <div className="movies-info">
-                                                <div className="content">
-                                                    <h5>
-                                                        <a className="title" href="movie-single.html">
-                                                            The Seven Samurai
-                                                        </a>
-                                                    </h5>
-                                                    <a className="time" href="#">
-                                                        <i className="far fa-clock me-2" />
-                                                        3hr : 15mins
-                                                    </a>
-                                                </div>
-                                                <a
-                                                    className="play-btn popup-youtube"
-                                                    href="https://www.youtube.com/watch?v=n_Cn8eFo7u8"
-                                                >
-                                                    <i className="fa-solid fa-play" />
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="item">
-                                    <div className="movies-categories movies-style-1">
-                                        <div className="movies-img">
-                                            <img
-                                                className="img-fluid"
-                                                src="images/movie/11.jpg"
-                                                alt="#"
-                                            />
-                                            <div className="info-top">
-                                                <div className="ms-auto">
-                                                    <a href="javascript:void(0)" className="like" />
-                                                    <a className="views" href="#">
-                                                        <i className="far fa-eye" /> 14M
-                                                    </a>
-                                                </div>
-                                            </div>
-                                            <div className="movies-info">
-                                                <div className="content">
-                                                    <h5>
-                                                        <a className="title" href="movie-single.html">
-                                                            Bonnie and Clyde
-                                                        </a>
-                                                    </h5>
-                                                    <a className="time" href="#">
-                                                        <i className="far fa-clock me-2" />
-                                                        3hr : 10mins
-                                                    </a>
-                                                </div>
-                                                <a
-                                                    className="play-btn popup-youtube"
-                                                    href="https://www.youtube.com/watch?v=n_Cn8eFo7u8"
-                                                >
-                                                    <i className="fa-solid fa-play" />
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="item">
-                                    <div className="movies-categories movies-style-1">
-                                        <div className="movies-img">
-                                            <img
-                                                className="img-fluid"
-                                                src="images/movie/12.jpg"
-                                                alt="#"
-                                            />
-                                            <div className="info-top">
-                                                <div className="ms-auto">
-                                                    <a href="javascript:void(0)" className="like" />
-                                                    <a className="views" href="#">
-                                                        <i className="far fa-eye" /> 38M
-                                                    </a>
-                                                </div>
-                                            </div>
-                                            <div className="movies-info">
-                                                <div className="content">
-                                                    <h5>
-                                                        <a className="title" href="movie-single.html">
-                                                            Reservoir Dogs
-                                                        </a>
-                                                    </h5>
-                                                    <a className="time" href="#">
-                                                        <i className="far fa-clock me-2" />
-                                                        2hr : 55mins
-                                                    </a>
-                                                </div>
-                                                <a
-                                                    className="play-btn popup-youtube"
-                                                    href="https://www.youtube.com/watch?v=n_Cn8eFo7u8"
-                                                >
-                                                    <i className="fa-solid fa-play" />
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="item">
-                                    <div className="movies-categories movies-style-1">
-                                        <div className="movies-img">
-                                            <img
-                                                className="img-fluid"
-                                                src="images/movie/10.jpg"
-                                                alt="#"
-                                            />
-                                            <div className="info-top">
-                                                <div className="ms-auto">
-                                                    <a href="javascript:void(0)" className="like" />
-                                                    <a className="views" href="#">
-                                                        <i className="far fa-eye" /> 10K
-                                                    </a>
-                                                </div>
-                                            </div>
-                                            <div className="movies-info">
-                                                <div className="content">
-                                                    <h5>
-                                                        <a className="title" href="movie-single.html">
-                                                            The Seven Samurai
-                                                        </a>
-                                                    </h5>
-                                                    <a className="time" href="#">
-                                                        <i className="far fa-clock me-2" />
-                                                        3hr : 15mins
-                                                    </a>
-                                                </div>
-                                                <a
-                                                    className="play-btn popup-youtube"
-                                                    href="https://www.youtube.com/watch?v=n_Cn8eFo7u8"
-                                                >
-                                                    <i className="fa-solid fa-play" />
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="item">
-                                    <div className="movies-categories movies-style-1">
-                                        <div className="movies-img">
-                                            <img
-                                                className="img-fluid"
-                                                src="images/movie/11.jpg"
-                                                alt="#"
-                                            />
-                                            <div className="info-top">
-                                                <div className="ms-auto">
-                                                    <a href="javascript:void(0)" className="like" />
-                                                    <a className="views" href="#">
-                                                        <i className="far fa-eye" /> 14M
-                                                    </a>
-                                                </div>
-                                            </div>
-                                            <div className="movies-info">
-                                                <div className="content">
-                                                    <h5>
-                                                        <a className="title" href="movie-single.html">
-                                                            Bonnie and Clyde
-                                                        </a>
-                                                    </h5>
-                                                    <a className="time" href="#">
-                                                        <i className="far fa-clock me-2" />
-                                                        3hr : 10mins
-                                                    </a>
-                                                </div>
-                                                <a
-                                                    className="play-btn popup-youtube"
-                                                    href="https://www.youtube.com/watch?v=n_Cn8eFo7u8"
-                                                >
-                                                    <i className="fa-solid fa-play" />
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-md-2 col-sm-3 align-self-center text-center py-4 py-sm-0">
-                            <a
-                                href="movie.html"
-                                className="btn btn-link text-dark text-uppercase"
-                            >
-                                {" "}
-                                See All <i className="fa-solid fa-arrow-right" />{" "}
-                            </a>
-                        </div>
-                    </div>
+                    )}
                 </div>
             </section>
+
+
+
             <section className="space-ptb bg-holder bg-overlay-dark-99" style={{ backgroundImage: "url(images/bg/01.jpg)" }}>
                 <div className="container position-relative">
                     <div className="row">
@@ -1497,7 +1308,7 @@ export default function Home() {
                                 </div>
                             </div>
                         </div>
-                    </div>         
+                    </div>
                 </div>
             </section>
             <section className="space-ptb bg-secondary">
