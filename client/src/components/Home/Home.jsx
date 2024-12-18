@@ -1,4 +1,17 @@
+import { useEffect, useState } from "react";
+import * as moviesService from '../../services/moviesService'
+
 export default function Home() {
+    const [movies, setMovies] = useState([]);
+
+    useEffect(() => {
+        moviesService.getBanner()
+            .then(result => console.log(result))
+            .catch(err => {
+                console.log(err);
+            });
+    }, []);
+    
     return (
         <>
             <section className="banner banner-1 position-relative">
