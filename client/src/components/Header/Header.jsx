@@ -16,7 +16,7 @@ const Header = () => {
             baseHeaderClass += " header-style-01";
         } else if (pathname === "/most-popular") {
             baseHeaderClass += " header-style-02";
-        } else if (pathname === "/movie-details" || pathname === "/series-details") {
+        } else if (pathname.includes("/movie/details/") || pathname === "/series-details") {
             baseHeaderClass += " header-transparent";
         } else if (pathname === "/movies" || pathname === "/series") {
             baseContainerClass = "container-fluid main-header position-relative";
@@ -47,7 +47,7 @@ const Header = () => {
                                     <a className="nav-link" href="javascript:void(0)" data-bs-toggle="dropdown">Movie<i className="fas fa-chevron-down fa-xs"></i></a>
                                     <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
                                         <li><Link className="dropdown-item" to="/movies"><span>Movie</span></Link></li>
-                                        <li><Link className="dropdown-item" to="/movie-details"><span>Movie Single</span></Link></li>
+                                        <li><Link className="dropdown-item" to="/movie/details/771"><span>Movie Single</span></Link></li>
                                     </ul>
                                 </li>
                                 <li className=" nav-item dropdown">

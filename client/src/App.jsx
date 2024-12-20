@@ -48,7 +48,7 @@ function App() {
                     <Route path='/' element={<Home />} />
                     <Route path='/most-popular' element={<MostPopular />} />
                     <Route path='/movies' element={<Movies />} />
-                    <Route path='/movie-details' element={<MovieDetails />} />
+                    <Route path='/movie/details/:movieId' element={<MovieDetails />} />
                     <Route path='/series' element={<Series />} />
                     <Route path='/series-details' element={<SeriesDetails />} />
                     <Route path='/about' element={<About />} />

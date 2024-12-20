@@ -1,7 +1,211 @@
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import * as moviesService from '../../services/moviesService'
+
 export default function MovieDetails() {
+    const [movie, setMovie] = useState([]);
+    const { movieId } = useParams();
+
+    useEffect(() => {
+        moviesService.getMovieDetails(movieId)
+            .then(result => setMovie(result))
+            .catch(err => {
+                console.log(err);
+            });
+    }, []);
+
+    useEffect(() => {
+        const existingScript = document.querySelector('script[src="/js/custom.js"]');
+        if (existingScript) {
+            document.body.removeChild(existingScript);
+        }
+
+        const script = document.createElement('script');
+        script.src = '/js/custom.js';
+        script.async = true;
+        document.body.appendChild(script);
+
+        return () => {
+            if (document.body.contains(script)) {
+                document.body.removeChild(script);
+            }
+        };
+    }, [movie.movie]);
+
     return (
         <>
-            <section className="single-movie-details space-pb bg-holder bg-overlay-dark-99" style={{ backgroundImage: "url(images/bg/03.jpg)" }}>
+            {movie.movie && (
+                <section
+                    className="single-movie-details space-pb bg-holder bg-overlay-dark-99"
+                    style={{ backgroundImage: "url(images/bg/03.jpg)" }}
+                >
+                    <div className="container position-relative">
+                        <div className="row g-0">
+                            <div className="movie-details-bg col-12 bg-overlay-dark-4" style={{ backgroundImage: `url(https://image.tmdb.org/t/p/original${movie.movie?.backdrop_path || ''})` }}>
+                                <div className="row position-relative">
+                                    <div className="col-xxl-6 col-xl-7 col-lg-6 col-md-8 col-sm-12 order-md-1 order-2">
+                                        <div className="movie-details">
+                                            <div className="movie-info">
+                                                <h2 className="title">{movie.movie.title}</h2>
+                                                <div className="movies-language">
+                                                    Language:{" "} English
+                                                </div>
+                                                <div className="movies-genre">
+                                                    Genre:{" "}
+                                                    {movie.movie.genres &&
+                                                        movie.movie.genres.map((genre, index) => (
+                                                            <a key={index} href="#">
+                                                                {genre.name}
+                                                                {index < movie.movie.genres.length - 1 && ", "}
+                                                            </a>
+                                                        ))}
+                                                </div>
+                                                <a className="views" href="#">
+                                                    <i className="far fa-eye" /> 55M Views
+                                                </a>
+                                                <a className="rating" href="#">
+                                                    <i className="fa-solid fa-star" />
+                                                    {movie.movie.vote_average}/10
+                                                </a>
+                                                <div className="d-sm-flex">
+                                                    <span className="year">{new Date(movie.movie.release_date).getFullYear()}</span>
+                                                    <a className="time" href="#">
+                                                        <i className="far fa-clock me-2" />
+                                                        {Math.floor(movie.movie.runtime / 60)}hr : {movie.movie.runtime % 60}mins
+                                                    </a>
+                                                    <span className="quality">
+                                                        Quality: <a href="#">720p, 1080p</a>
+                                                    </span>
+                                                </div>
+                                                <div className="d-sm-flex my-2">
+                                                    <a href="javascript:void(0)" className="add-icon me-3"> Add to List</a>
+                                                    <div className="share-box">
+                                                        <a href="#"><i className="fas fa-share-alt" /> Share</a>
+                                                        <ul className="list-unstyled share-box-social">
+                                                            <li>
+                                                                <a href="#">
+                                                                    <i className="fab fa-facebook-f" />
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="#">
+                                                                    <i className="fab fa-twitter" />
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="#">
+                                                                    <i className="fab fa-linkedin" />
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="#">
+                                                                    <i className="fab fa-instagram" />
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <p className="mb-4">{movie.movie.overview}</p>
+                                                <a
+                                                    className="btn btn-primary popup-youtube"
+                                                    href={`https://www.youtube.com/watch?v=${movie.movie.trailer}`}
+                                                >
+                                                    <i className="fa-solid fa-play" />
+                                                    Watch Trailer
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-xxl-6 col-xl-5 col-lg-6 col-md-4 col-sm-12 align-self-center order-md-2 order-1">
+                                        <div className="video movie-video-btn mb-4 mb-md-0">
+                                            <a
+                                                className="video-btn btn-animation popup-youtube"
+                                                href={`https://www.youtube.com/watch?v`}
+                                            >
+                                                <i className="fa-solid fa-play" />
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="row mt-4 mt-lg-5">
+                            <div className="col-md-12">
+                                <div className="section-title">
+                                    <h2 className="title">Cast &amp; Crew</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-lg-6 col-md-12 order-lg-2 mb-4 mb-lg-0">
+                                <h6 className="author-title">Cast</h6>
+                                <div className="row">
+                                    {movie.movie.cast &&
+                                        movie.movie.cast.map((actor) => (
+                                            <div className="col-md-6" key={actor.id}>
+                                                <a href="#" className="movie-author">
+                                                    <div className="author-img">
+                                                        <img
+                                                            className="img-fluid"
+                                                            src={`https://media.themoviedb.org/t/p/w138_and_h175_face${actor.profilePath}`}
+                                                            alt={actor.name}
+                                                        />
+                                                    </div>
+                                                    <div className="author-details">
+                                                        <h6 className="author-name">{actor.name}</h6>
+                                                        <span className="author-designation">{actor.character}</span>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        ))}
+                                </div>
+                            </div>
+                            <div className="col-lg-3 col-md-6 order-lg-1 mb-4 mb-md-0">
+                                <h6 className="author-title">Director &amp; Writers</h6>
+                                {movie.movie.crew &&
+                                    movie.movie.crew
+                                        .filter((crew) => crew.job === "Director" || crew.job === "Screenplay")
+                                        .map((crew) => (
+                                            <a href="#" className="movie-author" key={crew.id}>
+                                                <div className="author-img">
+                                                    <img
+                                                        className="img-fluid"
+                                                        src={`https://image.tmdb.org/t/p/original${crew.profilePath}`}
+                                                        alt={crew.name}
+                                                    />
+                                                </div>
+                                                <div className="author-details">
+                                                    <h6 className="author-name">{crew.name}</h6>
+                                                    <span className="author-designation">{crew.job}</span>
+                                                </div>
+                                            </a>
+                                        ))}
+                            </div>
+                            <div className="col-lg-3 col-md-6 order-lg-3">
+                                <h6 className="author-title">Producers</h6>
+                                {movie.movie.production_companies &&
+                                    movie.movie.production_companies.map((company, index) => (
+                                        <a href="#" className="movie-author" key={index}>
+                                            <div className="author-img">
+                                                <img
+                                                    className="img-fluid"
+                                                    src={`https://image.tmdb.org/t/p/original${company.logo_path}`}
+                                                    alt={company.name}
+                                                />
+                                            </div>
+                                            <div className="author-details">
+                                                <h6 className="author-name">{company.name}</h6>
+                                                <span className="author-designation">Production</span>
+                                            </div>
+                                        </a>
+                                    ))}
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            )}
+
+            {/* <section className="single-movie-details space-pb bg-holder bg-overlay-dark-99" style={{ backgroundImage: "url(images/bg/03.jpg)" }}>
                 <div className="container position-relative">
                     <div className="row g-0">
                         <div className="movie-details-bg col-12 bg-overlay-dark-4">
@@ -10,92 +214,34 @@ export default function MovieDetails() {
                                     <div className="movie-details">
                                         <div className="movie-info">
                                             <h2 className="title"> Witness for the Prosecution</h2>
-                                            <div className="movies-language">
-                                                Language: <a href="#">English,</a>
-                                                <a href="#">Hindi</a>
-                                            </div>
-                                            <div className="movies-genre">
-                                                Genre: <a href="#">Crime,</a>
-                                                <a href="#">Drama,</a>
-                                                <a href="#">Mystery</a>
-                                            </div>
-                                            <a className="views" href="#">
-                                                <i className="far fa-eye" /> 55M Views
-                                            </a>
-                                            <a className="rating" href="#">
-                                                <i className="fa-solid fa-star" /> 8.4/10
-                                            </a>
-                                            <div className="d-sm-flex">
-                                                <span className="year">1957</span>
-                                                <a className="time" href="#">
-                                                    <i className="far fa-clock me-2" />
-                                                    3hr : 20mins
-                                                </a>
-                                                <span className="quality">
-                                                    Quality: <a href="#">720P, HD, 4K</a>
-                                                </span>
+                                            <div className="movies-language">Language: <a href="#">English,</a><a href="#">Hindi</a></div>
+                                            <div className="movies-genre">Genre: <a href="#">Crime,</a><a href="#">Drama,</a><a href="#">Mystery</a></div>
+                                            <a className="views" href="#"><i className="far fa-eye" /> 55M Views</a>
+                                            <a className="rating" href="#"><i className="fa-solid fa-star" />8.4/10</a>
+                                            <div className="d-sm-flex"><span className="year">1957</span>
+                                                <a className="time" href="#"><i className="far fa-clock me-2" />3hr : 20mins</a>
+                                                <span className="quality">Quality: <a href="#">720P, HD, 4K</a></span>
                                             </div>
                                             <div className="d-sm-flex my-2">
-                                                <a href="javascript:void(0)" className="add-icon me-3">
-                                                    {" "}
-                                                    Add to List
-                                                </a>
+                                                <a href="javascript:void(0)" className="add-icon me-3">{" "}Add to List</a>
                                                 <div className="share-box">
-                                                    <a href="#">
-                                                        {" "}
-                                                        <i className="fas fa-share-alt" /> Share
-                                                    </a>
+                                                    <a href="#">{" "}<i className="fas fa-share-alt" />Share</a>
                                                     <ul className="list-unstyled share-box-social">
-                                                        <li>
-                                                            {" "}
-                                                            <a href="#">
-                                                                <i className="fab fa-facebook-f" />
-                                                            </a>{" "}
-                                                        </li>
-                                                        <li>
-                                                            {" "}
-                                                            <a href="#">
-                                                                <i className="fab fa-twitter" />
-                                                            </a>{" "}
-                                                        </li>
-                                                        <li>
-                                                            {" "}
-                                                            <a href="#">
-                                                                <i className="fab fa-linkedin" />
-                                                            </a>{" "}
-                                                        </li>
-                                                        <li>
-                                                            {" "}
-                                                            <a href="#">
-                                                                <i className="fab fa-instagram" />
-                                                            </a>{" "}
-                                                        </li>
+                                                        <li>{" "}<a href="#"><i className="fab fa-facebook-f" /></a>{" "}</li>
+                                                        <li>{" "}<a href="#"><i className="fab fa-twitter" /></a>{" "}</li>
+                                                        <li>{" "}<a href="#"><i className="fab fa-linkedin" /></a>{" "}</li>
+                                                        <li>{" "}<a href="#"><i className="fab fa-instagram" /></a>{" "}</li>
                                                     </ul>
                                                 </div>
                                             </div>
-                                            <p className="mb-4">
-                                                A veteran British barrister must defend his client in a
-                                                murder trial that has surprise after surprise.
-                                            </p>
-                                            <a
-                                                className="btn btn-primary popup-youtube"
-                                                href="https://www.youtube.com/watch?v=n_Cn8eFo7u8"
-                                            >
-                                                <i className="fa-solid fa-play" />
-                                                Watch Now
-                                            </a>
+                                            <p className="mb-4">{movie.movie?.overview}</p>
+                                            <a className="btn btn-primary popup-youtube" href="https://www.youtube.com/watch?v=n_Cn8eFo7u8"><i className="fa-solid fa-play" />Watch Trailer</a>
                                         </div>
                                     </div>
                                 </div>
                                 <div className="col-xxl-6 col-xl-5 col-lg-6  col-md-4 col-sm-12 align-self-center order-md-2 order-1">
                                     <div className="video movie-video-btn mb-4 mb-md-0">
-                                        <a
-                                            className="video-btn btn-animation popup-youtube"
-                                            href="https://www.youtube.com/watch?v=n_Cn8eFo7u8"
-                                        >
-                                            <i className="fa-solid fa-play" />
-                                        </a>
-                                        <h6>Watch Trailer</h6>
+                                        <a className="video-btn btn-animation popup-youtube" href="https://www.youtube.com/watch?v=n_Cn8eFo7u8"><i className="fa-solid fa-play" /></a>
                                     </div>
                                 </div>
                             </div>
@@ -606,7 +752,7 @@ export default function MovieDetails() {
                         </div>
                     </div>
                 </div>
-            </section>
+            </section> */}
             <section className="bg-secondary space-ptb">
                 <div className="container">
                     <div className="row">
