@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import * as moviesService from '../../services/moviesService'
 
@@ -5,7 +6,7 @@ export default function Home() {
     const [movies, setMovies] = useState([]);
 
     useEffect(() => {
-        moviesService.getBanner()
+        moviesService.getBannerMovies()
             .then(result => setMovies(result))
             .catch(err => {
                 console.log(err);
@@ -54,7 +55,7 @@ export default function Home() {
                                             <i className="fa-regular fa-star" />
                                         </span>
                                     </div>
-                                    <p>{movies.first_movie.overview}</p>
+                                    <p>{movies.first_movie.overview.length > 140 ? `${movies.first_movie.overview.substring(0, 140)}...` : movies.first_movie.overview}</p>
                                     <div className="author-info">
                                         <div className="author-details">
                                             <span className="author-designation">Directed By</span>
@@ -69,7 +70,7 @@ export default function Home() {
                                             <span>{movies.first_movie.production_companies[0].name}</span>
                                         </div>
                                     </div>
-                                    <a href="https://www.youtube.com/watch?v=n_Cn8eFo7u8" className="btn btn-primary me-2 popup-youtube"><i className="fa-solid fa-play" />Play Now</a>
+                                    <Link to={`/movie/details/${movies.first_movie.id}`} className="btn btn-primary me-2"><i className="fa-solid fa-play"/>Play Now</Link>
                                     <a href="#" className="btn btn-light"><i className="fa-solid fa-circle-plus" />Add to List</a>
                                 </div>
                             </div>
@@ -115,13 +116,13 @@ export default function Home() {
                                                     <div className="info-top">
                                                         <div className="ms-auto">
                                                             <a href="javascript:void(0)" className="like" />
-                                                            <a className="views" href="#"><i className="far fa-eye" /> 10K</a>
+                                                            <a className="views" href="#"><i className="fa-solid fa-star" />{movie.vote_average}</a>
                                                         </div>
                                                     </div>
                                                     <div className="movies-info">
                                                         <div className="content">
-                                                            <h5><a className="title" href={`movie-single.html?id=${movie.id}`}>{movie.title}</a></h5>
-                                                            <a className="time" href="#"><i className="far fa-clock me-2" />{Math.floor(movie.runtime / 60)}hr : {movie.runtime % 60}mins</a>
+                                                            <h5><Link className="title" to={`/movie/details/${movie.id}`}>{movie.title}</Link></h5>
+                                                            <a className="time" to={`/movie/details/${movie.id}`}><i className="far fa-clock me-2" />{Math.floor(movie.runtime / 60)}hr : {movie.runtime % 60}mins</a>
                                                         </div>
                                                         <a className="play-btn popup-youtube" href={`https://www.youtube.com/watch?v=${movie.trailer}`}><i className="fa-solid fa-play" /></a>
                                                     </div>
