@@ -275,10 +275,17 @@ button::-moz-focus-inner {
     padding-bottom: 40px;
 }
 
-.mfp-iframe-holder .mfp-content {
+/* .mfp-iframe-holder .mfp-content {
     line-height: 0;
     width: 100%;
     max-width: 900px;
+} */
+
+.mfp-iframe-holder .mfp-content {
+    line-height: 0;
+    width: 100%;
+    max-width: 1376px;
+    max-height: 775px;
 }
 
 .mfp-iframe-holder .mfp-close {

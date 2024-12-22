@@ -3753,8 +3753,8 @@ button {
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
+    /* -webkit-line-clamp: 2;
+    line-clamp: 2; */
     -webkit-box-orient: vertical;
 }
 
@@ -4309,8 +4309,7 @@ button {
 }
 
 .movie-details-bg {
-    padding-bottom: 65px;
-    padding-top: 200px;
+    padding: 130px 0;
     background: url("../images/bg/details.jpg");
     background-size: cover;
     background-position: center;
@@ -4349,7 +4348,7 @@ button {
     -webkit-box-pack: center;
     -ms-flex-pack: center;
     justify-content: center;
-    margin-left: 70px;
+    margin-left: 258px;
 }
 
 .movie-details-bg .movie-video-btn h6 {
@@ -4373,12 +4372,19 @@ button {
 .movie-author .author-img {
     height: 50px;
     width: 50px;
-    border-radius: 100px;
+    border-radius: 50%;
     margin-right: 15px;
+    overflow: hidden;
 }
 
 .movie-author .author-img img {
-    border-radius: 100px;
+    border-radius: 50%;
+}
+
+.movie-author .author-img img.actor,
+.movie-author .author-img img.crew {
+    width: 50px;
+    height: 50px;
 }
 
 .movie-author .author-details .author-name {
