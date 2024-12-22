@@ -34,12 +34,12 @@ export default function Footer() {
                         <div className="row align-items-center">
                             <div className="col-sm-3">
                                 <Link className="footer-logo" to="/">
-                                    <img className="img-fluid" src="images/logo.png" alt="logo" />
+                                    <img className="img-fluid" src="/images/logo.png" alt="logo" />
                                 </Link>
                             </div>
                             <div className="col-sm-9 text-sm-end mt-3 mt-sm-0">
-                                <a href="#"><img className="img-fluid me-3 my-2" src="images/google-pay.jpg" alt="#" /></a>
-                                <a href="#"><img className="img-fluid my-2" src="images/apps-store.jpg" alt="#" /></a>
+                                <a href="#"><img className="img-fluid me-3 my-2" src="/images/google-pay.jpg" alt="#" /></a>
+                                <a href="#"><img className="img-fluid my-2" src="/images/apps-store.jpg" alt="#" /></a>
                             </div>
                         </div>
                         <hr className="mt-4 mb-4 mb-md-5" />
@@ -110,28 +110,28 @@ export default function Footer() {
                                     data-items="6" data-md-items="4" data-sm-items="3" data-xs-items="3" data-xx-items="2"
                                     data-space="40" data-autoheight="true">
                                     <div className="item">
-                                        <img className="img-fluid" src="images/client-logo/01.png" alt="" />
+                                        <img className="img-fluid" src="/images/client-logo/01.png" alt="" />
                                     </div>
                                     <div className="item">
-                                        <img className="img-fluid" src="images/client-logo/02.png" alt="" />
+                                        <img className="img-fluid" src="/images/client-logo/02.png" alt="" />
                                     </div>
                                     <div className="item">
-                                        <img className="img-fluid" src="images/client-logo/03.png" alt="" />
+                                        <img className="img-fluid" src="/images/client-logo/03.png" alt="" />
                                     </div>
                                     <div className="item">
-                                        <img className="img-fluid" src="images/client-logo/04.png" alt="" />
+                                        <img className="img-fluid" src="/images/client-logo/04.png" alt="" />
                                     </div>
                                     <div className="item">
-                                        <img className="img-fluid" src="images/client-logo/05.png" alt="" />
+                                        <img className="img-fluid" src="/images/client-logo/05.png" alt="" />
                                     </div>
                                     <div className="item">
-                                        <img className="img-fluid" src="images/client-logo/01.png" alt="" />
+                                        <img className="img-fluid" src="/images/client-logo/01.png" alt="" />
                                     </div>
                                     <div className="item">
-                                        <img className="img-fluid" src="images/client-logo/02.png" alt="" />
+                                        <img className="img-fluid" src="/images/client-logo/02.png" alt="" />
                                     </div>
                                     <div className="item">
-                                        <img className="img-fluid" src="images/client-logo/03.png" alt="" />
+                                        <img className="img-fluid" src="/images/client-logo/03.png" alt="" />
                                     </div>
                                 </div>
                             </div>

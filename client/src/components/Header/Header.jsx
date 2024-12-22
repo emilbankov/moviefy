@@ -32,7 +32,7 @@ const Header = () => {
                 <nav className="navbar navbar-static-top navbar-expand-lg">
                     <div className={containerClass}>
                         <button type="button" className="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"><i className="fas fa-align-left"></i></button>
-                        <Link className="navbar-brand" to="/"><img className="img-fluid" src="images/logo.png" alt="logo" /></Link>
+                        <Link className="navbar-brand" to="/"><img className="img-fluid" src="/images/logo.png" alt="logo" /></Link>
                         <div className="navbar-collapse collapse justify-content-end justify-content-lg-center">
                             <ul className="nav navbar-nav">
                                 <li className="nav-item dropdown">
@@ -47,7 +47,7 @@ const Header = () => {
                                     <a className="nav-link" href="javascript:void(0)" data-bs-toggle="dropdown">Movie<i className="fas fa-chevron-down fa-xs"></i></a>
                                     <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
                                         <li><Link className="dropdown-item" to="/movies"><span>Movie</span></Link></li>
-                                        <li><Link className="dropdown-item" to="/movie/details/771"><span>Movie Single</span></Link></li>
+                                        <li><Link className="dropdown-item" to="/movie-details"><span>Movie Single</span></Link></li>
                                     </ul>
                                 </li>
                                 <li className=" nav-item dropdown">
@@ -100,7 +100,7 @@ const Header = () => {
                         <div className="add-listing">
                             <ul className="list-unstyled mb-0">
                                 <li className="search"><a href="#search"><i className="fa fa-search"></i></a></li>
-                                <li><a href="my-account.html"><i className="fa-regular fa-user"></i></a></li>
+                                <li><Link to="/account"><i className="fa-regular fa-user"></i></Link></li>
                                 <li className="dropdown">
                                     <a href="javascript:void(0)" className="notifications dropdown-toggle" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i className="fa-regular fa-bell"></i>
@@ -111,39 +111,39 @@ const Header = () => {
                                         <div className="notifications-list">
                                             <a href="#" className="notifications-info">
                                                 <div className="notifications-author">
-                                                    <img className="img-fluid" src="images/avatar/01.jpg" alt="" />
+                                                    <img className="img-fluid" src="/images/avatar/01.jpg" alt="" />
                                                 </div>
                                                 <div className="notifications-details">
                                                     <p>sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
                                                 </div>
                                                 <div className="movie-img">
-                                                    <img className="img-fluid" src="images/movie/single-categories/17.jpg" alt="" />
+                                                    <img className="img-fluid" src="/images/movie/single-categories/17.jpg" alt="" />
                                                 </div>
                                             </a>
                                         </div>
                                         <div className="notifications-list">
                                             <a href="#" className="notifications-info">
                                                 <div className="notifications-author">
-                                                    <img className="img-fluid" src="images/avatar/02.jpg" alt="" />
+                                                    <img className="img-fluid" src="/images/avatar/02.jpg" alt="" />
                                                 </div>
                                                 <div className="notifications-details">
                                                     <p>sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
                                                 </div>
                                                 <div className="movie-img">
-                                                    <img className="img-fluid" src="images/movie/single-categories/18.jpg" alt="" />
+                                                    <img className="img-fluid" src="/images/movie/single-categories/18.jpg" alt="" />
                                                 </div>
                                             </a>
                                         </div>
                                         <div className="notifications-list">
                                             <a href="#" className="notifications-info">
                                                 <div className="notifications-author">
-                                                    <img className="img-fluid" src="images/avatar/03.jpg" alt="" />
+                                                    <img className="img-fluid" src="/images/avatar/03.jpg" alt="" />
                                                 </div>
                                                 <div className="notifications-details">
                                                     <p>sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
                                                 </div>
                                                 <div className="movie-img">
-                                                    <img className="img-fluid" src="images/movie/single-categories/19.jpg" alt="" />
+                                                    <img className="img-fluid" src="/images/movie/single-categories/19.jpg" alt="" />
                                                 </div>
                                             </a>
                                         </div>
