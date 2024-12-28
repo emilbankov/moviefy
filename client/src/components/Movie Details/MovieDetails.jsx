@@ -34,41 +34,41 @@ export default function MovieDetails() {
                 document.body.removeChild(script);
             }
         };
-    }, [movie.movie]);
+    }, [movie.movies]);
 
     return (
         <>
-            {movie.movie && (
+            {movie.movies && (
                 <section
                     className="single-movie-details space-pb bg-holder bg-overlay-dark-99"
                     style={{ backgroundImage: "url(/images/bg/03.jpg)" }}
                 >
                     <div className="container position-relative">
                         <div className="row g-0">
-                            <div className="movie-details-bg col-12 bg-overlay-dark-4" style={{ backgroundImage: `url(https://image.tmdb.org/t/p/original${movie.movie.backdrop_path || ''})` }}>
+                            <div className="movie-details-bg col-12 bg-overlay-dark-4" style={{ backgroundImage: `url(https://image.tmdb.org/t/p/original${movie.movies.backdrop_path || ''})` }}>
                                 <div className="row position-relative">
                                     <div className="col-xxl-6 col-xl-7 col-lg-6 col-md-8 col-sm-12 order-md-1 order-2">
                                         <div className="movie-details">
                                             <div className="movie-info">
-                                                <h2 className="title">{movie.movie.title}</h2>
+                                                <h2 className="title">{movie.movies.title}</h2>
                                                 <div className="movies-language">
                                                     Language:{" "} English
                                                 </div>
                                                 <div className="movies-genre">
                                                     Genre:{" "}
-                                                    {movie.movie.genres.map((genre, index) => (
+                                                    {movie.movies.genres.map((genre, index) => (
                                                         <a key={index} href="#">
                                                             {genre.name}
-                                                            {index < movie.movie.genres.length - 1 && ", "}
+                                                            {index < movie.movies.genres.length - 1 && ", "}
                                                         </a>
                                                     ))}
                                                 </div>
                                                 <div className="movies-genre">
                                                     Studio:{" "}
-                                                    {movie.movie.production_companies.map((company, index) => (
+                                                    {movie.movies.production_companies.map((company, index) => (
                                                         <span key={index}>
                                                             {company.name}
-                                                            {index < movie.movie.production_companies.length - 1 && ", "}
+                                                            {index < movie.movies.production_companies.length - 1 && ", "}
                                                         </span>
                                                     ))}
                                                 </div>
@@ -78,13 +78,13 @@ export default function MovieDetails() {
                                                 </a>
                                                 <a className="rating" href="#">
                                                     <i className="fa-solid fa-star" />
-                                                    {movie.movie.vote_average}/10
+                                                    {movie.movies.vote_average}/10
                                                 </a>
                                                 <div className="d-sm-flex">
-                                                    <span className="year">{new Date(movie.movie.release_date).getFullYear()}</span>
+                                                    <span className="year">{new Date(movie.movies.release_date).getFullYear()}</span>
                                                     <a className="time" href="#">
                                                         <i className="far fa-clock me-2" />
-                                                        {Math.floor(movie.movie.runtime / 60)}hr : {movie.movie.runtime % 60}mins
+                                                        {Math.floor(movie.movies.runtime / 60)}hr : {movie.movies.runtime % 60}mins
                                                     </a>
                                                     <span className="quality">
                                                         Quality: <a href="#">720p, 1080p</a>
@@ -118,10 +118,10 @@ export default function MovieDetails() {
                                                         </ul>
                                                     </div>
                                                 </div>
-                                                <p className="mb-4">{movie.movie.overview}</p>
+                                                <p className="mb-4">{movie.movies.overview}</p>
                                                 <a
                                                     className="btn btn-primary popup-youtube"
-                                                    href={`https://www.youtube.com/watch?v=${movie.movie.trailer}`}
+                                                    href={`https://www.youtube.com/watch?v=${movie.movies.trailer}`}
                                                 >
                                                     <i className="fa-solid fa-play" />
                                                     Watch Trailer
@@ -131,7 +131,7 @@ export default function MovieDetails() {
                                     </div>
                                     <div className="col-xxl-6 col-xl-5 col-lg-6 col-md-4 col-sm-12 align-self-center order-md-2 order-1">
                                         <div className="video movie-video-btn mb-4 mb-md-0">
-                                            <a className="video-btn btn-animation popup-youtube" href={`https://vidsrc.net/embed/movie?tmdb=${movie.movie.api_id}`}><i className="fa-solid fa-play" /></a>
+                                            <a className="video-btn btn-animation popup-youtube" href={`https://vidsrc.net/embed/movie?tmdb=${movie.movies.api_id}`}><i className="fa-solid fa-play" /></a>
                                         </div>
                                     </div>
                                 </div>
@@ -147,8 +147,8 @@ export default function MovieDetails() {
                         <div className="row">
                             <div className="col-lg-3-4 col-md-6 order-lg-1 mb-4 mb-md-0">
                                 <h6 className="author-title">Director, Writers & Producers</h6>
-                                {movie.movie.crew &&
-                                    movie.movie.crew
+                                {movie.movies.crew &&
+                                    movie.movies.crew
                                         .filter((crew) =>
                                             crew.job === "Director" ||
                                             crew.job === "Writer" ||
@@ -175,8 +175,8 @@ export default function MovieDetails() {
                             <div className="col-lg-9 col-md-12 order-lg-2 mb-4 mb-lg-0">
                                 <h6 className="author-title">Cast</h6>
                                 <div className="row">
-                                    {movie.movie.cast &&
-                                        movie.movie.cast.filter(actor => actor.profilePath).slice(0, 9).map((actor) => (
+                                    {movie.movies.cast &&
+                                        movie.movies.cast.filter(actor => actor.profilePath).slice(0, 9).map((actor) => (
                                             <div className="col-md-4" key={actor.id}>
                                                 <a href="#" className="movie-author">
                                                     <div className="author-img">
@@ -547,7 +547,7 @@ export default function MovieDetails() {
                     </div>
                 </section>
             )}
-            {movie.movie && movie.movie.collection && (
+            {movie.movies && movie.movies.collection && (
                 <section className="bg-secondary space-ptb">
                     <div className="container">
                         <div className="row">
@@ -575,7 +575,7 @@ export default function MovieDetails() {
                                     data-autoplay="false"
                                     data-loop="false"
                                 >
-                                    {movie.movie.collection.map((item) => (
+                                    {movie.movies.collection.map((item) => (
                                         <div className="item" key={item.id}>
                                             <div className="movies-categories">
                                                 <div className="movies-img">
@@ -586,10 +586,10 @@ export default function MovieDetails() {
                                                     />
                                                     <div className="info-top">
                                                         <a className="tag" href="#">
-                                                            {movie.movie.genres && movie.movie.genres.map((genre, index) => (
+                                                            {movie.movies.genres && movie.movies.genres.map((genre, index) => (
                                                                 <span key={index}>
                                                                     {genre.name}
-                                                                    {index < movie.movie.genres.length - 1 && ", "}
+                                                                    {index < movie.movies.genres.length - 1 && ", "}
                                                                 </span>
                                                             ))}
                                                         </a>
@@ -610,7 +610,7 @@ export default function MovieDetails() {
                                                                 <div className="movies-title">
                                                                     <a
                                                                         className="play-btn popup-youtube"
-                                                                        href={`https://www.youtube.com/watch?v=${movie.movie.trailer}`}
+                                                                        href={`https://www.youtube.com/watch?v=${item.trailer}`}
                                                                     >
                                                                         <i className="fa-solid fa-play" />
                                                                     </a>
