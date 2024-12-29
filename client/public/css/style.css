@@ -751,6 +751,7 @@ a {
 
 a:focus {
     color: #f6be00;
+    outline: none !important;
     text-decoration: none !important;
 }
 
@@ -2250,7 +2251,7 @@ ul.list.list-circle li i {
 
 .btn-link:focus {
     color: #f6be00;
-    text-decoration: underline !important;
+    text-decoration: none !important;
 }
 
 .btn-link:hover {

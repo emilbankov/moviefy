@@ -547,16 +547,13 @@ export default function MovieDetails() {
                     </div>
                 </section>
             )}
-            {movie.movies && movie.movies.collection && (
+            {movie.movies && movie.movies.collection.length > 0 && (
                 <section className="bg-secondary space-ptb">
                     <div className="container">
                         <div className="row">
                             <div className="col-md-12">
                                 <div className="section-title">
                                     <h2 className="title">Movie Collection</h2>
-                                    <a href="movie.html" className="btn-link">
-                                        More Videos
-                                    </a>
                                 </div>
                             </div>
                             <div className="col-md-12">
@@ -586,12 +583,7 @@ export default function MovieDetails() {
                                                     />
                                                     <div className="info-top">
                                                         <a className="tag" href="#">
-                                                            {movie.movies.genres && movie.movies.genres.map((genre, index) => (
-                                                                <span key={index}>
-                                                                    {genre.name}
-                                                                    {index < movie.movies.genres.length - 1 && ", "}
-                                                                </span>
-                                                            ))}
+                                                            {item.genre}
                                                         </a>
                                                         <div className="ms-auto">
                                                             <a href="javascript:void(0)" className="like" />
