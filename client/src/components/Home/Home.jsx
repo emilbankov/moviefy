@@ -3,13 +3,29 @@ import { useEffect, useState } from "react";
 import * as moviesService from '../../services/moviesService'
 
 export default function Home() {
-    const [movies, setMovies] = useState([]);
+    const [bannerMovies, setBannerMovies] = useState([]);
+    const [latestMovies, setLatestMovies] = useState([]);
+    const [trendingMovies, setTrendingMovies] = useState([]);
+    const [popularMovies, setPopularMovies] = useState([]);
+    const [popularCollections, setPopularCollections] = useState([]);
 
     useEffect(() => {
-        moviesService.getBannerMovies()
-            .then(result => setMovies(result))
+        Promise.all([
+            moviesService.getBannerMovies(),
+            moviesService.getLatestMovies(),
+            moviesService.getTrendingMovies(),
+            moviesService.getPopularMovies(),
+            moviesService.getPopularCollections(),
+        ])
+            .then(([banner, latest, trending, popular, collections]) => {
+                setBannerMovies(banner);
+                setLatestMovies(latest);
+                setTrendingMovies(trending);
+                setPopularMovies(popular);
+                setPopularCollections(collections);
+            })
             .catch(err => {
-                console.log(err);
+                console.error("Error fetching movies:", err);
             });
     }, []);
 
@@ -29,7 +45,8 @@ export default function Home() {
                 document.body.removeChild(script);
             }
         };
-    }, [movies.rest_movies]);
+    }, [bannerMovies.rest_movies]);
+    console.log(latestMovies);
 
     return (
         <>
@@ -37,40 +54,40 @@ export default function Home() {
                 <div className="shape-01"><img className="img-fluid" src="images/banner/home-01/shape-01.png" alt="#" /></div>
                 <div className="shape-02"><img className="img-fluid" src="images/banner/home-01/shape-02.png" alt="#" /></div>
                 <div className="container">
-                    {movies.first_movie && (
-                        <div className="row banner-img" style={{ backgroundImage: `url(https://image.tmdb.org/t/p/original${movies.first_movie.backdrop_path || ''})` }}>
+                    {bannerMovies.first_movie && (
+                        <div className="row banner-img" style={{ backgroundImage: `url(https://image.tmdb.org/t/p/original${bannerMovies.first_movie.backdrop_path || ''})` }}>
                             <div className="col-xxl-6 col-xl-7 col-md-9 order-md-1 order-2">
                                 <div className="movie-details-info movies-info">
-                                    <h1 className="title">{movies.first_movie.title}</h1>
+                                    <h1 className="title">{bannerMovies.first_movie.title}</h1>
                                     <div className="d-flex">
-                                        <span className="year">{movies.first_movie.release_date.split("-")[0]} .</span>
-                                        <span className="time">{Math.floor(movies.first_movie.runtime / 60)} hr {movies.first_movie.runtime % 60} min</span>
+                                        <span className="year">{bannerMovies.first_movie.release_date.split("-")[0]} .</span>
+                                        <span className="time">{Math.floor(bannerMovies.first_movie.runtime / 60)} hr {bannerMovies.first_movie.runtime % 60} min</span>
                                     </div>
                                     <div className="features">
                                         <span className="review">R</span>
-                                        <span className="imdb"><img className="img-fluid" src="images/imdb-logo.png" alt="#" />{movies.first_movie.vote_average}</span>
+                                        <span className="imdb"><img className="img-fluid" src="images/imdb-logo.png" alt="#" />{bannerMovies.first_movie.vote_average}</span>
                                         <span className="bookmark save" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Bookmark" />
                                         <span className="like" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Like" />
                                         <span className="reting" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rating">
                                             <i className="fa-regular fa-star" />
                                         </span>
                                     </div>
-                                    <p>{movies.first_movie.overview.length > 140 ? `${movies.first_movie.overview.substring(0, 140)}...` : movies.first_movie.overview}</p>
+                                    <p>{bannerMovies.first_movie.overview.length > 140 ? `${bannerMovies.first_movie.overview.substring(0, 140)}...` : bannerMovies.first_movie.overview}</p>
                                     <div className="author-info">
                                         <div className="author-details">
                                             <span className="author-designation">Directed By</span>
-                                            <span>{movies.first_movie.crew[0].name}</span>
+                                            <span>{bannerMovies.first_movie.crew[0].name}</span>
                                         </div>
                                         <div className="author-details">
                                             <span className="author-designation">Written By</span>
-                                            <span>{movies.first_movie.crew[1].name}</span>
+                                            <span>{bannerMovies.first_movie.crew[1].name}</span>
                                         </div>
                                         <div className="author-details">
                                             <span className="author-designation">Studio</span>
-                                            <span>{movies.first_movie.production_companies[0].name}</span>
+                                            <span>{bannerMovies.first_movie.production_companies[0].name}</span>
                                         </div>
                                     </div>
-                                    <Link to={`/movie/details/${movies.first_movie.id}`} className="btn btn-primary me-2"><i className="fa-solid fa-play"/>Play Now</Link>
+                                    <Link to={`/movie/details/${bannerMovies.first_movie.id}`} className="btn btn-primary me-2"><i className="fa-solid fa-play" />Play Now</Link>
                                     <a href="#" className="btn btn-light"><i className="fa-solid fa-circle-plus" />Add to List</a>
                                 </div>
                             </div>
@@ -78,7 +95,7 @@ export default function Home() {
                                 <div className="video">
                                     <a
                                         className="video-btn btn-animation popup-youtube"
-                                        href={`https://www.youtube.com/watch?v=${movies.first_movie.trailer}`}
+                                        href={`https://www.youtube.com/watch?v=${bannerMovies.first_movie.trailer}`}
                                     >
                                         <i className="fa-solid fa-play" />
                                     </a>
@@ -86,7 +103,7 @@ export default function Home() {
                             </div>
                         </div>
                     )}
-                    {movies.rest_movies && movies.rest_movies.length > 0 && (
+                    {bannerMovies.rest_movies && bannerMovies.rest_movies.length > 0 && (
                         <div className="row">
                             <div className="col-md-10 col-sm-9">
                                 <div
@@ -104,7 +121,7 @@ export default function Home() {
                                     data-autoplay="false"
                                     data-loop="false"
                                 >
-                                    {movies.rest_movies.map((movie) => (
+                                    {bannerMovies.rest_movies.map((movie) => (
                                         <div key={movie.id} className="item">
                                             <div className="movies-categories movies-style-1">
                                                 <div className="movies-img banner-backdrop">
@@ -141,9 +158,6 @@ export default function Home() {
                     )}
                 </div>
             </section>
-
-
-
             <section className="space-ptb bg-holder bg-overlay-dark-99" style={{ backgroundImage: "url(images/bg/01.jpg)" }}>
                 <div className="container position-relative">
                     <div className="row">
@@ -157,246 +171,42 @@ export default function Home() {
                         </div>
                     </div>
                     <div className="row">
-                        <div className="col-xl-3 col-lg-4 col-md-6 col-sm-6 mb-4">
-                            <div className="movies-categories-style-3">
-                                <div className="movie-image">
-                                    <img className="img-fluid" src="images/movie/05.jpg" alt="#" />
-                                </div>
-                                <div className="movie-info-content">
-                                    <h5>
-                                        <a className="title" href="movie-single.html">
-                                            The fellowship of the ring
-                                        </a>
-                                    </h5>
-                                    <div className="movie-info">
-                                        <span className="year">2022</span>
-                                        <a className="time" href="#">
-                                            <i className="far fa-clock me-2" />
-                                            2hr : 57mins
-                                        </a>
-                                        <div className="info-tag">
-                                            <a className="views" href="#">
-                                                <i className="far fa-eye" />
+                        {latestMovies.movies && latestMovies.movies.slice(0, 8).map(latest => (
+                            <div key={latest.id} className="col-xl-3 col-lg-4 col-md-6 col-sm-6 mb-4">
+                                <div className="movies-categories-style-3">
+                                    <div className="movie-image">
+                                        <img
+                                            className="img-fluid"
+                                            src={`https://image.tmdb.org/t/p/w500${latest.poster_path}`}
+                                            alt={latest.title}
+                                        />
+                                    </div>
+                                    <div className="movie-info-content">
+                                        <h5>
+                                            <a className="title" href={`#movie-${latest.id}`}>
+                                                {latest.title}
                                             </a>
-                                            <a href="javascript:void(0)" className="like" />
-                                            <a className="rating" href="#">
-                                                <i className="fa-solid fa-star" /> 8.3/10
+                                        </h5>
+                                        <div className="movie-info">
+                                            <span className="year">{new Date().getFullYear()}</span>
+                                            <a className="time" href="#">
+                                                <i className="far fa-clock me-2" />
+                                                {Math.floor(latest.runtime / 60)} hr {latest.runtime % 60} mins
                                             </a>
+                                            <div className="info-tag">
+                                                <a className="views" href="#">
+                                                    <i className="far fa-eye" />
+                                                </a>
+                                                <a href="javascript:void(0)" className="like" />
+                                                <a className="rating" href="#">
+                                                    <i className="fa-solid fa-star" /> {latest.vote_average}/10
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div className="col-xl-3 col-lg-4 col-md-6 col-sm-6 mb-4">
-                            <div className="movies-categories-style-3">
-                                <div className="movie-image">
-                                    <img className="img-fluid" src="images/movie/13.jpg" alt="#" />
-                                </div>
-                                <div className="movie-info-content">
-                                    <h5>
-                                        <a className="title" href="movie-single.html">
-                                            On the waterfront
-                                        </a>
-                                    </h5>
-                                    <div className="movie-info">
-                                        <span className="year">2022</span>
-                                        <a className="time" href="#">
-                                            <i className="far fa-clock me-2" />
-                                            3hr : 02mins
-                                        </a>
-                                        <div className="info-tag">
-                                            <a className="views" href="#">
-                                                <i className="far fa-eye" />
-                                            </a>
-                                            <a href="javascript:void(0)" className="like" />
-                                            <a className="rating" href="#">
-                                                <i className="fa-solid fa-star" /> 8.3/10
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-xl-3 col-lg-4 col-md-6 col-sm-6 mb-4">
-                            <div className="movies-categories-style-3">
-                                <div className="movie-image">
-                                    <img className="img-fluid" src="images/movie/14.jpg" alt="#" />
-                                </div>
-                                <div className="movie-info-content">
-                                    <h5>
-                                        <a className="title" href="movie-single.html">
-                                            Monty python and the holy grail
-                                        </a>
-                                    </h5>
-                                    <div className="movie-info">
-                                        <span className="year">2022</span>
-                                        <a className="time" href="#">
-                                            <i className="far fa-clock me-2" />
-                                            2hr : 30mins
-                                        </a>
-                                        <div className="info-tag">
-                                            <a className="views" href="#">
-                                                <i className="far fa-eye" />
-                                            </a>
-                                            <a href="javascript:void(0)" className="like" />
-                                            <a className="rating" href="#">
-                                                <i className="fa-solid fa-star" /> 8.3/10
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-xl-3 col-lg-4 col-md-6 col-sm-6 mb-4">
-                            <div className="movies-categories-style-3">
-                                <div className="movie-image">
-                                    <img className="img-fluid" src="images/movie/15.jpg" alt="#" />
-                                </div>
-                                <div className="movie-info-content">
-                                    <h5>
-                                        <a className="title" href="movie-single.html">
-                                            Wall-E
-                                        </a>
-                                    </h5>
-                                    <div className="movie-info">
-                                        <span className="year">2022</span>
-                                        <a className="time" href="#">
-                                            <i className="far fa-clock me-2" />
-                                            2hr : 15mins
-                                        </a>
-                                        <div className="info-tag">
-                                            <a className="views" href="#">
-                                                <i className="far fa-eye" />
-                                            </a>
-                                            <a href="javascript:void(0)" className="like" />
-                                            <a className="rating" href="#">
-                                                <i className="fa-solid fa-star" /> 8.3/10
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-xl-3 col-lg-4 col-md-6 col-sm-6 mb-4 mb-lg-0">
-                            <div className="movies-categories-style-3">
-                                <div className="movie-image">
-                                    <img className="img-fluid" src="images/movie/16.jpg" alt="#" />
-                                </div>
-                                <div className="movie-info-content">
-                                    <h5>
-                                        <a className="title" href="movie-single.html">
-                                            12 Angry Men
-                                        </a>
-                                    </h5>
-                                    <div className="movie-info">
-                                        <span className="year">2022</span>
-                                        <a className="time" href="#">
-                                            <i className="far fa-clock me-2" />
-                                            2hr : 38mins
-                                        </a>
-                                        <div className="info-tag">
-                                            <a className="views" href="#">
-                                                <i className="far fa-eye" />
-                                            </a>
-                                            <a href="javascript:void(0)" className="like" />
-                                            <a className="rating" href="#">
-                                                <i className="fa-solid fa-star" /> 8.3/10
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-xl-3 col-lg-4 col-md-6 col-sm-6 mb-4 mb-4 mb-lg-0">
-                            <div className="movies-categories-style-3">
-                                <div className="movie-image">
-                                    <img className="img-fluid" src="images/movie/17.jpg" alt="#" />
-                                </div>
-                                <div className="movie-info-content">
-                                    <h5>
-                                        <a className="title" href="movie-single.html">
-                                            Ghostbusters
-                                        </a>
-                                    </h5>
-                                    <div className="movie-info">
-                                        <span className="year">2022</span>
-                                        <a className="time" href="#">
-                                            <i className="far fa-clock me-2" />
-                                            2hr : 52mins
-                                        </a>
-                                        <div className="info-tag">
-                                            <a className="views" href="#">
-                                                <i className="far fa-eye" />
-                                            </a>
-                                            <a href="javascript:void(0)" className="like" />
-                                            <a className="rating" href="#">
-                                                <i className="fa-solid fa-star" /> 8.3/10
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-xl-3 col-lg-4 col-md-6 col-sm-6 mb-4 mb-sm-0">
-                            <div className="movies-categories-style-3">
-                                <div className="movie-image">
-                                    <img className="img-fluid" src="images/movie/18.jpg" alt="#" />
-                                </div>
-                                <div className="movie-info-content">
-                                    <h5>
-                                        <a className="title" href="movie-single.html">
-                                            The bridge on the river kwai
-                                        </a>
-                                    </h5>
-                                    <div className="movie-info">
-                                        <span className="year">2022</span>
-                                        <a className="time" href="#">
-                                            <i className="far fa-clock me-2" />
-                                            2hr : 57mins
-                                        </a>
-                                        <div className="info-tag">
-                                            <a className="views" href="#">
-                                                <i className="far fa-eye" />
-                                            </a>
-                                            <a href="javascript:void(0)" className="like" />
-                                            <a className="rating" href="#">
-                                                <i className="fa-solid fa-star" /> 8.3/10
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-xl-3 col-lg-4 col-md-6 col-sm-6">
-                            <div className="movies-categories-style-3">
-                                <div className="movie-image">
-                                    <img className="img-fluid" src="images/movie/19.jpg" alt="#" />
-                                </div>
-                                <div className="movie-info-content">
-                                    <h5>
-                                        <a className="title" href="movie-single.html">
-                                            Brokeback Mountain
-                                        </a>
-                                    </h5>
-                                    <div className="movie-info">
-                                        <span className="year">2022</span>
-                                        <a className="time" href="#">
-                                            <i className="far fa-clock me-2" />
-                                            3hr : 00mins
-                                        </a>
-                                        <div className="info-tag">
-                                            <a className="views" href="#">
-                                                <i className="far fa-eye" />
-                                            </a>
-                                            <a href="javascript:void(0)" className="like" />
-                                            <a className="rating" href="#">
-                                                <i className="fa-solid fa-star" /> 8.3/10
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        ))}
                     </div>
                 </div>
             </section>
