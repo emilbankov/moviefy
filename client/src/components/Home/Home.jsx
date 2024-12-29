@@ -746,7 +746,56 @@ export default function Home() {
                     </div>
                 </section>
             )}
-            
+            <section className="space-ptb">
+                <div className="container">
+                    <div className="row">
+                        <div className="col-md-12">
+                            <div className="section-title">
+                                <h2 className="title">All Time Favorite Movie Collections</h2>
+                                <a href="web-series.html" className="btn-link">
+                                    More Collections
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row">
+                        {popularCollections.collections && popularCollections.collections.map((collection, index) => (
+                            <div className="col-xl-3 col-lg-4 col-md-6 col-sm-6 mb-4" key={index}>
+                                <div className="movies-categories-style-2">
+                                    <div className="movie-image">
+                                        <img
+                                            className="img-fluid"
+                                            src={`https://image.tmdb.org/t/p/w500${collection.poster_path}`}
+                                            alt={collection.name}
+                                        />
+                                        <div className="info-top">
+                                            <a href="javascript:void(0)" className="like" />
+                                            <a className="views" href="#">
+                                                <i className="far fa-eye" /> 24M
+                                            </a>
+                                        </div>
+                                        <div className="movie-info-content">
+                                            <a className="time" href="#">
+                                                <i className="far fa-clock me-2" />
+                                                1hr : 00mins
+                                            </a>
+                                            <h5>
+                                                <a className="title" href="web-series-single.html">
+                                                    {collection.name}
+                                                </a>
+                                            </h5>
+                                            <p>
+                                                {`The ${collection.name} is a series of movies that include exciting action and adventure.`}
+                                            </p>
+                                            <Link className="btn btn-link btn-link-1" to={`/movie/details/${collection.first_movie_id}`}><i className="fa-solid fa-play" />Play Now</Link>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
             <section className="single-categories">
                 <div className="container-fluid">
                     <div className="row">
