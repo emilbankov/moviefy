@@ -634,6 +634,118 @@ export default function Home() {
                     </div>
                 </div>
             </section>
+            {popularMovies.movies && (
+                <section className="space-ptb bg-secondary">
+                    <div className="container">
+                        <div className="row">
+                            <div className="col-md-12">
+                                <div className="section-title">
+                                    <h2 className="title">All Time Most Popular Movies</h2>
+                                    <a href="movie.html" className="btn-link">
+                                        More Movies
+                                    </a>
+                                </div>
+                            </div>
+                            <div className="col-md-12">
+                                <div
+                                    className="owl-carousel owl-nav-center"
+                                    data-nav-dots="false"
+                                    data-nav-arrow="true"
+                                    data-items={4}
+                                    data-xl-items={4}
+                                    data-lg-items={4}
+                                    data-md-items={3}
+                                    data-sm-items={2}
+                                    data-xs-items={1}
+                                    data-space={30}
+                                    data-autoheight="true"
+                                    data-autoplay="false"
+                                    data-loop="false"
+                                >
+                                    {popularMovies.movies.map((popular) => (
+                                        <div className="item" key={popular.id}>
+                                            <div className="movies-categories">
+                                                <div className="movies-img">
+                                                    <img
+                                                        className="img-fluid"
+                                                        src={`https://image.tmdb.org/t/p/w500${popular.poster_path}`}
+                                                        alt={popular.title}
+                                                    />
+                                                    <div className="info-top">
+                                                        <a className="tag" href="#">
+                                                            {popular.genre}
+                                                        </a>
+                                                        <div className="ms-auto">
+                                                            <a href="javascript:void(0)" className="like" />
+                                                            <a className="views" href="#">
+                                                                <i className="fa-solid fa-star" /> {popular.vote_average}
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                    <div className="movies-info">
+                                                        <div className="content">
+                                                            <Link className="time" to={`/movie/details/${popular.id}`}>
+                                                                <i className="far fa-clock me-2" />
+                                                                {Math.floor(popular.runtime / 60)}hr : {popular.runtime % 60}min
+                                                            </Link>
+                                                            <div className="info-content">
+                                                                <div className="movies-title">
+                                                                    <a
+                                                                        className="play-btn popup-youtube"
+                                                                        href={`https://www.youtube.com/watch?v=${popular.trailer}`}
+                                                                    >
+                                                                        <i className="fa-solid fa-play" />
+                                                                    </a>
+                                                                    <h5>
+                                                                        <Link className="title mt-0" to={`/movie/details/${popular.id}`}>
+                                                                            {popular.title}
+                                                                        </Link>
+                                                                    </h5>
+                                                                </div>
+                                                                <div className="share-info">
+                                                                    <a href="javascript:void(0)" className="add-icon" />
+                                                                    <div className="share-box">
+                                                                        <a href="#">
+                                                                            <i className="fas fa-share-alt" />
+                                                                        </a>
+                                                                        <ul className="list-unstyled share-box-social">
+                                                                            <li>
+                                                                                <a href="#">
+                                                                                    <i className="fab fa-facebook-f" />
+                                                                                </a>
+                                                                            </li>
+                                                                            <li>
+                                                                                <a href="#">
+                                                                                    <i className="fab fa-twitter" />
+                                                                                </a>
+                                                                            </li>
+                                                                            <li>
+                                                                                <a href="#">
+                                                                                    <i className="fab fa-linkedin" />
+                                                                                </a>
+                                                                            </li>
+                                                                            <li>
+                                                                                <a href="#">
+                                                                                    <i className="fab fa-instagram" />
+                                                                                </a>
+                                                                            </li>
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            )}
             
             <section className="single-categories">
                 <div className="container-fluid">
