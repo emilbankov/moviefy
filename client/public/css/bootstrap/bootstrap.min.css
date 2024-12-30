@@ -641,6 +641,10 @@ progress {
     height: auto
 }
 
+.br-20 {
+    border-radius: 20px;
+}
+
 .img-thumbnail {
     padding: .25rem;
     background-color: #fff;
@@ -1657,6 +1661,11 @@ progress {
     .col-xl-2 {
         flex: 0 0 auto;
         width: 16.66666667%
+    }
+
+    .col-xl-2-3 {
+        flex: 0 0 auto;
+        width: 20%
     }
 
     .col-xl-3 {

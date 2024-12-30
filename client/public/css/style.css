@@ -3173,6 +3173,7 @@ button {
 .movies-categories {
     position: relative;
     overflow: hidden;
+    border-radius: 20px;
 }
 
 .movies-categories .movies-img {
@@ -3418,6 +3419,15 @@ button {
 
 .movies-categories.movies-style-1 .movies-info .content .time {
     margin-bottom: 0;
+}
+
+.dot {
+    display: inline-block;
+    width: 4px;
+    height: 4px;
+    background-color: white;
+    border-radius: 50%;
+    margin: 3px 5px;
 }
 
 .movies-categories.movies-style-1 .movies-info a.play-btn {
@@ -4050,6 +4060,7 @@ button {
     transition: all .3s ease-in-out;
     background: -webkit-gradient(linear, left top, left bottom, color-stop(15%, rgba(0, 0, 0, 0)), to(black));
     background: linear-gradient(180deg, rgba(0, 0, 0, 0) 15%, black 100%);
+    border-radius: 20px;
 }
 
 .movies-categories-style-2:hover .movie-image {
@@ -4071,6 +4082,7 @@ button {
 .movies-categories-style-3 .movie-image {
     position: relative;
     overflow: hidden;
+    border-radius: 20px;
 }
 
 .movies-categories-style-3 .movie-image img {
@@ -4100,6 +4112,10 @@ button {
     display: flex;
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
+}
+
+.movies-categories-style-3 .movie-info-content .smaller-text {
+    font-size: 14px;
 }
 
 .movies-categories-style-3 .movie-info-content .movie-info .rating {
