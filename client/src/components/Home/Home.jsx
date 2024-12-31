@@ -55,7 +55,7 @@ export default function Home() {
                 document.body.removeChild(script);
             }
         };
-    }, [bannerMovies.rest_movies, latestMovies.movies, trendingMovies.movies, popularMovies.movies, popularCollections.collections]);
+    }, [bannerMovies.rest_movies, latestMovies.movies, trendingMovies.movies, popularMovies.movies, popularCollections.collections, latestSeries.series, trendingSeries.series, popularSeries.series]);
     console.log(trendingSeries);
 
     return (
