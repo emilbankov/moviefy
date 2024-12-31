@@ -645,6 +645,10 @@ progress {
     border-radius: 20px;
 }
 
+.as-c {
+    align-self: center;
+}
+
 .img-thumbnail {
     padding: .25rem;
     background-color: #fff;

@@ -56,7 +56,7 @@ export default function Home() {
             }
         };
     }, [bannerMovies.rest_movies, latestMovies.movies, trendingMovies.movies, popularMovies.movies, popularCollections.collections]);
-    console.log(latestSeries);
+    console.log(trendingSeries);
 
     return (
         <>
@@ -70,7 +70,8 @@ export default function Home() {
                                 <div className="movie-details-info movies-info">
                                     <h1 className="title">{bannerMovies.first_movie.title}</h1>
                                     <div className="d-flex">
-                                        <span className="year">{bannerMovies.first_movie.release_date.split("-")[0]} .</span>
+                                        <span className="year m-0">{bannerMovies.first_movie.release_date.split("-")[0]}</span>
+                                        <span className="dot as-c"></span>
                                         <span className="time">{Math.floor(bannerMovies.first_movie.runtime / 60)} hr {bannerMovies.first_movie.runtime % 60} min</span>
                                     </div>
                                     <div className="features">
@@ -250,7 +251,7 @@ export default function Home() {
                                 >
                                     {trendingMovies.movies.map((trending) => (
                                         <div className="item" key={trending.id}>
-                                            <div className="movies-categories">
+                                            <div className="movies-categories br-20">
                                                 <div className="movies-img">
                                                     <img
                                                         className="img-fluid"
@@ -675,7 +676,7 @@ export default function Home() {
                                 >
                                     {popularMovies.movies.map((popular) => (
                                         <div className="item" key={popular.id}>
-                                            <div className="movies-categories">
+                                            <div className="movies-categories br-20">
                                                 <div className="movies-img">
                                                     <img
                                                         className="img-fluid"
@@ -813,417 +814,100 @@ export default function Home() {
                         <div className="col-md-12">
                             <div className="swiper single-slide">
                                 <div className="swiper-wrapper">
-                                    <div
-                                        className="swiper-slide bg-holder"
-                                        style={{
-                                            backgroundImage: "url(images/movie/single-categories/01.jpg)"
-                                        }}
-                                    >
-                                        <div className="container">
-                                            <div className="row">
-                                                <div className="col-xxl-6 col-xl-7 col-md-10 col-sm-10 order-sm-1 order-2">
-                                                    <div className="movie-details">
-                                                        <div className="movie-info">
-                                                            <h2 className="title">Blazing Saddles</h2>
-                                                            <div className="movies-language">
-                                                                Language: <a href="#">English,</a>
-                                                                <a href="#">Hindi</a>
-                                                            </div>
-                                                            <div className="movies-genre">
-                                                                Genre: <a href="#">Action,</a>
-                                                                <a href="#">Drama</a>
-                                                            </div>
-                                                            <a className="views" href="#">
-                                                                <i className="far fa-eye" /> 5M Views
-                                                            </a>
-                                                            <a className="rating" href="#">
-                                                                <i className="fa-solid fa-star" />
-                                                                7.7/10
-                                                            </a>
-                                                            <div className="d-sm-flex">
-                                                                <span className="year">1974</span>
-                                                                <a className="time" href="#">
-                                                                    <i className="far fa-clock me-2" />
-                                                                    3hr : 02mins
-                                                                </a>
-                                                                <span className="quality">
-                                                                    Quality: <a href="#">720P, HD, 4K</a>
-                                                                </span>
-                                                            </div>
-                                                            <div className="d-sm-flex my-2">
-                                                                <a className="btn btn-link" href="#">
-                                                                    <i className="fa-solid fa-play" /> Play Now
-                                                                </a>
-                                                                <a
-                                                                    href="javascript:void(0)"
-                                                                    className="add-icon mx-3"
-                                                                >
-                                                                    {" "}
-                                                                    Add to List
-                                                                </a>
-                                                                <div className="share-box">
-                                                                    <a href="#">
-                                                                        {" "}
-                                                                        <i className="fas fa-share-alt" /> Share
-                                                                    </a>
-                                                                    <ul className="list-unstyled share-box-social">
-                                                                        <li>
-                                                                            {" "}
-                                                                            <a href="#">
-                                                                                <i className="fab fa-facebook-f" />
-                                                                            </a>
-                                                                        </li>
-                                                                        <li>
-                                                                            {" "}
-                                                                            <a href="#">
-                                                                                <i className="fab fa-twitter" />
-                                                                            </a>
-                                                                        </li>
-                                                                        <li>
-                                                                            {" "}
-                                                                            <a href="#">
-                                                                                <i className="fab fa-linkedin" />
-                                                                            </a>
-                                                                        </li>
-                                                                        <li>
-                                                                            {" "}
-                                                                            <a href="#">
-                                                                                <i className="fab fa-instagram" />
-                                                                            </a>
-                                                                        </li>
-                                                                    </ul>
+                                    {trendingSeries.series && trendingSeries.series.slice(0, 4).map((series) => (
+                                        <div
+                                            key={series.id}
+                                            className="swiper-slide bg-holder"
+                                            style={{
+                                                backgroundImage: `url(https://image.tmdb.org/t/p/original${series.backdrop_path})`,
+                                                backgroundPosition: 'center -30px',
+                                                backgroundSize: 'cover'
+                                            }}
+                                        >
+                                            <div className="container">
+                                                <div className="row">
+                                                    <div className="col-xxl-6 col-xl-7 col-md-10 col-sm-10 order-sm-1 order-2">
+                                                        <div className="movie-details">
+                                                            <div className="movie-info">
+                                                                <h2 className="title">{series.name}</h2>
+                                                                <div className="movies-language">
+                                                                    Language: <a href="#">English</a>{" "}<a className="rating" href="#"><i className="fa-solid fa-star" /> {series.vote_average}/10</a>
                                                                 </div>
+                                                                <div className="movies-genre">
+                                                                    Genre:{" "}
+                                                                    {series.genres.map((genre, index) => (
+                                                                        <a key={index} href="#">
+                                                                            {genre.name}
+                                                                            {index < series.genres.length - 1 && ", "}
+                                                                        </a>
+                                                                    ))}
+                                                                </div>
+                                                                <div className="d-sm-flex">
+                                                                    <span className="year">{new Date(series.firstAirDate).getFullYear()}</span>
+                                                                    <a className="time" href="#">SS {series.seasons} <span className="dot"></span> EPS {series.episodes}</a>
+                                                                    <span className="quality">
+                                                                        Quality: <a href="#">720P, 1080P</a>
+                                                                    </span>
+                                                                </div>
+                                                                <div className="d-sm-flex my-2">
+                                                                    <a className="btn btn-link" href="#">
+                                                                        <i className="fa-solid fa-play" /> Play Now
+                                                                    </a>
+                                                                    <a href="javascript:void(0)" className="add-icon mx-3">
+                                                                        {" "}
+                                                                        Add to List
+                                                                    </a>
+                                                                    <div className="share-box">
+                                                                        <a href="#">
+                                                                            {" "}
+                                                                            <i className="fas fa-share-alt" /> Share
+                                                                        </a>
+                                                                        <ul className="list-unstyled share-box-social">
+                                                                            <li>
+                                                                                {" "}
+                                                                                <a href="#">
+                                                                                    <i className="fab fa-facebook-f" />
+                                                                                </a>
+                                                                            </li>
+                                                                            <li>
+                                                                                {" "}
+                                                                                <a href="#">
+                                                                                    <i className="fab fa-twitter" />
+                                                                                </a>
+                                                                            </li>
+                                                                            <li>
+                                                                                {" "}
+                                                                                <a href="#">
+                                                                                    <i className="fab fa-linkedin" />
+                                                                                </a>
+                                                                            </li>
+                                                                            <li>
+                                                                                {" "}
+                                                                                <a href="#">
+                                                                                    <i className="fab fa-instagram" />
+                                                                                </a>
+                                                                            </li>
+                                                                        </ul>
+                                                                    </div>
+                                                                </div>
+                                                                <p>{series.overview}</p>
                                                             </div>
-                                                            <p>
-                                                                Appearing onstage with Alan Yentob, creative
-                                                                director for the BBC, at the Geffen Theater in
-                                                                Westwood, Cal.
-                                                            </p>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div className="col-xxl-6 ol-xl-5 col-md-2 col-sm-2 align-self-center order-sm-2 order-1">
-                                                    <div className="video mb-4 mb-sm-0">
-                                                        <a
-                                                            className="video-btn btn-animation popup-youtube"
-                                                            href="https://www.youtube.com/watch?v=n_Cn8eFo7u8"
-                                                        >
-                                                            <i className="fa-solid fa-play" />
-                                                        </a>
+                                                    <div className="col-xxl-6 ol-xl-5 col-md-2 col-sm-2 align-self-center order-sm-2 order-1">
+                                                        <div className="video mb-4 mb-sm-0">
+                                                            <a
+                                                                className="video-btn btn-animation popup-youtube"
+                                                                href="https://www.youtube.com/watch?v=n_Cn8eFo7u8"
+                                                            >
+                                                                <i className="fa-solid fa-play" />
+                                                            </a>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div
-                                        className="swiper-slide bg-holder"
-                                        style={{
-                                            backgroundImage: "url(images/movie/single-categories/03.jpg)"
-                                        }}
-                                    >
-                                        <div className="container">
-                                            <div className="row">
-                                                <div className="col-xxl-6 col-xl-7 col-md-10 col-sm-10 order-sm-1 order-2">
-                                                    <div className="movie-details">
-                                                        <div className="movie-info">
-                                                            <h2 className="title">All the President's Men</h2>
-                                                            <div className="movies-language">
-                                                                Language: <a href="#">English,</a>
-                                                                <a href="#">Hindi</a>
-                                                            </div>
-                                                            <div className="movies-genre">
-                                                                Genre: <a href="#">Action,</a>
-                                                                <a href="#">Drama</a>
-                                                            </div>
-                                                            <a className="views" href="#">
-                                                                <i className="far fa-eye" /> 5M Views
-                                                            </a>
-                                                            <a className="rating" href="#">
-                                                                <i className="fa-solid fa-star" />
-                                                                8.3/10
-                                                            </a>
-                                                            <div className="d-sm-flex">
-                                                                <span className="year">1976</span>
-                                                                <a className="time" href="#">
-                                                                    <i className="far fa-clock me-2" />
-                                                                    2hr : 42mins
-                                                                </a>
-                                                                <span className="quality">
-                                                                    Quality: <a href="#">720P, HD, 4K</a>
-                                                                </span>
-                                                            </div>
-                                                            <div className="d-sm-flex my-2">
-                                                                <a className="btn btn-link" href="#">
-                                                                    <i className="fa-solid fa-play" /> Play Now
-                                                                </a>
-                                                                <a
-                                                                    href="javascript:void(0)"
-                                                                    className="add-icon mx-3"
-                                                                >
-                                                                    {" "}
-                                                                    Add to List
-                                                                </a>
-                                                                <div className="share-box">
-                                                                    <a href="#">
-                                                                        {" "}
-                                                                        <i className="fas fa-share-alt" /> Share
-                                                                    </a>
-                                                                    <ul className="list-unstyled share-box-social">
-                                                                        <li>
-                                                                            {" "}
-                                                                            <a href="#">
-                                                                                <i className="fab fa-facebook-f" />
-                                                                            </a>
-                                                                        </li>
-                                                                        <li>
-                                                                            {" "}
-                                                                            <a href="#">
-                                                                                <i className="fab fa-twitter" />
-                                                                            </a>
-                                                                        </li>
-                                                                        <li>
-                                                                            {" "}
-                                                                            <a href="#">
-                                                                                <i className="fab fa-linkedin" />
-                                                                            </a>
-                                                                        </li>
-                                                                        <li>
-                                                                            {" "}
-                                                                            <a href="#">
-                                                                                <i className="fab fa-instagram" />
-                                                                            </a>
-                                                                        </li>
-                                                                    </ul>
-                                                                </div>
-                                                            </div>
-                                                            <p>
-                                                                The Washington Post" reporters Bob Woodward and Carl
-                                                                Bernstein uncover the details of the Watergate
-                                                                scandal that leads to President Richard Nixon's
-                                                                resignation.
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="col-xxl-6 ol-xl-5 col-md-2 col-sm-2 align-self-center order-sm-2 order-1">
-                                                    <div className="video mb-4 mb-sm-0">
-                                                        <a
-                                                            className="video-btn btn-animation popup-youtube"
-                                                            href="https://www.youtube.com/watch?v=n_Cn8eFo7u8"
-                                                        >
-                                                            <i className="fa-solid fa-play" />
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div
-                                        className="swiper-slide bg-holder"
-                                        style={{
-                                            backgroundImage: "url(images/movie/single-categories/05.jpg)"
-                                        }}
-                                    >
-                                        <div className="container">
-                                            <div className="row">
-                                                <div className="col-xxl-6 col-xl-7 col-md-10 col-sm-10 order-sm-1 order-2">
-                                                    <div className="movie-details">
-                                                        <div className="movie-info">
-                                                            <h2 className="title">Young Frankenstein</h2>
-                                                            <div className="movies-language">
-                                                                Language: <a href="#">English,</a>
-                                                                <a href="#">Hindi</a>
-                                                            </div>
-                                                            <div className="movies-genre">
-                                                                Genre: <a href="#">Action,</a>
-                                                                <a href="#">Drama</a>
-                                                            </div>
-                                                            <a className="views" href="#">
-                                                                <i className="far fa-eye" /> 68M Views
-                                                            </a>
-                                                            <a className="rating" href="#">
-                                                                <i className="fa-solid fa-star" /> 8/10
-                                                            </a>
-                                                            <div className="d-sm-flex">
-                                                                <span className="year">2022</span>
-                                                                <a className="time" href="#">
-                                                                    <i className="far fa-clock me-2" />
-                                                                    2hr : 50mins
-                                                                </a>
-                                                                <span className="quality">
-                                                                    Quality: <a href="#">720P, HD, 4K</a>
-                                                                </span>
-                                                            </div>
-                                                            <div className="d-sm-flex my-2">
-                                                                <a className="btn btn-link" href="#">
-                                                                    <i className="fa-solid fa-play" /> Play Now
-                                                                </a>
-                                                                <a
-                                                                    href="javascript:void(0)"
-                                                                    className="add-icon mx-3"
-                                                                >
-                                                                    {" "}
-                                                                    Add to List
-                                                                </a>
-                                                                <div className="share-box">
-                                                                    <a href="#">
-                                                                        {" "}
-                                                                        <i className="fas fa-share-alt" /> Share
-                                                                    </a>
-                                                                    <ul className="list-unstyled share-box-social">
-                                                                        <li>
-                                                                            {" "}
-                                                                            <a href="#">
-                                                                                <i className="fab fa-facebook-f" />
-                                                                            </a>
-                                                                        </li>
-                                                                        <li>
-                                                                            {" "}
-                                                                            <a href="#">
-                                                                                <i className="fab fa-twitter" />
-                                                                            </a>
-                                                                        </li>
-                                                                        <li>
-                                                                            {" "}
-                                                                            <a href="#">
-                                                                                <i className="fab fa-linkedin" />
-                                                                            </a>
-                                                                        </li>
-                                                                        <li>
-                                                                            {" "}
-                                                                            <a href="#">
-                                                                                <i className="fab fa-instagram" />
-                                                                            </a>
-                                                                        </li>
-                                                                    </ul>
-                                                                </div>
-                                                            </div>
-                                                            <p>
-                                                                An American grandson of the infamous scientist,
-                                                                struggling to prove that his grandfather was not as
-                                                                insane as people believe, is invited to
-                                                                Transylvania, where he discovers the process that
-                                                                reanimates a dead body.
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="col-xxl-6 ol-xl-5 col-md-2 col-sm-2 align-self-center order-sm-2 order-1">
-                                                    <div className="video mb-4 mb-sm-0">
-                                                        <a
-                                                            className="video-btn btn-animation popup-youtube"
-                                                            href="https://www.youtube.com/watch?v=n_Cn8eFo7u8"
-                                                        >
-                                                            <i className="fa-solid fa-play" />
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div
-                                        className="swiper-slide bg-holder"
-                                        style={{
-                                            backgroundImage: "url(images/movie/single-categories/07.jpg)"
-                                        }}
-                                    >
-                                        <div className="container">
-                                            <div className="row">
-                                                <div className="col-xxl-6 col-xl-7 col-md-10 col-sm-10 order-sm-1 order-2">
-                                                    <div className="movie-details">
-                                                        <div className="movie-info">
-                                                            <h2 className="title">Almost Famous</h2>
-                                                            <div className="movies-language">
-                                                                Language: <a href="#">English,</a>
-                                                                <a href="#">Hindi</a>
-                                                            </div>
-                                                            <div className="movies-genre">
-                                                                Genre: <a href="#">Action,</a>
-                                                                <a href="#">Drama</a>
-                                                            </div>
-                                                            <a className="views" href="#">
-                                                                <i className="far fa-eye" /> 58M Views
-                                                            </a>
-                                                            <a className="rating" href="#">
-                                                                <i className="fa-solid fa-star" />
-                                                                7.9/10
-                                                            </a>
-                                                            <div className="d-sm-flex">
-                                                                <span className="year">2000</span>
-                                                                <a className="time" href="#">
-                                                                    <i className="far fa-clock me-2" />
-                                                                    2hr : 58mins
-                                                                </a>
-                                                                <span className="quality">
-                                                                    Quality: <a href="#">720P, HD, 4K</a>
-                                                                </span>
-                                                            </div>
-                                                            <div className="d-sm-flex my-2">
-                                                                <a className="btn btn-link" href="#">
-                                                                    <i className="fa-solid fa-play" /> Play Now
-                                                                </a>
-                                                                <a
-                                                                    href="javascript:void(0)"
-                                                                    className="add-icon mx-3"
-                                                                >
-                                                                    {" "}
-                                                                    Add to List
-                                                                </a>
-                                                                <div className="share-box">
-                                                                    <a href="#">
-                                                                        {" "}
-                                                                        <i className="fas fa-share-alt" /> Share
-                                                                    </a>
-                                                                    <ul className="list-unstyled share-box-social">
-                                                                        <li>
-                                                                            {" "}
-                                                                            <a href="#">
-                                                                                <i className="fab fa-facebook-f" />
-                                                                            </a>
-                                                                        </li>
-                                                                        <li>
-                                                                            {" "}
-                                                                            <a href="#">
-                                                                                <i className="fab fa-twitter" />
-                                                                            </a>
-                                                                        </li>
-                                                                        <li>
-                                                                            {" "}
-                                                                            <a href="#">
-                                                                                <i className="fab fa-linkedin" />
-                                                                            </a>
-                                                                        </li>
-                                                                        <li>
-                                                                            {" "}
-                                                                            <a href="#">
-                                                                                <i className="fab fa-instagram" />
-                                                                            </a>
-                                                                        </li>
-                                                                    </ul>
-                                                                </div>
-                                                            </div>
-                                                            <p>
-                                                                A high-school boy in the early 1970s is given the
-                                                                chance to write a story for Rolling Stone magazine
-                                                                about an up-and-coming rock band as he accompanies
-                                                                them on their concert tour.
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="col-xxl-6 ol-xl-5 col-md-2 col-sm-2 align-self-center order-sm-2 order-1">
-                                                    <div className="video mb-4 mb-sm-0">
-                                                        <a
-                                                            className="video-btn btn-animation popup-youtube"
-                                                            href="https://www.youtube.com/watch?v=n_Cn8eFo7u8"
-                                                        >
-                                                            <i className="fa-solid fa-play" />
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    ))}
                                 </div>
                             </div>
                         </div>
@@ -1235,134 +919,35 @@ export default function Home() {
                             <div className="position-relative">
                                 <div className="swiper single-slide-thumb">
                                     <div className="swiper-wrapper">
-                                        <div className="swiper-slide">
-                                            <div className="movies-categories movies-style-2">
-                                                <div className="movies-img">
-                                                    <img
-                                                        className="img-fluid"
-                                                        src="images/movie/single-categories/02.jpg"
-                                                        alt="#"
-                                                    />
-                                                    <div className="info-top">
-                                                        <div className="ms-auto">
-                                                            <a href="javascript:void(0)" className="like" />
-                                                            <a className="views" href="#">
-                                                                <i className="far fa-eye" /> 5M
-                                                            </a>
+                                        {trendingSeries.series && trendingSeries.series.slice(0, 4).map((series, index) => (
+                                            <div className="swiper-slide" key={series.id}>
+                                                <div className="movies-categories movies-style-2">
+                                                    <div className="movies-img">
+                                                        <img
+                                                            className="img-fluid"
+                                                            src={`https://image.tmdb.org/t/p/w500${series.backdrop_path}`}
+                                                            alt={series.name}
+                                                        />
+                                                        <div className="info-top">
+                                                            <div className="ms-auto">
+                                                                <a href="javascript:void(0)" className="like" />
+                                                                <a className="rating" href="#"><i className="fa-solid fa-star" /> {series.vote_average}/10</a>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div className="movies-info">
-                                                        <div className="content">
-                                                            <h5>
-                                                                <a className="title" href="javascript:void(0)">
-                                                                    Blazing Saddles
-                                                                </a>
-                                                            </h5>
-                                                            <a className="time" href="#">
-                                                                <i className="far fa-clock me-2" />
-                                                                2hr : 40mins
-                                                            </a>
+                                                        <div className="movies-info">
+                                                            <div className="content">
+                                                                <h5>
+                                                                    <a className="title" href="javascript:void(0)">
+                                                                        {series.name}
+                                                                    </a>
+                                                                </h5>
+                                                                <a className="time" href="#">SS {series.seasons} <span className="dot"></span> EPS {series.episodes}</a>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div className="swiper-slide">
-                                            <div className="movies-categories movies-style-2">
-                                                <div className="movies-img">
-                                                    <img
-                                                        className="img-fluid"
-                                                        src="images/movie/single-categories/04.jpg"
-                                                        alt="#"
-                                                    />
-                                                    <div className="info-top">
-                                                        <div className="ms-auto">
-                                                            <a href="javascript:void(0)" className="like" />
-                                                            <a className="views" href="#">
-                                                                <i className="far fa-eye" /> 5K
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                    <div className="movies-info">
-                                                        <div className="content">
-                                                            <h5>
-                                                                <a className="title" href="javascript:void(0)">
-                                                                    All the President's Men
-                                                                </a>
-                                                            </h5>
-                                                            <a className="time" href="#">
-                                                                <i className="far fa-clock me-2" />
-                                                                3hr : 12mins
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="swiper-slide">
-                                            <div className="movies-categories movies-style-2">
-                                                <div className="movies-img">
-                                                    <img
-                                                        className="img-fluid"
-                                                        src="images/movie/single-categories/06.jpg"
-                                                        alt="#"
-                                                    />
-                                                    <div className="info-top">
-                                                        <div className="ms-auto">
-                                                            <a href="javascript:void(0)" className="like" />
-                                                            <a className="views" href="#">
-                                                                <i className="far fa-eye" /> 68M
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                    <div className="movies-info">
-                                                        <div className="content">
-                                                            <h5>
-                                                                <a className="title" href="javascript:void(0)">
-                                                                    Young Frankenstein
-                                                                </a>
-                                                            </h5>
-                                                            <a className="time" href="#">
-                                                                <i className="far fa-clock me-2" />
-                                                                3hr : 20mins
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="swiper-slide">
-                                            <div className="movies-categories movies-style-2">
-                                                <div className="movies-img">
-                                                    <img
-                                                        className="img-fluid"
-                                                        src="images/movie/single-categories/08.jpg"
-                                                        alt="#"
-                                                    />
-                                                    <div className="info-top">
-                                                        <div className="ms-auto">
-                                                            <a href="javascript:void(0)" className="like" />
-                                                            <a className="views" href="#">
-                                                                <i className="far fa-eye" /> 58K
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                    <div className="movies-info">
-                                                        <div className="content">
-                                                            <h5>
-                                                                <a className="title" href="javascript:void(0)">
-                                                                    Almost Famous
-                                                                </a>
-                                                            </h5>
-                                                            <a className="time" href="#">
-                                                                <i className="far fa-clock me-2" />
-                                                                3hr : 30mins
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        ))}
                                     </div>
                                 </div>
                             </div>
@@ -1446,7 +1031,7 @@ export default function Home() {
                                 >
                                     {popularSeries.series.map((popular) => (
                                         <div className="item" key={popular.id}>
-                                            <div className="movies-categories">
+                                            <div className="movies-categories br-20">
                                                 <div className="movies-img">
                                                     <img
                                                         className="img-fluid"

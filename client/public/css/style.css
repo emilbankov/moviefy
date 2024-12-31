@@ -3173,7 +3173,6 @@ button {
 .movies-categories {
     position: relative;
     overflow: hidden;
-    border-radius: 20px;
 }
 
 .movies-categories .movies-img {
