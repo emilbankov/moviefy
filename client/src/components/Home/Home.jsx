@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import * as moviesService from '../../services/moviesService'
+import * as seriesService from '../../services/seriesService'
 
 export default function Home() {
     const [bannerMovies, setBannerMovies] = useState([]);
@@ -9,8 +10,8 @@ export default function Home() {
     const [popularMovies, setPopularMovies] = useState([]);
     const [popularCollections, setPopularCollections] = useState([]);
 
+    const [bannerSeries, setBannerSeries] = useState([]);
     const [latestSeries, setLatestSeries] = useState([]);
-    const [trendingSeries, setTrendingSeries] = useState([]);
     const [popularSeries, setPopularSeries] = useState([]);
 
     useEffect(() => {
@@ -20,18 +21,18 @@ export default function Home() {
             moviesService.getTrendingMovies(),
             moviesService.getPopularMovies(),
             moviesService.getPopularCollections(),
-            moviesService.getLatestSeries(),
-            moviesService.getTrendingSeries(),
-            moviesService.getPopularSeries(),
+            seriesService.getBannerSeries(),
+            seriesService.getLatestSeries(),
+            seriesService.getPopularSeries(),
         ])
-            .then(([banner, latest, trending, popular, collections, latestSeriesData, trendingSeriesData, popularSeriesData]) => {
+            .then(([banner, latest, trending, popular, collections, bannerSeries, latestSeriesData, popularSeriesData]) => {
                 setBannerMovies(banner);
                 setLatestMovies(latest);
                 setTrendingMovies(trending);
                 setPopularMovies(popular);
                 setPopularCollections(collections);
+                setBannerSeries(bannerSeries);
                 setLatestSeries(latestSeriesData);
-                setTrendingSeries(trendingSeriesData);
                 setPopularSeries(popularSeriesData);
             })
             .catch(err => {
@@ -55,8 +56,8 @@ export default function Home() {
                 document.body.removeChild(script);
             }
         };
-    }, [bannerMovies.rest_movies, latestMovies.movies, trendingMovies.movies, popularMovies.movies, popularCollections.collections, latestSeries.series, trendingSeries.series, popularSeries.series]);
-    console.log(trendingSeries);
+    }, [bannerMovies.rest_movies, latestMovies.movies, trendingMovies.movies, popularMovies.movies, popularCollections.collections, latestSeries.series, bannerSeries.series, popularSeries.series]);
+    console.log(popularSeries);
 
     return (
         <>
@@ -199,7 +200,7 @@ export default function Home() {
                                             </Link>
                                         </h6>
                                         <div className="movie-info smaller-text">
-                                            <span className="year">{new Date().getFullYear()}</span>
+                                            <span className="year">{latest.year}</span>
                                             <a className="time" href="#">
                                                 <i className="far fa-clock me-2" />
                                                 {Math.floor(latest.runtime / 60)}hr : {latest.runtime % 60}min
@@ -783,21 +784,21 @@ export default function Home() {
                                         <div className="info-top">
                                             <a href="javascript:void(0)" className="like" />
                                             <a className="views" href="#">
-                                                <i className="far fa-eye" /> 24M
+                                                <i className="fa-solid fa-star" /> {collection.voteAverage.toFixed(1)}
                                             </a>
                                         </div>
                                         <div className="movie-info-content">
                                             <a className="time" href="#">
                                                 <i className="far fa-clock me-2" />
-                                                1hr : 00mins
+                                                {Math.floor(collection.runtime / 60)}hr : {collection.runtime % 60}min
                                             </a>
                                             <h5>
-                                                <a className="title" href="web-series-single.html">
+                                                <Link className="title" to={`/movie/details/${collection.first_movie_id}`}>
                                                     {collection.name}
-                                                </a>
+                                                </Link>
                                             </h5>
                                             <p>
-                                                {`The ${collection.name} is a series of movies that include exciting action and adventure.`}
+                                                {collection.overview}
                                             </p>
                                             <Link className="btn btn-link btn-link-1" to={`/movie/details/${collection.first_movie_id}`}><i className="fa-solid fa-play" />Play Now</Link>
                                         </div>
@@ -814,7 +815,7 @@ export default function Home() {
                         <div className="col-md-12">
                             <div className="swiper single-slide">
                                 <div className="swiper-wrapper">
-                                    {trendingSeries.series && trendingSeries.series.slice(0, 4).map((series) => (
+                                    {bannerSeries.series && bannerSeries.series.slice(0, 4).map((series) => (
                                         <div
                                             key={series.id}
                                             className="swiper-slide bg-holder"
@@ -896,12 +897,7 @@ export default function Home() {
                                                     </div>
                                                     <div className="col-xxl-6 ol-xl-5 col-md-2 col-sm-2 align-self-center order-sm-2 order-1">
                                                         <div className="video mb-4 mb-sm-0">
-                                                            <a
-                                                                className="video-btn btn-animation popup-youtube"
-                                                                href="https://www.youtube.com/watch?v=n_Cn8eFo7u8"
-                                                            >
-                                                                <i className="fa-solid fa-play" />
-                                                            </a>
+                                                            <a className="video-btn btn-animation popup-youtube" href={`https://www.youtube.com/watch?v=${series.trailer}`}><i className="fa-solid fa-play" /></a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -919,7 +915,7 @@ export default function Home() {
                             <div className="position-relative">
                                 <div className="swiper single-slide-thumb">
                                     <div className="swiper-wrapper">
-                                        {trendingSeries.series && trendingSeries.series.slice(0, 4).map((series, index) => (
+                                        {bannerSeries.series && bannerSeries.series.slice(0, 4).map((series, index) => (
                                             <div className="swiper-slide" key={series.id}>
                                                 <div className="movies-categories movies-style-2">
                                                     <div className="movies-img">
@@ -985,9 +981,12 @@ export default function Home() {
                                             </Link>
                                         </h6>
                                         <div className="movie-info smaller-text">
-                                            <span className="year">{new Date().getFullYear()}</span>
+                                            <span className="year">{latest.year}</span>
                                             <a className="time" href="#">SS {latest.seasons} <span className="dot"></span> EPS {latest.episodes}</a>
                                             <div className="info-tag">
+                                                <a className="views" href="#">
+                                                    <i className="far fa-eye" />
+                                                </a>
                                                 <a href="javascript:void(0)" className="like" />
                                                 <a className="rating" href="#">
                                                     <i className="fa-solid fa-star" /> {latest.vote_average}/10
