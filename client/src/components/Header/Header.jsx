@@ -16,7 +16,7 @@ const Header = () => {
             baseHeaderClass += " header-style-01";
         } else if (pathname === "/most-popular") {
             baseHeaderClass += " header-style-02";
-        } else if (pathname.includes("/movie/details/") || pathname === "/series-details") {
+        } else if (pathname.includes("/movie/details/") || pathname.includes("/series/details/")) {
             baseHeaderClass += " header-transparent";
         } else if (pathname === "/movies" || pathname === "/series") {
             baseContainerClass = "container-fluid main-header position-relative";
@@ -51,10 +51,10 @@ const Header = () => {
                                     </ul>
                                 </li>
                                 <li className=" nav-item dropdown">
-                                    <a className="nav-link" href="javascript:void(0)" data-bs-toggle="dropdown">Tv Shows<i className="fas fa-chevron-down fa-xs"></i></a>
+                                    <a className="nav-link" href="javascript:void(0)" data-bs-toggle="dropdown">Series<i className="fas fa-chevron-down fa-xs"></i></a>
                                     <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
-                                        <li><Link className="dropdown-item" to="/series"><span>Tv Show</span></Link></li>
-                                        <li><Link className="dropdown-item" to="/series-details"><span>Tv Show Single</span></Link></li>
+                                        <li><Link className="dropdown-item" to="/series"><span>Series</span></Link></li>
+                                        <li><Link className="dropdown-item" to="/series-details"><span>Series Single</span></Link></li>
                                     </ul>
                                 </li>
                                 <li className="nav-item dropdown">
