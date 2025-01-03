@@ -39,10 +39,7 @@ export default function MovieDetails() {
     return (
         <>
             {movie.movies && (
-                <section
-                    className="single-movie-details space-pb bg-holder bg-overlay-dark-99"
-                    style={{ backgroundImage: "url(/images/bg/03.jpg)" }}
-                >
+                <section className="single-movie-details space-pb bg-holder bg-overlay-dark-99" style={{ backgroundImage: "url(/images/bg/03.jpg)" }}>
                     <div className="container position-relative">
                         <div className="row g-0">
                             <div className="movie-details-bg col-12 bg-overlay-dark-4" style={{ backgroundImage: `url(https://image.tmdb.org/t/p/original${movie.movies.backdrop_path || ''})` }}>
@@ -52,7 +49,10 @@ export default function MovieDetails() {
                                             <div className="movie-info">
                                                 <h2 className="title">{movie.movies.title}</h2>
                                                 <div className="movies-language">
-                                                    Language:{" "} English
+                                                    Language:{" "} English{" "}
+                                                    <a className="rating" href="#"><i className="fa-solid fa-star" />
+                                                        {" "}{movie.movies.vote_average}/10
+                                                    </a>
                                                 </div>
                                                 <div className="movies-genre">
                                                     Genre:{" "}
@@ -72,14 +72,6 @@ export default function MovieDetails() {
                                                         </span>
                                                     ))}
                                                 </div>
-
-                                                <a className="views" href="#">
-                                                    <i className="far fa-eye" /> 55M Views
-                                                </a>
-                                                <a className="rating" href="#">
-                                                    <i className="fa-solid fa-star" />
-                                                    {movie.movies.vote_average}/10
-                                                </a>
                                                 <div className="d-sm-flex">
                                                     <span className="year">{new Date(movie.movies.release_date).getFullYear()}</span>
                                                     <a className="time" href="#">
@@ -119,11 +111,7 @@ export default function MovieDetails() {
                                                     </div>
                                                 </div>
                                                 <p className="mb-4">{movie.movies.overview}</p>
-                                                <a
-                                                    className="btn btn-primary popup-youtube"
-                                                    href={`https://www.youtube.com/watch?v=${movie.movies.trailer}`}
-                                                >
-                                                    <i className="fa-solid fa-play" />
+                                                <a className="btn btn-primary popup-youtube" href={`https://www.youtube.com/watch?v=${movie.movies.trailer}`}><i className="fa-solid fa-play" />
                                                     Watch Trailer
                                                 </a>
                                             </div>

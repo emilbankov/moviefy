@@ -3589,7 +3589,7 @@ button {
 }
 
 .single-categories .single-slide .swiper-slide {
-    padding: 100px 0 310px;
+    padding: 150px 0 356px;
     background-position: bottom;
 }
 
@@ -3897,6 +3897,11 @@ button {
 
 .movie-details-info.movies-info .author-info {
     margin-bottom: 30px;
+}
+
+.movie-details .movie-info p.series-overview {
+    margin-bottom: 30px;
+    min-height: 72px;
 }
 
 .movie-details-info.movies-info .author-info .author-details {

@@ -12403,6 +12403,14 @@ fieldset:disabled .btn {
         margin-left: 3rem !important
     }
 
+    .ms-xl-play-button-movies {
+        margin-left: 13.8125rem !important
+    }
+
+    .ms-xl-play-button-series {
+        margin-left: 19.0625rem !important
+    }
+
     .ms-xxl-auto {
         margin-left: auto !important
     }

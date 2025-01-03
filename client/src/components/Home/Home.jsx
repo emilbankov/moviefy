@@ -103,14 +103,9 @@ export default function Home() {
                                     <a href="#" className="btn btn-light"><i className="fa-solid fa-circle-plus" />Add to List</a>
                                 </div>
                             </div>
-                            <div className="col-xxl-2 col-xl-3 col-md-3 align-self-center order-md-2 order-1 justify-content-start justify-content-md-center d-flex">
+                            <div className="col-xxl-2 col-xl-3 col-md-3 align-self-center order-md-2 order-1 justify-content-start justify-content-md-center d-flex ms-xl-play-button-movies">
                                 <div className="video">
-                                    <a
-                                        className="video-btn btn-animation popup-youtube"
-                                        href={`https://www.youtube.com/watch?v=${bannerMovies.first_movie.trailer}`}
-                                    >
-                                        <i className="fa-solid fa-play" />
-                                    </a>
+                                    <a className="video-btn btn-animation popup-youtube" href={`https://www.youtube.com/watch?v=${bannerMovies.first_movie.trailer}`}><i className="fa-solid fa-play" /></a>
                                 </div>
                             </div>
                         </div>
@@ -891,12 +886,14 @@ export default function Home() {
                                                                         </ul>
                                                                     </div>
                                                                 </div>
-                                                                <p>{series.overview}</p>
+                                                                <p className="series-overview">{series.overview.length > 270 ? `${series.overview.substring(0, 270)}...` : series.overview}</p>
                                                             </div>
                                                         </div>
+                                                        <Link to={`/series/details/${series.id}`} className="btn btn-primary me-2"><i className="fa-solid fa-play" />Play Now</Link>
+                                                        <a href="#" className="btn btn-light"><i className="fa-solid fa-circle-plus" />Add to List</a>
                                                     </div>
                                                     <div className="col-xxl-6 ol-xl-5 col-md-2 col-sm-2 align-self-center order-sm-2 order-1">
-                                                        <div className="video mb-4 mb-sm-0">
+                                                        <div className="video mb-4 mb-sm-0 ms-xl-play-button-series">
                                                             <a className="video-btn btn-animation popup-youtube" href={`https://www.youtube.com/watch?v=${series.trailer}`}><i className="fa-solid fa-play" /></a>
                                                         </div>
                                                     </div>
@@ -976,7 +973,7 @@ export default function Home() {
                                     </div>
                                     <div className="movie-info-content">
                                         <h6>
-                                            <Link className="title" to={`/movie/details/${latest.id}`}>
+                                            <Link className="title" to={`/series/details/${latest.id}`}>
                                                 {latest.name}
                                             </Link>
                                         </h6>
@@ -1060,7 +1057,7 @@ export default function Home() {
                                                                         <i className="fa-solid fa-play" />
                                                                     </a>
                                                                     <h6>
-                                                                        <Link className="title mt-0" to={`/movie/details/${popular.id}`}>
+                                                                        <Link className="title mt-0" to={`/series/details/${popular.id}`}>
                                                                             {popular.name}
                                                                         </Link>
                                                                     </h6>
