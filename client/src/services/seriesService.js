@@ -8,3 +8,4 @@ export const getLatestSeries = async () => await get(`${baseUrl}/series/latest?s
 export const getTrendingSeries = async () => await get(`${baseUrl}/series/trending`);
 export const getPopularSeries = async () => await get(`${baseUrl}/series/popular`);
 export const getSeriesDetails = async (seriesId) => await get(`${baseUrl}/series/${seriesId}`);
+export const getEpisodes = async (seasonId) => await get(`${baseUrl}/series/season/${seasonId}`);

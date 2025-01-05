@@ -4,19 +4,22 @@ import * as seriesService from '../../services/seriesService'
 
 export default function SeriesDetails() {
     const [series, setSeries] = useState([]);
+    const [episodes, setEpisodes] = useState([]);
     const { seriesId } = useParams();
     const location = useLocation();
 
     useEffect(() => {
-        seriesService.getSeriesDetails(seriesId)
-            .then(result => setSeries(result))
+        Promise.all([
+            seriesService.getSeriesDetails(seriesId),
+            seriesService.getEpisodes("63547"),
+        ])
+            .then(([series, episodes]) => {
+                setSeries(series);
+                setEpisodes(episodes);
+            })
             .catch(err => {
-                console.log(err);
+                console.error("Error fetching data:", err);
             });
-
-        return () => {
-            setSeries('series');
-        };
     }, [location.pathname]);
 
     useEffect(() => {
@@ -36,7 +39,7 @@ export default function SeriesDetails() {
             }
         };
     }, [series.series]);
-    console.log(series);
+    let eps = episodes['1'];
 
     return (
         <>
@@ -51,9 +54,9 @@ export default function SeriesDetails() {
                                             <div className="movie-details">
                                                 <div className="movie-info">
                                                     <h2 className="title">{series.series.name}</h2>
-                                                    <div className="movies-language">Language:{" "} English{" "} 
+                                                    <div className="movies-language">Language:{" "} English{" "}
                                                         <a className="rating" href="#"><i className="fa-solid fa-star" />
-                                                        {" "}{series.series.vote_average}/10
+                                                            {" "}{series.series.vote_average}/10
                                                         </a>
                                                     </div>
                                                     <div className="movies-genre">
@@ -134,10 +137,56 @@ export default function SeriesDetails() {
                                         </div>
                                         <div className="col-xxl-6 col-xl-5 col-lg-6  col-md-4 col-sm-12 align-self-center order-md-2 order-1">
                                             <div className="video movie-video-btn mb-4 mb-md-0">
-                                                <a className="video-btn btn-animation popup-youtube" href={`https://vidsrc.net/embed/tv?tmdb=${series.series.api_id}&season=1&episode=1`}><i className="fa-solid fa-play" /></a>
+                                                {/* <a className="video-btn btn-animation popup-youtube" href={`https://vidsrc.net/embed/tv?tmdb=${series.series.api_id}&season=1&episode=1`}><i className="fa-solid fa-play" /></a> */}
+                                                <a className="video-btn btn-animation" href={`#seasons`}><i className="fa-solid fa-play" /></a>
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="row mt-4 mt-lg-5" id="seasons">
+                            <div className="col-md-12">
+                                <div className="section-title">
+                                    <h2 className="title">Seasons</h2>
+                                </div>
+                            </div>
+                            <div className="col-md-12">
+                                <div
+                                    className="owl-carousel owl-nav-center"
+                                    data-nav-dots="false"
+                                    data-nav-arrow="true"
+                                    data-items={5}
+                                    data-xl-items={5}
+                                    data-lg-items={5}
+                                    data-md-items={4}
+                                    data-sm-items={3}
+                                    data-xs-items={2}
+                                    data-space={30}
+                                    data-autoheight="true"
+                                    data-autoplay="false"
+                                    data-loop="false"
+                                >
+                                    {series.series.seasons && series.series.seasons.map((season) => (
+                                        <Link>
+                                            <div className="item" key={season.id}>
+                                                <div className="episode-item">
+                                                    <a href="https://www.youtube.com/watch?v=n_Cn8eFo7u8" className="popup-youtube tv-episode">
+                                                        <img className="img-fluid" src={`https://image.tmdb.org/t/p/w500${season.poster_path}`} alt="#" />
+                                                        <div className="episode-info">
+                                                            <span className="play-btn"><i className="fa-solid fa-play" /></span>
+                                                            <h6 className="title">
+                                                                SS {season.season_number}
+                                                                <span className="dot"></span>
+                                                                EPS {season.episode_count}
+                                                            </h6>
+                                                            <h6 className="title">/ {new Date(season.air_date).getFullYear()}</h6>
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </Link>
+                                    ))}
                                 </div>
                             </div>
                         </div>
@@ -146,168 +195,36 @@ export default function SeriesDetails() {
                                 <div className="section-title">
                                     <h2 className="title">Episodes</h2>
                                 </div>
-                                <div className="categories-slider episode">
-                                    <div
-                                        className="owl-carousel owl-nav-center"
-                                        data-nav-dots="false"
-                                        data-nav-arrow="true"
-                                        data-items={6}
-                                        data-xl-items={5}
-                                        data-lg-items={5}
-                                        data-md-items={4}
-                                        data-sm-items={3}
-                                        data-xs-items={2}
-                                        data-space={30}
-                                        data-autoheight="true"
-                                    >
-                                        <div className="item">
+                            </div>
+                            <div className="col-md-12">
+                                <div
+                                    className="owl-carousel owl-nav-center"
+                                    data-nav-dots="false"
+                                    data-nav-arrow="true"
+                                    data-items={3}
+                                    data-xl-items={3}
+                                    data-lg-items={3}
+                                    data-md-items={3}
+                                    data-sm-items={2}
+                                    data-xs-items={1}
+                                    data-space={30}
+                                    data-autoheight="true"
+                                    data-autoplay="false"
+                                    data-loop="false"
+                                >
+                                    {eps && eps.map((season) => (
+                                        <div className="item" key={season.episode_number}>
                                             <div className="episode-item">
-                                                <a
-                                                    href="https://www.youtube.com/watch?v=n_Cn8eFo7u8"
-                                                    className="popup-youtube tv-episode"
-                                                >
-                                                    <img
-                                                        className="img-fluid"
-                                                        src="/images/tv-show/tv-show01.jpg"
-                                                        alt="#"
-                                                    />
-                                                    <div className="episode-info">
-                                                        <span className="play-btn">
-                                                            <i className="fa-solid fa-play" />
-                                                        </span>
-                                                        <h6 className="title">S1 E1</h6>
-                                                        <span className="date">14 Sep</span>
-                                                    </div>
-                                                </a>
+                                                <a href="https://www.youtube.com/watch?v=n_Cn8eFo7u8" className="play-btn-episodes popup-youtube"><i className="fa-solid fa-play" /></a>
+                                                <img className="img-fluid" src={`https://image.tmdb.org/t/p/w500${season.still_path}`} alt="#" />
+                                                <div className="episode-info">
+                                                    <h6 className="title">
+                                                        {season.name}
+                                                    </h6>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div className="item">
-                                            <div className="episode-item">
-                                                <a
-                                                    href="https://www.youtube.com/watch?v=n_Cn8eFo7u8"
-                                                    className="popup-youtube tv-episode"
-                                                >
-                                                    <img
-                                                        className="img-fluid"
-                                                        src="/images/tv-show/tv-show02.jpg"
-                                                        alt="#"
-                                                    />
-                                                    <div className="episode-info">
-                                                        <span className="play-btn">
-                                                            <i className="fa-solid fa-play" />
-                                                        </span>
-                                                        <h6 className="title">S1 E1</h6>
-                                                        <span className="date">14 Sep</span>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <div className="item">
-                                            <div className="episode-item">
-                                                <a
-                                                    href="https://www.youtube.com/watch?v=n_Cn8eFo7u8"
-                                                    className="popup-youtube tv-episode"
-                                                >
-                                                    <img
-                                                        className="img-fluid"
-                                                        src="/images/tv-show/tv-show03.jpg"
-                                                        alt="#"
-                                                    />
-                                                    <div className="episode-info">
-                                                        <span className="play-btn">
-                                                            <i className="fa-solid fa-play" />
-                                                        </span>
-                                                        <h6 className="title">S1 E1</h6>
-                                                        <span className="date">14 Sep</span>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <div className="item">
-                                            <div className="episode-item">
-                                                <a
-                                                    href="https://www.youtube.com/watch?v=n_Cn8eFo7u8"
-                                                    className="popup-youtube tv-episode"
-                                                >
-                                                    <img
-                                                        className="img-fluid"
-                                                        src="/images/tv-show/tv-show04.jpg"
-                                                        alt="#"
-                                                    />
-                                                    <div className="episode-info">
-                                                        <span className="play-btn">
-                                                            <i className="fa-solid fa-play" />
-                                                        </span>
-                                                        <h6 className="title">S1 E1</h6>
-                                                        <span className="date">14 Sep</span>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <div className="item">
-                                            <div className="episode-item">
-                                                <a
-                                                    href="https://www.youtube.com/watch?v=n_Cn8eFo7u8"
-                                                    className="popup-youtube tv-episode"
-                                                >
-                                                    <img
-                                                        className="img-fluid"
-                                                        src="/images/tv-show/tv-show05.jpg"
-                                                        alt="#"
-                                                    />
-                                                    <div className="episode-info">
-                                                        <span className="play-btn">
-                                                            <i className="fa-solid fa-play" />
-                                                        </span>
-                                                        <h6 className="title">S1 E1</h6>
-                                                        <span className="date">14 Sep</span>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <div className="item">
-                                            <div className="episode-item">
-                                                <a
-                                                    href="https://www.youtube.com/watch?v=n_Cn8eFo7u8"
-                                                    className="popup-youtube tv-episode"
-                                                >
-                                                    <img
-                                                        className="img-fluid"
-                                                        src="/images/tv-show/tv-show06.jpg"
-                                                        alt="#"
-                                                    />
-                                                    <div className="episode-info">
-                                                        <span className="play-btn">
-                                                            <i className="fa-solid fa-play" />
-                                                        </span>
-                                                        <h6 className="title">S1 E1</h6>
-                                                        <span className="date">14 Sep</span>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <div className="item">
-                                            <div className="episode-item">
-                                                <a
-                                                    href="https://www.youtube.com/watch?v=n_Cn8eFo7u8"
-                                                    className="popup-youtube tv-episode"
-                                                >
-                                                    <img
-                                                        className="img-fluid"
-                                                        src="/images/tv-show/tv-show07.jpg"
-                                                        alt="#"
-                                                    />
-                                                    <div className="episode-info">
-                                                        <span className="play-btn">
-                                                            <i className="fa-solid fa-play" />
-                                                        </span>
-                                                        <h6 className="title">S1 E1</h6>
-                                                        <span className="date">14 Sep</span>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    ))}
                                 </div>
                             </div>
                         </div>
