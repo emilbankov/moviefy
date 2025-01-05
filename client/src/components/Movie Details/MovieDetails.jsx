@@ -637,7 +637,6 @@ export default function MovieDetails() {
                                             </div>
                                         </div>
                                     ))}
-
                                 </div>
                             </div>
                         </div>

@@ -3290,6 +3290,81 @@ button {
     background: #f6be00;
 }
 
+.play-btn-episodes {
+    color: #0b0b0d;
+    font-size: 24px;
+    width: 66px;
+    height: 66px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 66px;
+    flex: 0 0 66px;
+    background: #ffffff;
+    margin-right: 15px;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    border-radius: 50px;
+    -webkit-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+    position: absolute;
+    top: 36.7%;
+    left: 42.4%;
+    z-index: 9;
+}
+
+.play-btn-episodes:hover {
+    color: #ffffff;
+    background: #f6be00;
+}
+
+@media (min-width: 576px) {
+    .play-btn-episodes {
+        top: 38.5%;
+        left: 42%;
+    }
+}
+
+@media (min-width: 768px) {
+    .play-btn-episodes {
+        top: 32.6%;
+        left: 40.2%;
+    }
+}
+
+@media (min-width: 992px) {
+    .play-btn-episodes {
+        top: 29.8%;
+        left: 38.7%;
+    }
+}
+
+@media (min-width: 1200px) {
+    .play-btn-episodes {
+        top: 33%;
+        left: 40.6%;
+    }
+}
+
+@media (min-width: 1400px) {
+    .play-btn-episodes {
+        top: 35.6%;
+        left: 42%;
+    }
+}
+
+@media (min-width: 1600px) {
+    .play-btn-episodes {
+        top: 36.7%;
+        left: 42.4%;
+    }
+}
+
 .movies-categories .movies-info .content {
     width: 100%;
 }
