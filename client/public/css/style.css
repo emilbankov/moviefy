@@ -1049,6 +1049,13 @@ textarea.form-control {
     color: #f6be00;
 }
 
+.section-title .link-yellow {
+    font-size: 22px;
+    color: #f6be00;
+    background: transparent;
+    border: none;
+}
+
 .section-title.text-center {
     text-align: center;
     -webkit-box-pack: center;
