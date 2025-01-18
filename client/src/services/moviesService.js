@@ -2,7 +2,7 @@ import { get, post, put, del } from '../lib/request.js';
 
 const baseUrl = 'https://moviefy-vwnq.onrender.com';
 const collection = 'Home Alone Collection'
-const collections = 'The Fast and the Furious Collection, Die Hard Collection, The Avengers Collection, Harry Potter Collection, The Dark Knight Collection, Star Wars Collection, Mission: Impossible Collection, Jurassic Park Collection, Venom Collection, Top Gun Collection'
+const collections = 'The Fast and the Furious Collection, Die Hard Collection, The Avengers Collection, Harry Potter Collection, The Dark Knight Collection, Star Wars Collection, The Godfather Collection, Jurassic Park Collection, Venom Collection, Top Gun Collection'
 const seriesCollection = 'The Penguin, Squid Game, Money Heist, Hawaii Five-0';
 
 export const getBannerMovies = async () => await get(`${baseUrl}/movies/collection?name=${collection}`);
