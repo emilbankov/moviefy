@@ -34,8 +34,6 @@ function App() {
         return () => clearTimeout(timer);
     }, [location]);
 
-
-
     return (
         <body className='bg-dark'>
             <Header />

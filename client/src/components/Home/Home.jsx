@@ -39,20 +39,49 @@ export default function Home() {
                 console.error("Error fetching data:", err);
             });
     }, []);
+    
+    // useEffect(() => {
+    //     const existingScript = document.querySelector('script[src="/js/custom.js"]');
+    //     if (existingScript) {
+    //         document.body.removeChild(existingScript);
+    //     }
+
+    //     const script = document.createElement('script');
+    //     script.src = '/js/custom.js';
+    //     script.async = true;
+    //     document.body.appendChild(script);
+
+    //     return () => {
+    //         if (document.body.contains(script)) {
+    //             document.body.removeChild(script);
+    //         }
+    //     };
+    // }, [bannerMovies.rest_movies, latestMovies.movies, trendingMovies.movies, popularMovies.movies, popularCollections.collections, latestSeries.series, bannerSeries.series, popularSeries.series]);
 
     useEffect(() => {
-        const existingScript = document.querySelector('script[src="/js/custom.js"]');
-        if (existingScript) {
-            document.body.removeChild(existingScript);
+        const handleLoad = () => {
+            const existingScript = document.querySelector('script[src="/js/custom.js"]');
+            if (existingScript) {
+                document.body.removeChild(existingScript);
+            }
+
+            const script = document.createElement('script');
+            script.src = '/js/custom.js';
+            script.async = true;
+            document.body.appendChild(script);
+        };
+
+        // Wait for the window to fully load
+        if (document.readyState === 'complete') {
+            handleLoad();
+        } else {
+            window.addEventListener('load', handleLoad);
         }
 
-        const script = document.createElement('script');
-        script.src = '/js/custom.js';
-        script.async = true;
-        document.body.appendChild(script);
-
         return () => {
-            if (document.body.contains(script)) {
+            window.removeEventListener('load', handleLoad);
+            const script = document.querySelector('script[src="/js/custom.js"]');
+            if (script) {
                 document.body.removeChild(script);
             }
         };
