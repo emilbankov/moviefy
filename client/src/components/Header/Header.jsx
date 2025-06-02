@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
-const Header = () => {
+const Header = ({ onSearchOpen }) => {
     const location = useLocation();
     const [headerClass, setHeaderClass] = useState("header header-sticky");
     const [containerClass, setContainerClass] = useState("container main-header position-relative");
@@ -99,7 +99,7 @@ const Header = () => {
                         </div>
                         <div className="add-listing">
                             <ul className="list-unstyled mb-0">
-                                <li className="search"><a href="#search"><i className="fa fa-search"></i></a></li>
+                                <li className="search"><a href="#search" onClick={(e) => { e.preventDefault(); onSearchOpen(); }}><i className="fa fa-search"></i></a></li>
                                 <li><Link to="/account"><i className="fa-regular fa-user"></i></Link></li>
                                 <li className="dropdown">
                                     <a href="javascript:void(0)" className="notifications dropdown-toggle" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

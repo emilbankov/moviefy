@@ -19,9 +19,11 @@ import PrivacyPolicy from './components/Privacy Policy/PrivacyPolicy';
 import TermsConditions from './components/Terms Conditions/TermsConditions';
 import Loader from './components/Loader/Loader';
 import Footer from './components/Footer/Footer';
+import SearchResults from './components/Search Results/SearchResults';
 
 function App() {
     const [loading, setLoading] = useState(false);
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
     const location = useLocation();
 
     useEffect(() => {
@@ -36,8 +38,8 @@ function App() {
 
     return (
         <body className='bg-dark'>
-            <Header />
-            <Search />
+            <Header onSearchOpen={() => setIsSearchOpen(true)} />
+            <Search isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
 
             {loading && <Loader />}
 
@@ -57,6 +59,7 @@ function App() {
                     <Route path='/error' element={<Error />} />
                     <Route path='/privacy-policy' element={<PrivacyPolicy />} />
                     <Route path='/terms-and-conditions' element={<TermsConditions />} />
+                    <Route path='/search' element={<SearchResults />} />
                 </Routes>
             </div>
 
