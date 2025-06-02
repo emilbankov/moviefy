@@ -249,19 +249,22 @@ export default function SeriesDetails() {
                                         data-autoplay="false"
                                         data-loop="false"
                                     >
-                                        {episodes[selectedSeason].map((episode) => (
+                                        {episodes[selectedSeason].map((episode) => {
+                                            console.log('Episode:', episode);
+                                            return (
                                             <div className="item" key={episode.episode_number}>
                                                 <div className="episode-item">
                                                     <a href={`https://vidsrc.net/embed/tv?tmdb=${series.series.api_id}&season=${selectedSeason}&episode=${episode.episode_number}`} className="play-btn-episodes popup-youtube"><i className="fa-solid fa-play" /></a>
                                                     <img className="img-fluid" src={`https://image.tmdb.org/t/p/w500${episode.still_path}`} alt="#" />
                                                     <div className="episode-info">
                                                         <h6 className="title">
-                                                            {episode.name}
+                                                            {episode.episode_number}. {episode.name}
                                                         </h6>
                                                     </div>
                                                 </div>
                                             </div>
-                                        ))}
+                                            );
+                                        })}
                                     </div>
                                 </div>
                             </div>
@@ -399,15 +402,15 @@ export default function SeriesDetails() {
                                                 every possible setback. Commit the plan to paper and then keep
                                                 it with you at all times. Review it regularly and ensure that
                                                 every step takes you closer to your Vision and Goals. If the
-                                                plan doesn’t support the vision then change it!
+                                                plan doesn't support the vision then change it!
                                             </p>
                                             <h5 className="mb-2">Does it need to be done at all?</h5>
                                             <p>
-                                                But haven’t you seen people who seem to coast into good
-                                                things, like the farmer who found the Hope Diamond? I’ve known
-                                                people like that. In fact, after I’d been in Japan for a while
-                                                and had set up a “channel” for business to flow through, I
-                                                could just think about receiving more money, and I’d get an
+                                                But haven't you seen people who seem to coast into good
+                                                things, like the farmer who found the Hope Diamond? I've known
+                                                people like that. In fact, after I'd been in Japan for a while
+                                                and had set up a "channel" for business to flow through, I
+                                                could just think about receiving more money, and I'd get an
                                                 immediate surge of business within hours. This pattern went on
                                                 for 16 or 17 years, till I shut down my writing and editing
                                                 business.
@@ -475,7 +478,7 @@ export default function SeriesDetails() {
                                             <div className="row">
                                                 <div className="col-12">
                                                     <h4 className="mb-4">
-                                                        4 Reviews for women’s fabric mix midi wrap jumpsuit
+                                                        4 Reviews for women's fabric mix midi wrap jumpsuit
                                                     </h4>
                                                     <div className="commentlist">
                                                         <div className="comment-author">
@@ -560,11 +563,11 @@ export default function SeriesDetails() {
                                                                 </div>
                                                             </div>
                                                             <p>
-                                                                Success isn’t really that difficult. There is a
+                                                                Success isn't really that difficult. There is a
                                                                 significant portion of the population here in North
                                                                 America, that actually want and need success to be
                                                                 hard! Why? So they then have a built-in excuse when
-                                                                things don’t go their way! Pretty sad situation, to
+                                                                things don't go their way! Pretty sad situation, to
                                                                 say the least.
                                                             </p>
                                                         </div>
