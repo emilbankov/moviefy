@@ -1,6 +1,6 @@
 import { get, post, put, del } from '../lib/request.js';
 
-const baseUrl = 'https://moviefy-vwnq.onrender.com';
+const baseUrl = 'https://organisational-enrica-boklucite1-470d3a75.koyeb.app';
 const collection = 'Home Alone Collection'
 const collections = 'The Fast and the Furious Collection, Die Hard Collection, The Avengers Collection, Harry Potter Collection, The Dark Knight Collection, Star Wars Collection, The Godfather Collection, Jurassic Park Collection, Venom Collection, Top Gun Collection'
 const seriesCollection = 'The Penguin, Squid Game, Money Heist, Hawaii Five-0';
@@ -11,3 +11,4 @@ export const getTrendingMovies = async () => await get(`${baseUrl}/movies/trendi
 export const getPopularMovies = async () => await get(`${baseUrl}/movies/popular`);
 export const getPopularCollections = async () => await get(`${baseUrl}/movies/collections?names=${collections}`);
 export const getMovieDetails = async (movieId) => await get(`${baseUrl}/movies/${movieId}`);
+export const search = async (query) => await get(`${baseUrl}/search?query=${query}`);

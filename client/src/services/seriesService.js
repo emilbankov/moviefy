@@ -1,6 +1,6 @@
 import { get, post, put, del } from '../lib/request.js';
 
-const baseUrl = 'https://moviefy-vwnq.onrender.com';
+const baseUrl = 'https://organisational-enrica-boklucite1-470d3a75.koyeb.app';
 const collection = 'Peaky Blinders, Squid Game, Money Heist, Hawaii Five-0';
 
 export const getBannerSeries = async () => await get(`${baseUrl}/series/collection?names=${collection}`);
