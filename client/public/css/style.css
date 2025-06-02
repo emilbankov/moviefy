@@ -1293,7 +1293,7 @@ input[type="search"]::-webkit-search-cancel-button:hover {
     padding: 0 40px;
     background: #f6be00;
     color: #070709;
-    transition: all 0.3s ease;
+    transition: none !important;
 }
 
 #search .view-all-results-btn {
@@ -1320,23 +1320,19 @@ input[type="search"]::-webkit-search-cancel-button:hover {
 #search .search-results {
     position: absolute;
     top: calc(50% + 30px);
-    left: calc(50% - 60px);
+    left: 50%;
     transform: translateX(-50%);
-    width: calc(50% - 120px);
-    max-width: calc(800px - 120px);
+    width: 50%;
+    max-width: 800px;
     background: #070709;
     border: 1px solid #f6be00;
     border-radius: 0 0 50px 50px;
     max-height: 350px;
-    overflow: hidden;
+    overflow-y: auto;
     z-index: 100001;
     scrollbar-width: none;
     -ms-overflow-style: none;
     margin-top: -50px;
-}
-
-#search input[type="search"].has-results {
-    border-bottom-left-radius: 0;
 }
 
 #search .search-results::-webkit-scrollbar {
@@ -1344,7 +1340,7 @@ input[type="search"]::-webkit-search-cancel-button:hover {
 }
 
 #search .search-result-item {
-    padding: 15px;
+    padding: 12px 15px;
     border-bottom: 1px solid rgba(246, 190, 0, 0.1);
     cursor: pointer;
     transition: background-color 0.3s ease;
@@ -1383,6 +1379,9 @@ input[type="search"]::-webkit-search-cancel-button:hover {
     color: #ffffff;
     margin: 0 0 5px 0;
     font-size: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 #search .search-result-item p {
@@ -1392,6 +1391,7 @@ input[type="search"]::-webkit-search-cancel-button:hover {
     display: flex;
     align-items: center;
     gap: 10px;
+    flex-wrap: wrap;
 }
 
 #search .search-result-item p .rating {
@@ -8740,6 +8740,10 @@ button {
   border-bottom-right-radius: 0;
 }
 
+#search .button-has-results {
+  border-bottom-right-radius: 0;
+}
+
 #search .search-results::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
@@ -8761,4 +8765,68 @@ button {
   letter-spacing: 0.5px;
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
+}
+
+/* Add responsive styles */
+@media (max-width: 768px) {
+    #search form {
+        width: 80%;
+        max-width: 600px;
+    }
+
+    #search input[type="search"] {
+        height: 50px;
+        font-size: 16px;
+        padding: 0 20px;
+    }
+
+    #search .btn {
+        height: 50px;
+        padding: 0 30px;
+    }
+
+    #search .search-results {
+        width: 80%;
+        max-width: 600px;
+        max-height: 300px;
+    }
+}
+
+@media (max-width: 480px) {
+    #search form {
+        width: 90%;
+    }
+
+    #search input[type="search"] {
+        height: 45px;
+        font-size: 14px;
+        padding: 0 15px;
+    }
+
+    #search .btn {
+        height: 45px;
+        padding: 0 20px;
+    }
+
+    #search .search-results {
+        width: 90%;
+        max-height: 250px;
+    }
+
+    #search .search-result-item {
+        padding: 10px;
+    }
+
+    #search .search-result-item .poster {
+        width: 40px;
+        height: 60px;
+    }
+
+    #search .search-result-item h3 {
+        font-size: 14px;
+    }
+
+    #search .search-result-item p {
+        font-size: 12px;
+    }
 }

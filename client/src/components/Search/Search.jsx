@@ -79,7 +79,11 @@ export default function Search({ isOpen, onClose }) {
                         placeholder="Search for a movie or series"
                         className={results && results.length > 0 ? 'has-results' : ''}
                     />
-                    <button id="search-btn" type="submit" className="btn btn-primary">
+                    <button 
+                        id="search-btn" 
+                        type="submit" 
+                        className={`btn btn-primary ${results && results.length > 0 ? 'button-has-results' : ''}`}
+                    >
                         Search
                     </button>
                 </form>
@@ -96,7 +100,7 @@ export default function Search({ isOpen, onClose }) {
                                     }}
                                 >
                                     <div className="poster">
-                                        <img src={`https://image.tmdb.org/t/p/w92/${item.poster_path}`} alt={item.title || item.name} />
+                                        <img src={`https://image.tmdb.org/t/p/w92${item.poster_path}`} alt={item.title || item.name} />
                                     </div>
                                     <div className="content">
                                         <h3>{item.title || item.name}</h3>
