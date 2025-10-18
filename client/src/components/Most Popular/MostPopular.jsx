@@ -8,8 +8,8 @@ export default function MostPopular() {
     useEffect(() => {
         const getMovieDetails = async () => {
             try {
-                console.log('Fetching movie details for ID: 62912');
-                const movieDetails = await moviesService.getMovieDetails(62912);
+                console.log('Fetching movie details for ID: 64132');
+                const movieDetails = await moviesService.getMovieDetails(64132);
                 console.log('Movie details:', movieDetails);
                 console.log('Movie title:', movieDetails.movies?.title || 'N/A');
                 console.log('Overview:', movieDetails.movies?.overview || 'N/A');
@@ -82,13 +82,20 @@ export default function MostPopular() {
                         <div className="col-xxl-7 col-xl-9 col-md-10">
                             <div className="movie-details-info movies-info bg">
                                 <ul className="d-flex">
-                                    <li className="year">06/10/2016 (IN)</li>
-                                    <li className="tag"><a href="#">Horror,</a> <a href="#">Thriller</a></li>
-                                    <li className="time">2h 39m</li>
+                                    <li className="year">{movie?.movies?.release_date ? new Date(movie.movies.release_date).toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' }) : 'N/A'}</li>
+                                    <li className="tag">
+                                        {movie?.movies?.genres?.map((genre, index) => (
+                                            <span key={index}>
+                                                <a href="#">{genre.name}</a>
+                                                {index < movie.movies.genres.length - 1 && ', '}
+                                            </span>
+                                        )) || <a href="#">N/A</a>}
+                                    </li>
+                                    <li className="time">{movie?.movies?.runtime ? `${Math.floor(movie.movies.runtime / 60)}h ${movie.movies.runtime % 60}m` : 'N/A'}</li>
                                 </ul>
-                                <h1 className="title">Good Will Hunting (1997)</h1>
+                                <h1 className="title">{movie?.movies?.title || 'N/A'}</h1>
                                 <div className="features">
-                                    <div className="user-score pie-chart pie-chart-percentage" data-percent="76" data-color="#f6be00" data-trackcolor="#fff">
+                                    <div className="user-score pie-chart pie-chart-percentage" data-percent={movie?.movies?.vote_average ? Math.round(movie.movies.vote_average * 10) : 76} data-color="#f6be00" data-trackcolor="#fff">
                                         <div className="round-chart">
                                             <span className="percent"></span>
                                         </div>
@@ -101,17 +108,24 @@ export default function MostPopular() {
                                     </span>
                                 </div>
                                 <h3 className="mb-3 overview">Overview</h3>
-                                <p>Will Hunting, a genius in mathematics, solves all the difficult mathematical problems. When he faces an emotional crisis, he takes help from psychiatrist Dr. Sean Maguire, who helps him recover.</p>
+                                <p>{movie?.movies?.overview || 'No overview available.'}</p>
                                 <div className="link-btn">
-                                    <a href="https://www.youtube.com/watch?v=n_Cn8eFo7u8" className="btn btn-link popup-youtube">
+                                    <a href={movie?.movies?.trailer ? `https://www.youtube.com/watch?v=${movie.movies.trailer}` : "#"} className="btn btn-link popup-youtube">
                                         <i className="fa-solid fa-play"></i>Play Now
                                     </a>
                                     <a href="javascript:void(0)" className="add-icon">My List</a>
                                 </div>
                                 <div className="author-info">
                                     <div className="author-details mb-0">
-                                        <div className="author-designation">Gus Van Sant <span>Director, Writer</span></div>
-                                        <div className="author-designation">Robin Williams <span>Characters</span></div>
+                                        {movie?.movies?.crew?.filter(person => person.job === 'Director').map((director, index) => (
+                                            <div key={index} className="author-designation">{director.name} <span>Director</span></div>
+                                        ))}
+                                        {movie?.movies?.crew?.filter(person => person.job === 'Writer').slice(0, 2).map((writer, index) => (
+                                            <div key={index} className="author-designation">{writer.name} <span>Writer</span></div>
+                                        ))}
+                                        {movie?.movies?.cast?.slice(0, 2).map((actor, index) => (
+                                            <div key={index} className="author-designation">{actor.name} <span>{actor.character}</span></div>
+                                        ))}
                                     </div>
                                 </div>
                             </div>
