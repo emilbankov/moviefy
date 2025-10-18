@@ -1,6 +1,27 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import * as moviesService from '../../services/moviesService';
 
 export default function MostPopular() {
+    const [movie, setMovie] = useState(null);
+    
+    // Make request to get movie details with ID 62912
+    useEffect(() => {
+        const getMovieDetails = async () => {
+            try {
+                console.log('Fetching movie details for ID: 62912');
+                const movieDetails = await moviesService.getMovieDetails(62912);
+                console.log('Movie details:', movieDetails);
+                console.log('Movie title:', movieDetails.movies?.title || 'N/A');
+                console.log('Overview:', movieDetails.movies?.overview || 'N/A');
+                setMovie(movieDetails);
+            } catch (error) {
+                console.error('Error fetching movie details:', error);
+            }
+        };
+
+        getMovieDetails();
+    }, []);
+
     useEffect(() => {
         const initPieChart = () => {
             const $pieChart = $('.pie-chart-percentage');
@@ -55,7 +76,7 @@ export default function MostPopular() {
     
     return (
         <>
-            <section className="banner banner-2 bg-holder" style={{ backgroundImage: 'url(images/banner/home-02/01.jpg)' }}>
+            <section className="banner banner-2 bg-holder" style={{ backgroundImage: movie?.movies?.backdrop_path ? `url(https://image.tmdb.org/t/p/original${movie.movies.backdrop_path})` : 'url(images/banner/home-02/01.jpg)' }}>
                 <div className="container">
                     <div className="row">
                         <div className="col-xxl-7 col-xl-9 col-md-10">
@@ -124,7 +145,7 @@ export default function MostPopular() {
                                                 aria-controls="pills-categories"
                                                 aria-selected="true"
                                             >
-                                                All
+                                                All Time
                                             </button>
                                         </li>
                                         <li className="nav-item" role="presentation">
@@ -138,7 +159,7 @@ export default function MostPopular() {
                                                 aria-controls="pills-movie"
                                                 aria-selected="false"
                                             >
-                                                Letast Movie
+                                                Latest Movies
                                             </button>
                                         </li>
                                         <li className="nav-item" role="presentation">
