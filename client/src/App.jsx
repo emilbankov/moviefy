@@ -37,7 +37,7 @@ function App() {
     }, [location]);
 
     return (
-        <body className='bg-dark'>
+        <div className='bg-dark'>
             <Header onSearchOpen={() => setIsSearchOpen(true)} />
             <Search isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
 
@@ -65,7 +65,7 @@ function App() {
 
             <div id="snow-container"></div>
             <Footer />
-        </body>
+        </div>
     );
 }
 
