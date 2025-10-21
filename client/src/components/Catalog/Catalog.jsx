@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
 import { getLatestMovies, getPopularMovies, getTrendingMovies } from '../../services/moviesService';
+import { useLoading } from '../../contexts/LoadingContext';
 
 export default function Catalog() {
     const [movies, setMovies] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('latest');
+    const { setLoading } = useLoading();
 
     useEffect(() => {
         const fetchMovies = async () => {
-            setIsLoading(true);
+            setLoading(true);
             try {
                 let data;
                 switch (activeTab) {
@@ -29,16 +30,13 @@ export default function Catalog() {
             } catch (error) {
                 console.error('Error fetching movies:', error);
                 setMovies([]);
+            } finally {
+                setLoading(false);
             }
-            setIsLoading(false);
         };
 
         fetchMovies();
-    }, [activeTab]);
-
-    if (isLoading) {
-        return <div className="container mt-5 text-center">Loading...</div>;
-    }
+    }, [activeTab, setLoading]);
 
     return (
         <div className="container mt-5">

@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import * as moviesService from '../../services/moviesService'
 import * as seriesService from '../../services/seriesService'
+import { useLoading } from '../../contexts/LoadingContext';
 
 export default function Home() {
     const [bannerMovies, setBannerMovies] = useState([]);
@@ -14,7 +15,10 @@ export default function Home() {
     const [latestSeries, setLatestSeries] = useState([]);
     const [popularSeries, setPopularSeries] = useState([]);
 
+    const { setLoading } = useLoading();
+
     useEffect(() => {
+        setLoading(true);
         Promise.all([
             moviesService.getBannerMovies(),
             moviesService.getLatestMovies(),
@@ -37,8 +41,11 @@ export default function Home() {
             })
             .catch(err => {
                 console.error("Error fetching data:", err);
+            })
+            .finally(() => {
+                setLoading(false);
             });
-    }, []);
+    }, [setLoading]);
     
     // useEffect(() => {
     //     const existingScript = document.querySelector('script[src="/js/custom.js"]');

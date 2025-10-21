@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import * as moviesService from '../../services/moviesService';
+import { useLoading } from '../../contexts/LoadingContext';
 
 export default function MostPopular() {
     const [movie, setMovie] = useState(null);
+    const { setLoading } = useLoading();
     
-    // Make request to get movie details with ID 62912
+    // Make request to get movie details with ID 64132
     useEffect(() => {
         const getMovieDetails = async () => {
+            setLoading(true);
             try {
                 console.log('Fetching movie details for ID: 64132');
                 const movieDetails = await moviesService.getMovieDetails(64132);
@@ -16,11 +19,13 @@ export default function MostPopular() {
                 setMovie(movieDetails);
             } catch (error) {
                 console.error('Error fetching movie details:', error);
+            } finally {
+                setLoading(false);
             }
         };
 
         getMovieDetails();
-    }, []);
+    }, [setLoading]);
 
     useEffect(() => {
         const initPieChart = () => {

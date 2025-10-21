@@ -1,22 +1,28 @@
 import { Link, useLocation, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import * as moviesService from '../../services/moviesService'
+import { useLoading } from '../../contexts/LoadingContext';
 
 export default function MovieDetails() {
     const [movie, setMovie] = useState([]);
     const { movieId } = useParams();
     const location = useLocation();
+    const { setLoading } = useLoading();
 
     useEffect(() => {
+        setLoading(true);
         moviesService.getMovieDetails(movieId)
             .then(result => setMovie(result))
             .catch(err => {
                 console.log(err);
+            })
+            .finally(() => {
+                setLoading(false);
             });
         return () => {
             setMovie('movie');
         };
-    }, [location.pathname]);
+    }, [location.pathname, setLoading]);
 
     useEffect(() => {
         const existingScript = document.querySelector('script[src="/js/custom.js"]');
