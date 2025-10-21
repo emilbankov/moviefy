@@ -38,6 +38,8 @@ export default function Home() {
                 setBannerSeries(bannerSeries);
                 setLatestSeries(latestSeriesData);
                 setPopularSeries(popularSeriesData);
+                console.log(latestSeriesData);
+                
             })
             .catch(err => {
                 console.error("Error fetching data:", err);
@@ -215,38 +217,40 @@ export default function Home() {
                     <div className="row">
                         {latestMovies.movies && latestMovies.movies.map(latest => (
                             <div key={latest.id} className="col-xl-2 col-lg-4 col-md-6 col-sm-6 mb-4">
-                                <div className="movies-categories-style-3">
-                                    <div className="movie-image">
-                                        <img
-                                            className="img-fluid"
-                                            src={`https://image.tmdb.org/t/p/w500${latest.poster_path}`}
-                                            alt={latest.title}
-                                        />
-                                    </div>
-                                    <div className="movie-info-content">
-                                        <h6>
-                                            <Link className="title" to={`/movie/details/${latest.id}`}>
-                                                {latest.title}
-                                            </Link>
-                                        </h6>
-                                        <div className="movie-info smaller-text">
-                                            <span className="year">{latest.year}</span>
-                                            <a className="time" href="#">
-                                                <i className="far fa-clock me-2" />
-                                                {Math.floor(latest.runtime / 60)}hr : {latest.runtime % 60}min
-                                            </a>
-                                            <div className="info-tag">
-                                                <a className="views" href="#">
-                                                    <i className="far fa-eye" />
+                                <Link to={`/movie/details/${latest.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                    <div className="movies-categories-style-3">
+                                        <div className="movie-image">
+                                            <img
+                                                className="img-fluid"
+                                                src={`https://image.tmdb.org/t/p/w500${latest.poster_path}`}
+                                                alt={latest.title}
+                                            />
+                                        </div>
+                                        <div className="movie-info-content">
+                                            <h6>
+                                                <span className="title">
+                                                    {latest.title}
+                                                </span>
+                                            </h6>
+                                            <div className="movie-info smaller-text">
+                                                <span className="year">{latest.year}</span>
+                                                <a className="time" href="#">
+                                                    <i className="far fa-clock me-2" />
+                                                    {Math.floor(latest.runtime / 60)}hr : {latest.runtime % 60}min
                                                 </a>
-                                                <a href="javascript:void(0)" className="like" />
-                                                <a className="rating" href="#">
-                                                    <i className="fa-solid fa-star" /> {latest.vote_average}/10
-                                                </a>
+                                                <div className="info-tag">
+                                                    <a className="views" href="#">
+                                                        <i className="far fa-eye" />
+                                                    </a>
+                                                    <a href="javascript:void(0)" className="like" />
+                                                    <a className="rating" href="#">
+                                                        <i className="fa-solid fa-star" /> {latest.vote_average}/10
+                                                    </a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </Link>
                             </div>
                         ))}
                     </div>
@@ -376,14 +380,14 @@ export default function Home() {
                     <div className="row">
                         <div className="col-lg-3 col-md-6">
                             <div className="movies-categories-iteam">
-                                <div className="categories-img">
+                                <Link to="/genre?genre=Horror" className="categories-img">
                                     <img
                                         className="img-fluid"
-                                        src="images/movie/categories/01.jpg"
+                                        src="images/poster.png"
                                         alt="#"
                                     />
                                     <h3 className="title">
-                                        <a href="movie.html">Horror</a>{" "}
+                                        Horror
                                     </h3>
                                     <div className="categories-content overlay-new">
                                         <div className="categories-content-inner">
@@ -396,24 +400,24 @@ export default function Home() {
                                                     />
                                                 </div>
                                                 <h3 className="categories-title">
-                                                    <a href="movie.html">Horror</a>
+                                                    Horror
                                                 </h3>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </Link>
                             </div>
                         </div>
                         <div className="col-lg-3 col-md-6">
                             <div className="movies-categories-iteam mt-4 mt-sm-0 mt-md-4">
-                                <div className="categories-img">
+                                <Link to="/genre?genre=Action" className="categories-img">
                                     <img
                                         className="img-fluid"
                                         src="images/movie/categories/02.jpg"
                                         alt="#"
                                     />
                                     <h3 className="title">
-                                        <a href="web-series.html">Action</a>{" "}
+                                        Action
                                     </h3>
                                     <div className="categories-content overlay-new">
                                         <div className="categories-content-inner">
@@ -426,24 +430,24 @@ export default function Home() {
                                                     />
                                                 </div>
                                                 <h3 className="categories-title">
-                                                    <a href="web-series.html">Action</a>
+                                                    Action
                                                 </h3>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </Link>
                             </div>
                         </div>
                         <div className="col-lg-3 col-md-6 mt-4 mt-md-0">
                             <div className="movies-categories-iteam">
-                                <div className="categories-img">
+                                <Link to="/genre?genre=Drama" className="categories-img">
                                     <img
                                         className="img-fluid"
                                         src="images/movie/categories/03.jpg"
                                         alt="#"
                                     />
                                     <h3 className="title">
-                                        <a href="#">Drama</a>
+                                        Drama
                                     </h3>
                                     <div className="categories-content overlay-new">
                                         <div className="categories-content-inner">
@@ -456,24 +460,24 @@ export default function Home() {
                                                     />
                                                 </div>
                                                 <h3 className="categories-title">
-                                                    <a href="#">Drama</a>
+                                                    Drama
                                                 </h3>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </Link>
                             </div>
                         </div>
                         <div className="col-lg-3 col-md-6">
                             <div className="movies-categories-iteam mt-4">
-                                <div className="categories-img">
+                                <Link to="/genre?genre=Thriller" className="categories-img">
                                     <img
                                         className="img-fluid"
                                         src="images/movie/categories/04.jpg"
                                         alt="#"
                                     />
                                     <h3 className="title">
-                                        <a href="tv-show.html">Thriller</a>{" "}
+                                        Thriller
                                     </h3>
                                     <div className="categories-content overlay-new">
                                         <div className="categories-content-inner">
@@ -486,24 +490,24 @@ export default function Home() {
                                                     />
                                                 </div>
                                                 <h3 className="categories-title">
-                                                    <a href="tv-show.html">Thriller</a>
+                                                    Thriller
                                                 </h3>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </Link>
                             </div>
                         </div>
                         <div className="col-lg-3 col-md-6 mt-4 mt-md-0">
                             <div className="movies-categories-iteam">
-                                <div className="categories-img">
+                                <Link to="/genre?genre=Adventure" className="categories-img">
                                     <img
                                         className="img-fluid"
                                         src="images/movie/categories/03.jpg"
                                         alt="#"
                                     />
                                     <h3 className="title">
-                                        <a href="#">Adventure</a>
+                                        Adventure
                                     </h3>
                                     <div className="categories-content overlay-new">
                                         <div className="categories-content-inner">
@@ -516,24 +520,24 @@ export default function Home() {
                                                     />
                                                 </div>
                                                 <h3 className="categories-title">
-                                                    <a href="#">Adventure</a>
+                                                    Adventure
                                                 </h3>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </Link>
                             </div>
                         </div>
                         <div className="col-lg-3 col-md-6 mt-4 mt-md-0">
                             <div className="movies-categories-iteam">
-                                <div className="categories-img">
+                                <Link to="/genre?genre=Crime" className="categories-img">
                                     <img
                                         className="img-fluid"
                                         src="images/movie/categories/03.jpg"
                                         alt="#"
                                     />
                                     <h3 className="title">
-                                        <a href="#">Crime</a>
+                                        Crime
                                     </h3>
                                     <div className="categories-content overlay-new">
                                         <div className="categories-content-inner">
@@ -546,24 +550,24 @@ export default function Home() {
                                                     />
                                                 </div>
                                                 <h3 className="categories-title">
-                                                    <a href="#">Crime</a>
+                                                    Crime
                                                 </h3>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </Link>
                             </div>
                         </div>
                         <div className="col-lg-3 col-md-6">
                             <div className="movies-categories-iteam mt-4 mt-sm-0 mt-md-4">
-                                <div className="categories-img">
+                                <Link to="/genre?genre=Comedy" className="categories-img">
                                     <img
                                         className="img-fluid"
                                         src="images/movie/categories/02.jpg"
                                         alt="#"
                                     />
                                     <h3 className="title">
-                                        <a href="web-series.html">Comedy</a>{" "}
+                                        Comedy
                                     </h3>
                                     <div className="categories-content overlay-new">
                                         <div className="categories-content-inner">
@@ -576,24 +580,24 @@ export default function Home() {
                                                     />
                                                 </div>
                                                 <h3 className="categories-title">
-                                                    <a href="web-series.html">Comedy</a>
+                                                    Comedy
                                                 </h3>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </Link>
                             </div>
                         </div>
                         <div className="col-lg-3 col-md-6 mt-4 mt-md-0">
                             <div className="movies-categories-iteam">
-                                <div className="categories-img">
+                                <Link to="/genre?genre=Romance" className="categories-img">
                                     <img
                                         className="img-fluid"
                                         src="images/movie/categories/03.jpg"
                                         alt="#"
                                     />
                                     <h3 className="title">
-                                        <a href="#">Romance</a>
+                                        Romance
                                     </h3>
                                     <div className="categories-content overlay-new">
                                         <div className="categories-content-inner">
@@ -606,24 +610,24 @@ export default function Home() {
                                                     />
                                                 </div>
                                                 <h3 className="categories-title">
-                                                    <a href="#">Romance</a>
+                                                    Romance
                                                 </h3>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </Link>
                             </div>
                         </div>
                         <div className="col-lg-3 col-md-6">
                             <div className="movies-categories-iteam mt-4">
-                                <div className="categories-img">
+                                <Link to="/genre?genre=Fantasy" className="categories-img">
                                     <img
                                         className="img-fluid"
                                         src="images/movie/categories/04.jpg"
                                         alt="#"
                                     />
                                     <h3 className="title">
-                                        <a href="tv-show.html">Fantasy</a>{" "}
+                                        Fantasy
                                     </h3>
                                     <div className="categories-content overlay-new">
                                         <div className="categories-content-inner">
@@ -636,24 +640,24 @@ export default function Home() {
                                                     />
                                                 </div>
                                                 <h3 className="categories-title">
-                                                    <a href="tv-show.html">Fantasy</a>
+                                                    Fantasy
                                                 </h3>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </Link>
                             </div>
                         </div>
                         <div className="col-lg-3 col-md-6 mt-4 mt-md-0">
                             <div className="movies-categories-iteam">
-                                <div className="categories-img">
+                                <Link to="/genre?genre=Sci-Fi" className="categories-img">
                                     <img
                                         className="img-fluid"
                                         src="images/movie/categories/03.jpg"
                                         alt="#"
                                     />
                                     <h3 className="title">
-                                        <a href="#">Sci-Fi</a>
+                                        Sci-Fi
                                     </h3>
                                     <div className="categories-content overlay-new">
                                         <div className="categories-content-inner">
@@ -666,12 +670,12 @@ export default function Home() {
                                                     />
                                                 </div>
                                                 <h3 className="categories-title">
-                                                    <a href="#">Sci-Fi</a>
+                                                    Sci-Fi
                                                 </h3>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </Link>
                             </div>
                         </div>
                     </div>
@@ -998,35 +1002,37 @@ export default function Home() {
                     <div className="row">
                         {latestSeries.series && latestSeries.series.map(latest => (
                             <div key={latest.id} className="col-xl-2 col-lg-4 col-md-6 col-sm-6 mb-4">
-                                <div className="movies-categories-style-3">
-                                    <div className="movie-image">
-                                        <img
-                                            className="img-fluid"
-                                            src={`https://image.tmdb.org/t/p/w500${latest.poster_path}`}
-                                            alt={latest.title}
-                                        />
-                                    </div>
-                                    <div className="movie-info-content">
-                                        <h6>
-                                            <Link className="title" to={`/series/details/${latest.id}`}>
-                                                {latest.name}
-                                            </Link>
-                                        </h6>
-                                        <div className="movie-info smaller-text">
-                                            <span className="year">{latest.year}</span>
-                                            <a className="time" href="#">SS {latest.seasons} <span className="dot"></span> EPS {latest.episodes}</a>
-                                            <div className="info-tag">
-                                                <a className="views" href="#">
-                                                    <i className="far fa-eye" />
-                                                </a>
-                                                <a href="javascript:void(0)" className="like" />
-                                                <a className="rating" href="#">
-                                                    <i className="fa-solid fa-star" /> {latest.vote_average}/10
-                                                </a>
+                                <Link to={`/series/details/${latest.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                    <div className="movies-categories-style-3">
+                                        <div className="movie-image">
+                                            <img
+                                                className="img-fluid"
+                                                src={`https://image.tmdb.org/t/p/w500${latest.poster_path}`}
+                                                alt={latest.title}
+                                            />
+                                        </div>
+                                        <div className="movie-info-content">
+                                            <h6>
+                                                <span className="title">
+                                                    {latest.name}
+                                                </span>
+                                            </h6>
+                                            <div className="movie-info smaller-text">
+                                                <span className="year">{latest.year}</span>
+                                                <a className="time" href="#">SS {latest.seasons} <span className="dot"></span> EPS {latest.episodes}</a>
+                                                <div className="info-tag">
+                                                    <a className="views" href="#">
+                                                        <i className="far fa-eye" />
+                                                    </a>
+                                                    <a href="javascript:void(0)" className="like" />
+                                                    <a className="rating" href="#">
+                                                        <i className="fa-solid fa-star" /> {latest.vote_average}/10
+                                                    </a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </Link>
                             </div>
                         ))}
                     </div>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { search } from '../../services/moviesService';
 import { useLoading } from '../../contexts/LoadingContext';
 
@@ -35,32 +35,37 @@ export default function SearchResults() {
             <div className="row">
                 {results.map((item) => (
                     <div key={item.id || item._id} className="col-md-4 col-lg-3 mb-4">
-                        <div className="movie-card">
-                            <div className="poster">
-                                <img 
-                                    src={`https://image.tmdb.org/t/p/w500/${item.poster_path}`} 
-                                    alt={item.title || item.name} 
-                                    className="img-fluid"
-                                />
-                            </div>
-                            <div className="content p-3">
-                                <h3 className="h5 mb-2">{item.title || item.name}</h3>
-                                <p className="mb-2">
-                                    <span className="rating me-2">
-                                        <i className="fas fa-star"></i>
-                                        {item.vote_average}
-                                    </span>
-                                    <span className="type me-2">
-                                        {item.type === 'movie' ? 'Movie' : 'Series'}
-                                    </span>
-                                    {item.release_date && (
-                                        <span className="year">
-                                            {item.release_date.split('-')[0]}
+                        <Link 
+                            to={item.type === 'series' ? `/series/details/${item.id}` : `/movie/details/${item.id}`}
+                            style={{ textDecoration: 'none', color: 'inherit' }}
+                        >
+                            <div className="movie-card">
+                                <div className="poster">
+                                    <img 
+                                        src={`https://image.tmdb.org/t/p/w500/${item.poster_path}`} 
+                                        alt={item.title || item.name} 
+                                        className="img-fluid"
+                                    />
+                                </div>
+                                <div className="content p-3">
+                                    <h3 className="h5 mb-2">{item.title || item.name}</h3>
+                                    <p className="mb-2">
+                                        <span className="rating me-2">
+                                            <i className="fas fa-star"></i>
+                                            {item.vote_average}
                                         </span>
-                                    )}
-                                </p>
+                                        <span className="type me-2">
+                                            {item.type === 'movie' ? 'Movie' : 'Series'}
+                                        </span>
+                                        {item.release_date && (
+                                            <span className="year">
+                                                {item.release_date.split('-')[0]}
+                                            </span>
+                                        )}
+                                    </p>
+                                </div>
                             </div>
-                        </div>
+                        </Link>
                     </div>
                 ))}
             </div>

@@ -406,7 +406,7 @@ export default function Movies() {
                             >
                                 {trendingMovies?.map((movie) => (
                                     <div className="item" key={movie.id}>
-                                        <div className="movies-categories">
+                                        <div className="movies-categories br-20">
                                             <div className="movies-img">
                                                 <img
                                                     className="img-fluid"
@@ -521,7 +521,7 @@ export default function Movies() {
                             >
                                 {latestMovies.map((movie) => (
                                     <div className="item" key={movie.id}>
-                                        <div className="movies-categories">
+                                        <div className="movies-categories br-20">
                                             <div className="movies-img">
                                                 <img
                                                     className="img-fluid"
@@ -636,7 +636,7 @@ export default function Movies() {
                             >
                                 {popularMovies.map((movie) => (
                                     <div className="item" key={movie.id}>
-                                        <div className="movies-categories">
+                                        <div className="movies-categories br-20">
                                             <div className="movies-img">
                                                 <img
                                                     className="img-fluid"
