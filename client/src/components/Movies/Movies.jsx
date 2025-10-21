@@ -417,9 +417,13 @@ export default function Movies() {
                                                     />
                                                     <div className="info-top">
                                                         {movie.genre && (
-                                                            <a className="tag" href="#" onClick={e => e.preventDefault()}>
+                                                            <Link 
+                                                                to={`/genre?genre=${movie.genre}&media=movies`}
+                                                                className="tag" 
+                                                                onClick={e => e.stopPropagation()}
+                                                            >
                                                                 {movie.genre}
-                                                            </a>
+                                                            </Link>
                                                         )}
                                                         <div className="ms-auto">
                                                             <a href="#" className="like" onClick={e => e.preventDefault()} />
@@ -532,9 +536,13 @@ export default function Movies() {
                                                     />
                                                     <div className="info-top">
                                                         {movie.genre && (
-                                                            <a className="tag" href="#" onClick={e => e.preventDefault()}>
+                                                            <Link 
+                                                                to={`/genre?genre=${movie.genre}&media=movies`}
+                                                                className="tag" 
+                                                                onClick={e => e.stopPropagation()}
+                                                            >
                                                                 {movie.genre}
-                                                            </a>
+                                                            </Link>
                                                         )}
                                                         <div className="ms-auto">
                                                             <a href="#" className="like" onClick={e => e.preventDefault()} />
@@ -647,9 +655,13 @@ export default function Movies() {
                                                     />
                                                     <div className="info-top">
                                                         {movie.genre && (
-                                                            <a className="tag" href="#" onClick={e => e.preventDefault()}>
+                                                            <Link 
+                                                                to={`/genre?genre=${movie.genre}&media=movies`}
+                                                                className="tag" 
+                                                                onClick={e => e.stopPropagation()}
+                                                            >
                                                                 {movie.genre}
-                                                            </a>
+                                                            </Link>
                                                         )}
                                                         <div className="ms-auto">
                                                             <a href="#" className="like" onClick={e => e.preventDefault()} />

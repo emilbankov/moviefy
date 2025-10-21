@@ -614,9 +614,12 @@ export default function MovieDetails() {
                                                         alt={item.title}
                                                     />
                                                     <div className="info-top">
-                                                        <a className="tag" href="#">
+                                                        <Link 
+                                                            to={`/genre?genre=${item.genre}&media=movies`}
+                                                            className="tag"
+                                                        >
                                                             {item.genre}
-                                                        </a>
+                                                        </Link>
                                                         <div className="ms-auto">
                                                             <a href="javascript:void(0)" className="like" />
                                                             <a className="views" href="#">

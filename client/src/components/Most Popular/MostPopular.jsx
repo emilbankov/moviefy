@@ -91,10 +91,10 @@ export default function MostPopular() {
                                     <li className="tag">
                                         {movie?.movies?.genres?.map((genre, index) => (
                                             <span key={index}>
-                                                <a href="#">{genre.name}</a>
+                                                <Link to={`/genre?genre=${genre.name}&media=movies`}>{genre.name}</Link>
                                                 {index < movie.movies.genres.length - 1 && ', '}
                                             </span>
-                                        )) || <a href="#">N/A</a>}
+                                        )) || <Link to="#">N/A</Link>}
                                     </li>
                                     <li className="time">{movie?.movies?.runtime ? `${Math.floor(movie.movies.runtime / 60)}h ${movie.movies.runtime % 60}m` : 'N/A'}</li>
                                 </ul>

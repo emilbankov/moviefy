@@ -7,6 +7,7 @@ export default function GenreResults() {
     const [searchParams] = useSearchParams();
     const [results, setResults] = useState([]);
     const genre = searchParams.get('genre');
+    const media = searchParams.get('media') || 'all';
     const { setLoading } = useLoading();
 
     useEffect(() => {
@@ -14,9 +15,9 @@ export default function GenreResults() {
             if (genre) {
                 setLoading(true);
                 try {
-                    const data = await getMovieGenres('all', genre);
+                    const data = await getMovieGenres(media, genre);
                     console.log('Genre results:', data);
-                    setResults(data.results || data.movies || data);
+                    setResults(data.results || data.movies || data.series || data);
                 } catch (error) {
                     console.error('Genre fetch error:', error);
                     setResults([]);
@@ -27,7 +28,7 @@ export default function GenreResults() {
         };
 
         fetchGenreResults();
-    }, [genre, setLoading]);
+    }, [genre, media, setLoading]);
 
     return (
         <>
@@ -36,7 +37,9 @@ export default function GenreResults() {
                     <div className="row">
                         <div className="col-md-12">
                             <div className="section-title">
-                                <h2 className="title">{genre} Movies & TV Shows</h2>
+                                <h2 className="title">
+                                    {genre} {media === 'movies' ? 'Movies' : media === 'series' ? 'TV Shows' : 'Movies & TV Shows'}
+                                </h2>
                             </div>
                         </div>
                     </div>
@@ -68,7 +71,7 @@ export default function GenreResults() {
                                                          item.first_air_date ? new Date(item.first_air_date).getFullYear() : 
                                                          item.year || 'N/A'}
                                                     </span>
-                                                    {item.type === 'series' ? (
+                                                    {(item.type === 'series' || item.media_type === 'tv' || item.name || item.seasons || item.number_of_seasons) && !item.runtime ? (
                                                         <a className="time" href="#">
                                                             SS {item.seasons || item.number_of_seasons || 'N/A'} <span className="dot"></span> EPS {item.episodes || item.number_of_episodes || 'N/A'}
                                                         </a>

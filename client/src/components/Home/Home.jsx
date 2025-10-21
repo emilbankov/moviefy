@@ -334,9 +334,13 @@ export default function Home() {
                                                             alt={trending.title}
                                                         />
                                                         <div className="info-top">
-                                                            <a className="tag" href="#" onClick={(e) => e.preventDefault()}>
+                                                            <Link 
+                                                                to={`/genre?genre=${trending.genre}&media=movies`}
+                                                                className="tag" 
+                                                                onClick={(e) => e.stopPropagation()}
+                                                            >
                                                                 {trending.genre}
-                                                            </a>
+                                                            </Link>
                                                             <div className="ms-auto">
                                                                 <a href="javascript:void(0)" className="like" onClick={(e) => e.preventDefault()} />
                                                                 <a className="views" href="#" onClick={(e) => e.preventDefault()}>
@@ -692,7 +696,7 @@ export default function Home() {
                         </div>
                         <div className="col-lg-3 col-md-6 mt-4 mt-md-0">
                             <div className="movies-categories-iteam">
-                                <Link to="/genre?genre=Sci-Fi" className="categories-img">
+                                <Link to="/genre?genre=Science Fiction" className="categories-img">
                                     <img
                                         className="img-fluid"
                                         src="images/movie/categories/03.jpg"
@@ -762,9 +766,13 @@ export default function Home() {
                                                             alt={popular.title}
                                                         />
                                                         <div className="info-top">
-                                                            <a className="tag" href="#" onClick={(e) => e.preventDefault()}>
+                                                            <Link 
+                                                                to={`/genre?genre=${popular.genre}&media=movies`}
+                                                                className="tag" 
+                                                                onClick={(e) => e.stopPropagation()}
+                                                            >
                                                                 {popular.genre}
-                                                            </a>
+                                                            </Link>
                                                             <div className="ms-auto">
                                                                 <a href="javascript:void(0)" className="like" onClick={(e) => e.preventDefault()} />
                                                                 <a className="views" href="#" onClick={(e) => e.preventDefault()}>
@@ -1122,9 +1130,13 @@ export default function Home() {
                                                             alt={popular.title}
                                                         />
                                                         <div className="info-top">
-                                                            <a className="tag" href="#" onClick={(e) => e.preventDefault()}>
+                                                            <Link 
+                                                                to={`/genre?genre=${popular.genre}&media=series`}
+                                                                className="tag" 
+                                                                onClick={(e) => e.stopPropagation()}
+                                                            >
                                                                 {popular.genre}
-                                                            </a>
+                                                            </Link>
                                                             <div className="ms-auto">
                                                                 <a href="javascript:void(0)" className="like" onClick={(e) => e.preventDefault()} />
                                                                 <a className="views" href="#" onClick={(e) => e.preventDefault()}>
