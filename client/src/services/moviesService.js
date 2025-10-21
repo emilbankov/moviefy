@@ -9,6 +9,7 @@ export const getBannerMovies = async () => await get(`${baseUrl}/movies/collecti
 export const getLatestMovies = async () => await get(`${baseUrl}/movies/latest?size=12`);
 export const getTrendingMovies = async () => await get(`${baseUrl}/movies/trending`);
 export const getPopularMovies = async () => await get(`${baseUrl}/movies/popular`);
+export const getMovieGenres = async (media, genres) => await get(`${baseUrl}/${media}/genres?genres=${genres}`);
 export const getPopularCollections = async () => await get(`${baseUrl}/movies/collections?names=${collections}`);
 export const getMovieDetails = async (movieId) => await get(`${baseUrl}/movies/${movieId}`);
 export const search = async (query) => await get(`${baseUrl}/search?query=${query}`);
