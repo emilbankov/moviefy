@@ -1,13 +1,17 @@
 import { useState, useEffect } from 'react';
 import { getLatestMovies, getTrendingMovies, getPopularMovies } from '../../services/moviesService';
+import { useLoading } from '../../contexts/LoadingContext';
 
 export default function Movies() {
     const [trendingMovies, setTrendingMovies] = useState([]);
     const [latestMovies, setLatestMovies] = useState([]);
     const [popularMovies, setPopularMovies] = useState([]);
 
+    const { setLoading } = useLoading();
+
     useEffect(() => {
         const fetchMovies = async () => {
+            setLoading(true);
             try {
                 const [trending, latest, popular] = await Promise.all([
                     getTrendingMovies(),
@@ -19,10 +23,12 @@ export default function Movies() {
                 setPopularMovies(popular.movies || []);
             } catch (error) {
                 console.error('Error fetching movies:', error);
+            } finally {
+                setLoading(false);
             }
         };
         fetchMovies();
-    }, []);
+    }, [setLoading]);
 
     useEffect(() => {
         const initializeCarousels = () => {
@@ -383,98 +389,96 @@ export default function Movies() {
                     </div>
                     <div className="row">
                         <div className="col-md-12">
-                            <div className="categories-slider">
-                                <div
-                                    className="owl-carousel owl-nav-center"
-                                    data-nav-dots="false"
-                                    data-nav-arrow="true"
-                                    data-items={6}
-                                    data-xl-items={6}
-                                    data-lg-items={4}
-                                    data-md-items={4}
-                                    data-sm-items={3}
-                                    data-xs-items={3}
-                                    data-space={30}
-                                    data-autoheight="true"
-                                    data-autoplay="false"
-                                    data-loop="false"
-                                >
-                                    {trendingMovies?.map((movie) => (
-                                        <div className="item" key={movie.id}>
-                                            <div className="movies-categories">
-                                                <div className="movies-img">
-                                                    <img
-                                                        className="img-fluid"
-                                                        src={movie.poster_path ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}` : 'images/movie/movie-01.jpg'}
-                                                        alt={movie.title || movie.name}
-                                                    />
-                                                    <div className="info-top">
-                                                        {movie.genre && (
-                                                            <a className="tag" href="#">
-                                                                {movie.genre}
-                                                            </a>
-                                                        )}
-                                                        <div className="ms-auto">
-                                                            <a href="#" className="like" onClick={e => e.preventDefault()} />
-                                                            <span className="views">
-                                                                <i className="far fa-eye" /> {movie.vote_average ? `${movie.vote_average.toFixed(1)}★` : 'N/A'}
-                                                            </span>
-                                                        </div>
+                            <div
+                                className="owl-carousel owl-nav-center"
+                                data-nav-dots="false"
+                                data-nav-arrow="true"
+                                data-items={6}
+                                data-xl-items={6}
+                                data-lg-items={4}
+                                data-md-items={4}
+                                data-sm-items={3}
+                                data-xs-items={3}
+                                data-space={30}
+                                data-autoheight="true"
+                                data-autoplay="false"
+                                data-loop="false"
+                            >
+                                {trendingMovies?.map((movie) => (
+                                    <div className="item" key={movie.id}>
+                                        <div className="movies-categories">
+                                            <div className="movies-img">
+                                                <img
+                                                    className="img-fluid"
+                                                    src={movie.poster_path ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}` : 'images/movie/movie-01.jpg'}
+                                                    alt={movie.title || movie.name}
+                                                />
+                                                <div className="info-top">
+                                                    {movie.genre && (
+                                                        <a className="tag" href="#">
+                                                            {movie.genre}
+                                                        </a>
+                                                    )}
+                                                    <div className="ms-auto">
+                                                        <a href="#" className="like" onClick={e => e.preventDefault()} />
+                                                        <span className="views">
+                                                            <i className="far fa-eye" /> {movie.vote_average ? `${movie.vote_average.toFixed(1)}★` : 'N/A'}
+                                                        </span>
                                                     </div>
-                                                    <div className="movies-info">
-                                                        <div className="content">
-                                                            <span className="time">
-                                                                <i className="far fa-clock me-2" />
-                                                                {movie.runtime ? `${Math.floor(movie.runtime / 60)}hr : ${movie.runtime % 60}mins` : 'N/A'}
-                                                            </span>
-                                                            <div className="info-content">
-                                                                <div className="movies-title">
+                                                </div>
+                                                <div className="movies-info">
+                                                    <div className="content">
+                                                        <span className="time">
+                                                            <i className="far fa-clock me-2" />
+                                                            {movie.runtime ? `${Math.floor(movie.runtime / 60)}hr : ${movie.runtime % 60}mins` : 'N/A'}
+                                                        </span>
+                                                        <div className="info-content">
+                                                            <div className="movies-title">
+                                                                <a
+                                                                    className="play-btn popup-youtube"
+                                                                    href={movie.trailer ? `https://www.youtube.com/watch?v=${movie.trailer}` : "#"}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                >
+                                                                    <i className="fa-solid fa-play" />
+                                                                </a>
+                                                                <h5>
                                                                     <a
-                                                                        className="play-btn popup-youtube"
-                                                                        href={movie.trailer ? `https://www.youtube.com/watch?v=${movie.trailer}` : "#"}
-                                                                        target="_blank"
-                                                                        rel="noopener noreferrer"
+                                                                        className="title mt-0"
+                                                                        href={`/movie/details/${movie.id}`}
                                                                     >
-                                                                        <i className="fa-solid fa-play" />
+                                                                        {movie.title || movie.name}
                                                                     </a>
-                                                                    <h5>
-                                                                        <a
-                                                                            className="title mt-0"
-                                                                            href={`/movie/details/${movie.id}`}
-                                                                        >
-                                                                            {movie.title || movie.name}
-                                                                        </a>
-                                                                    </h5>
-                                                                </div>
-                                                                <div className="share-info">
-                                                                    <a href="#" className="add-icon" onClick={e => e.preventDefault()} />
-                                                                    <div className="share-box">
-                                                                        <a href="#">
-                                                                            <i className="fas fa-share-alt" />
-                                                                        </a>
-                                                                        <ul className="list-unstyled share-box-social">
-                                                                            <li>
-                                                                                <a href="#">
-                                                                                    <i className="fab fa-facebook-f" />
-                                                                                </a>
-                                                                            </li>
-                                                                            <li>
-                                                                                <a href="#">
-                                                                                    <i className="fab fa-twitter" />
-                                                                                </a>
-                                                                            </li>
-                                                                            <li>
-                                                                                <a href="#">
-                                                                                    <i className="fab fa-linkedin" />
-                                                                                </a>
-                                                                            </li>
-                                                                            <li>
-                                                                                <a href="#">
-                                                                                    <i className="fab fa-instagram" />
-                                                                                </a>
-                                                                            </li>
-                                                                        </ul>
-                                                                    </div>
+                                                                </h5>
+                                                            </div>
+                                                            <div className="share-info">
+                                                                <a href="#" className="add-icon" onClick={e => e.preventDefault()} />
+                                                                <div className="share-box">
+                                                                    <a href="#">
+                                                                        <i className="fas fa-share-alt" />
+                                                                    </a>
+                                                                    <ul className="list-unstyled share-box-social">
+                                                                        <li>
+                                                                            <a href="#">
+                                                                                <i className="fab fa-facebook-f" />
+                                                                            </a>
+                                                                        </li>
+                                                                        <li>
+                                                                            <a href="#">
+                                                                                <i className="fab fa-twitter" />
+                                                                            </a>
+                                                                        </li>
+                                                                        <li>
+                                                                            <a href="#">
+                                                                                <i className="fab fa-linkedin" />
+                                                                            </a>
+                                                                        </li>
+                                                                        <li>
+                                                                            <a href="#">
+                                                                                <i className="fab fa-instagram" />
+                                                                            </a>
+                                                                        </li>
+                                                                    </ul>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -482,8 +486,8 @@ export default function Movies() {
                                                 </div>
                                             </div>
                                         </div>
-                                    ))}
-                                </div>
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     </div>
@@ -500,98 +504,96 @@ export default function Movies() {
                     </div>
                     <div className="row">
                         <div className="col-md-12">
-                            <div className="categories-slider">
-                                <div
-                                    className="owl-carousel owl-nav-center"
-                                    data-nav-dots="false"
-                                    data-nav-arrow="true"
-                                    data-items={6}
-                                    data-xl-items={5}
-                                    data-lg-items={4}
-                                    data-md-items={4}
-                                    data-sm-items={3}
-                                    data-xs-items={3}
-                                    data-space={30}
-                                    data-autoheight="true"
-                                    data-autoplay="false"
-                                    data-loop="false"
-                                >
-                                    {latestMovies.map((movie) => (
-                                        <div className="item" key={movie.id}>
-                                            <div className="movies-categories">
-                                                <div className="movies-img">
-                                                    <img
-                                                        className="img-fluid"
-                                                        src={movie.poster_path ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}` : 'images/movie/movie-01.jpg'}
-                                                        alt={movie.title || movie.name}
-                                                    />
-                                                    <div className="info-top">
-                                                        {movie.genre && (
-                                                            <a className="tag" href="#">
-                                                                {movie.genre}
-                                                            </a>
-                                                        )}
-                                                        <div className="ms-auto">
-                                                            <a href="#" className="like" onClick={e => e.preventDefault()} />
-                                                            <span className="views">
-                                                                <i className="far fa-eye" /> {movie.vote_average ? `${movie.vote_average.toFixed(1)}★` : 'N/A'}
-                                                            </span>
-                                                        </div>
+                            <div
+                                className="owl-carousel owl-nav-center"
+                                data-nav-dots="false"
+                                data-nav-arrow="true"
+                                data-items={6}
+                                data-xl-items={5}
+                                data-lg-items={4}
+                                data-md-items={4}
+                                data-sm-items={3}
+                                data-xs-items={3}
+                                data-space={30}
+                                data-autoheight="true"
+                                data-autoplay="false"
+                                data-loop="false"
+                            >
+                                {latestMovies.map((movie) => (
+                                    <div className="item" key={movie.id}>
+                                        <div className="movies-categories">
+                                            <div className="movies-img">
+                                                <img
+                                                    className="img-fluid"
+                                                    src={movie.poster_path ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}` : 'images/movie/movie-01.jpg'}
+                                                    alt={movie.title || movie.name}
+                                                />
+                                                <div className="info-top">
+                                                    {movie.genre && (
+                                                        <a className="tag" href="#">
+                                                            {movie.genre}
+                                                        </a>
+                                                    )}
+                                                    <div className="ms-auto">
+                                                        <a href="#" className="like" onClick={e => e.preventDefault()} />
+                                                        <span className="views">
+                                                            <i className="far fa-eye" /> {movie.vote_average ? `${movie.vote_average.toFixed(1)}★` : 'N/A'}
+                                                        </span>
                                                     </div>
-                                                    <div className="movies-info">
-                                                        <div className="content">
-                                                            <span className="time">
-                                                                <i className="far fa-clock me-2" />
-                                                                {movie.runtime ? `${Math.floor(movie.runtime / 60)}hr : ${movie.runtime % 60}mins` : 'N/A'}
-                                                            </span>
-                                                            <div className="info-content">
-                                                                <div className="movies-title">
+                                                </div>
+                                                <div className="movies-info">
+                                                    <div className="content">
+                                                        <span className="time">
+                                                            <i className="far fa-clock me-2" />
+                                                            {movie.runtime ? `${Math.floor(movie.runtime / 60)}hr : ${movie.runtime % 60}mins` : 'N/A'}
+                                                        </span>
+                                                        <div className="info-content">
+                                                            <div className="movies-title">
+                                                                <a
+                                                                    className="play-btn popup-youtube"
+                                                                    href={movie.trailer ? `https://www.youtube.com/watch?v=${movie.trailer}` : "#"}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                >
+                                                                    <i className="fa-solid fa-play" />
+                                                                </a>
+                                                                <h5>
                                                                     <a
-                                                                        className="play-btn popup-youtube"
-                                                                        href={movie.trailer ? `https://www.youtube.com/watch?v=${movie.trailer}` : "#"}
-                                                                        target="_blank"
-                                                                        rel="noopener noreferrer"
+                                                                        className="title mt-0"
+                                                                        href={`/movie/details/${movie.id}`}
                                                                     >
-                                                                        <i className="fa-solid fa-play" />
+                                                                        {movie.title || movie.name}
                                                                     </a>
-                                                                    <h5>
-                                                                        <a
-                                                                            className="title mt-0"
-                                                                            href={`/movie/details/${movie.id}`}
-                                                                        >
-                                                                            {movie.title || movie.name}
-                                                                        </a>
-                                                                    </h5>
-                                                                </div>
-                                                                <div className="share-info">
-                                                                    <a href="#" className="add-icon" onClick={e => e.preventDefault()} />
-                                                                    <div className="share-box">
-                                                                        <a href="#">
-                                                                            <i className="fas fa-share-alt" />
-                                                                        </a>
-                                                                        <ul className="list-unstyled share-box-social">
-                                                                            <li>
-                                                                                <a href="#">
-                                                                                    <i className="fab fa-facebook-f" />
-                                                                                </a>
-                                                                            </li>
-                                                                            <li>
-                                                                                <a href="#">
-                                                                                    <i className="fab fa-twitter" />
-                                                                                </a>
-                                                                            </li>
-                                                                            <li>
-                                                                                <a href="#">
-                                                                                    <i className="fab fa-linkedin" />
-                                                                                </a>
-                                                                            </li>
-                                                                            <li>
-                                                                                <a href="#">
-                                                                                    <i className="fab fa-instagram" />
-                                                                                </a>
-                                                                            </li>
-                                                                        </ul>
-                                                                    </div>
+                                                                </h5>
+                                                            </div>
+                                                            <div className="share-info">
+                                                                <a href="#" className="add-icon" onClick={e => e.preventDefault()} />
+                                                                <div className="share-box">
+                                                                    <a href="#">
+                                                                        <i className="fas fa-share-alt" />
+                                                                    </a>
+                                                                    <ul className="list-unstyled share-box-social">
+                                                                        <li>
+                                                                            <a href="#">
+                                                                                <i className="fab fa-facebook-f" />
+                                                                            </a>
+                                                                        </li>
+                                                                        <li>
+                                                                            <a href="#">
+                                                                                <i className="fab fa-twitter" />
+                                                                            </a>
+                                                                        </li>
+                                                                        <li>
+                                                                            <a href="#">
+                                                                                <i className="fab fa-linkedin" />
+                                                                            </a>
+                                                                        </li>
+                                                                        <li>
+                                                                            <a href="#">
+                                                                                <i className="fab fa-instagram" />
+                                                                            </a>
+                                                                        </li>
+                                                                    </ul>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -599,8 +601,8 @@ export default function Movies() {
                                                 </div>
                                             </div>
                                         </div>
-                                    ))}
-                                </div>
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     </div>
@@ -617,95 +619,93 @@ export default function Movies() {
                     </div>
                     <div className="row">
                         <div className="col-md-12">
-                            <div className="categories-slider">
-                                <div
-                                    className="owl-carousel owl-nav-center"
-                                    data-nav-dots="false"
-                                    data-nav-arrow="true"
-                                    data-items={5}
-                                    data-xl-items={5}
-                                    data-lg-items={5}
-                                    data-md-items={3}
-                                    data-sm-items={2}
-                                    data-xs-items={1}
-                                    data-space={30}
-                                    data-autoheight="true"
-                                    data-autoplay="false"
-                                    data-loop="false"
-                                >
-                                    {popularMovies.map((movie) => (
-                                        <div className="item" key={movie.id}>
-                                            <div className="movies-categories">
-                                                <div className="movies-img">
-                                                    <img
-                                                        className="img-fluid"
-                                                        src={movie.poster_path ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}` : 'images/movie/movie-01.jpg'}
-                                                        alt={movie.title || movie.name}
-                                                    />
-                                                    <div className="info-top">
-                                                        {movie.genre && (
-                                                            <a className="tag" href="#">
-                                                                {movie.genre}
-                                                            </a>
-                                                        )}
-                                                        <div className="ms-auto">
-                                                            <a href="#" className="like" onClick={e => e.preventDefault()} />
-                                                            <a className="views" href="#">
-                                                                <i className="fa-solid fa-star" /> {movie.vote_average ? `${movie.vote_average.toFixed(1)}` : 'N/A'}
-                                                            </a>
-                                                        </div>
+                            <div
+                                className="owl-carousel owl-nav-center"
+                                data-nav-dots="false"
+                                data-nav-arrow="true"
+                                data-items={5}
+                                data-xl-items={5}
+                                data-lg-items={5}
+                                data-md-items={3}
+                                data-sm-items={2}
+                                data-xs-items={1}
+                                data-space={30}
+                                data-autoheight="true"
+                                data-autoplay="false"
+                                data-loop="false"
+                            >
+                                {popularMovies.map((movie) => (
+                                    <div className="item" key={movie.id}>
+                                        <div className="movies-categories">
+                                            <div className="movies-img">
+                                                <img
+                                                    className="img-fluid"
+                                                    src={movie.poster_path ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}` : 'images/movie/movie-01.jpg'}
+                                                    alt={movie.title || movie.name}
+                                                />
+                                                <div className="info-top">
+                                                    {movie.genre && (
+                                                        <a className="tag" href="#">
+                                                            {movie.genre}
+                                                        </a>
+                                                    )}
+                                                    <div className="ms-auto">
+                                                        <a href="#" className="like" onClick={e => e.preventDefault()} />
+                                                        <a className="views" href="#">
+                                                            <i className="fa-solid fa-star" /> {movie.vote_average ? `${movie.vote_average.toFixed(1)}` : 'N/A'}
+                                                        </a>
                                                     </div>
-                                                    <div className="movies-info">
-                                                        <div className="content">
-                                                            <a className="time" href={`/movie/details/${movie.id}`}>
-                                                                <i className="far fa-clock me-2" />
-                                                                {movie.runtime ? `${Math.floor(movie.runtime / 60)}hr : ${movie.runtime % 60}min` : 'N/A'}
-                                                            </a>
-                                                            <div className="info-content">
-                                                                <div className="movies-title">
-                                                                    <a
-                                                                        className="play-btn popup-youtube"
-                                                                        href={movie.trailer ? `https://www.youtube.com/watch?v=${movie.trailer}` : "#"}
-                                                                        target="_blank"
-                                                                        rel="noopener noreferrer"
-                                                                    >
-                                                                        <i className="fa-solid fa-play" />
+                                                </div>
+                                                <div className="movies-info">
+                                                    <div className="content">
+                                                        <a className="time" href={`/movie/details/${movie.id}`}>
+                                                            <i className="far fa-clock me-2" />
+                                                            {movie.runtime ? `${Math.floor(movie.runtime / 60)}hr : ${movie.runtime % 60}min` : 'N/A'}
+                                                        </a>
+                                                        <div className="info-content">
+                                                            <div className="movies-title">
+                                                                <a
+                                                                    className="play-btn popup-youtube"
+                                                                    href={movie.trailer ? `https://www.youtube.com/watch?v=${movie.trailer}` : "#"}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                >
+                                                                    <i className="fa-solid fa-play" />
+                                                                </a>
+                                                                <h5>
+                                                                    <a className="title mt-0" href={`/movie/details/${movie.id}`}>
+                                                                        {movie.title || movie.name}
                                                                     </a>
-                                                                    <h5>
-                                                                        <a className="title mt-0" href={`/movie/details/${movie.id}`}>
-                                                                            {movie.title || movie.name}
-                                                                        </a>
-                                                                    </h5>
-                                                                </div>
-                                                                <div className="share-info">
-                                                                    <a href="#" className="add-icon" onClick={e => e.preventDefault()} />
-                                                                    <div className="share-box">
-                                                                        <a href="#">
-                                                                            <i className="fas fa-share-alt" />
-                                                                        </a>
-                                                                        <ul className="list-unstyled share-box-social">
-                                                                            <li>
-                                                                                <a href="#">
-                                                                                    <i className="fab fa-facebook-f" />
-                                                                                </a>
-                                                                            </li>
-                                                                            <li>
-                                                                                <a href="#">
-                                                                                    <i className="fab fa-twitter" />
-                                                                                </a>
-                                                                            </li>
-                                                                            <li>
-                                                                                <a href="#">
-                                                                                    <i className="fab fa-linkedin" />
-                                                                                </a>
-                                                                            </li>
-                                                                            <li>
-                                                                                <a href="#">
-                                                                                    <i className="fab fa-instagram" />
-                                                                                </a>
-                                                                            </li>
-                                                                        </ul>
-                                                                    </div>
+                                                                </h5>
+                                                            </div>
+                                                            <div className="share-info">
+                                                                <a href="#" className="add-icon" onClick={e => e.preventDefault()} />
+                                                                <div className="share-box">
+                                                                    <a href="#">
+                                                                        <i className="fas fa-share-alt" />
+                                                                    </a>
+                                                                    <ul className="list-unstyled share-box-social">
+                                                                        <li>
+                                                                            <a href="#">
+                                                                                <i className="fab fa-facebook-f" />
+                                                                            </a>
+                                                                        </li>
+                                                                        <li>
+                                                                            <a href="#">
+                                                                                <i className="fab fa-twitter" />
+                                                                            </a>
+                                                                        </li>
+                                                                        <li>
+                                                                            <a href="#">
+                                                                                <i className="fab fa-linkedin" />
+                                                                            </a>
+                                                                        </li>
+                                                                        <li>
+                                                                            <a href="#">
+                                                                                <i className="fab fa-instagram" />
+                                                                            </a>
+                                                                        </li>
+                                                                    </ul>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -713,8 +713,8 @@ export default function Movies() {
                                                 </div>
                                             </div>
                                         </div>
-                                    ))}
-                                </div>
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     </div>
