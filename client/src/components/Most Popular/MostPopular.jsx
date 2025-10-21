@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import * as moviesService from '../../services/moviesService';
 import { useLoading } from '../../contexts/LoadingContext';
+import { Link } from 'react-router-dom';
+
+// Helper function to convert genre display name to database name
+const getGenreParam = (genreName) => {
+    if (genreName === 'Sci-Fi') return 'Science Fiction';
+    if (genreName === 'Sci-Fi & Fantasy') return 'Science Fiction';
+    return genreName;
+};
 
 export default function MostPopular() {
     const [movie, setMovie] = useState(null);
@@ -91,7 +99,7 @@ export default function MostPopular() {
                                     <li className="tag">
                                         {movie?.movies?.genres?.map((genre, index) => (
                                             <span key={index}>
-                                                <Link to={`/genre?genre=${genre.name}&media=movies`}>{genre.name}</Link>
+                                                <Link to={`/genre?genre=${getGenreParam(genre.name)}&media=movies`}>{genre.name}</Link>
                                                 {index < movie.movies.genres.length - 1 && ', '}
                                             </span>
                                         )) || <Link to="#">N/A</Link>}

@@ -3,6 +3,13 @@ import { useEffect, useState } from "react";
 import * as moviesService from '../../services/moviesService'
 import { useLoading } from '../../contexts/LoadingContext';
 
+// Helper function to convert genre display name to database name
+const getGenreParam = (genreName) => {
+    if (genreName === 'Sci-Fi') return 'Science Fiction';
+    if (genreName === 'Sci-Fi & Fantasy') return 'Science Fiction';
+    return genreName;
+};
+
 export default function MovieDetails() {
     const [movie, setMovie] = useState([]);
     const { movieId } = useParams();
@@ -101,10 +108,10 @@ export default function MovieDetails() {
                                                 <div className="movies-genre">
                                                     Genre:{" "}
                                                     {movie.movies.genres.map((genre, index) => (
-                                                        <a key={index} href="#">
+                                                        <Link key={index} to={`/genre?genre=${getGenreParam(genre.name)}&media=movies`}>
                                                             {genre.name}
                                                             {index < movie.movies.genres.length - 1 && ", "}
-                                                        </a>
+                                                        </Link>
                                                     ))}
                                                 </div>
                                                 <div className="movies-genre">
@@ -615,7 +622,7 @@ export default function MovieDetails() {
                                                     />
                                                     <div className="info-top">
                                                         <Link 
-                                                            to={`/genre?genre=${item.genre}&media=movies`}
+                                                            to={`/genre?genre=${getGenreParam(item.genre)}&media=movies`}
                                                             className="tag"
                                                         >
                                                             {item.genre}
@@ -629,10 +636,11 @@ export default function MovieDetails() {
                                                     </div>
                                                     <div className="movies-info">
                                                         <div className="content">
-                                                            <Link className="time" to={`/movie/details/${item.id}`}>
-                                                                <i className="far fa-clock me-2" />
+                                                            <span className="time">
+                                                                {item.year || (item.release_date ? new Date(item.release_date).getFullYear() : 'N/A')}
+                                                                <i className="far fa-clock me-2 ms-2" />
                                                                 {Math.floor(item.runtime / 60)}hr : {item.runtime % 60}mins
-                                                            </Link>
+                                                            </span>
                                                             <div className="info-content">
                                                                 <div className="movies-title">
                                                                     <a

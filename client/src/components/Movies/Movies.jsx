@@ -3,6 +3,13 @@ import { Link } from 'react-router-dom';
 import { getLatestMovies, getTrendingMovies, getPopularMovies } from '../../services/moviesService';
 import { useLoading } from '../../contexts/LoadingContext';
 
+// Helper function to convert genre display name to database name
+const getGenreParam = (genreName) => {
+    if (genreName === 'Sci-Fi') return 'Science Fiction';
+    if (genreName === 'Sci-Fi & Fantasy') return 'Science Fiction';
+    return genreName;
+};
+
 export default function Movies() {
     const [trendingMovies, setTrendingMovies] = useState([]);
     const [latestMovies, setLatestMovies] = useState([]);
@@ -418,7 +425,7 @@ export default function Movies() {
                                                     <div className="info-top">
                                                         {movie.genre && (
                                                             <Link 
-                                                                to={`/genre?genre=${movie.genre}&media=movies`}
+                                                                to={`/genre?genre=${getGenreParam(movie.genre)}&media=movies`}
                                                                 className="tag" 
                                                                 onClick={e => e.stopPropagation()}
                                                             >
@@ -537,7 +544,7 @@ export default function Movies() {
                                                     <div className="info-top">
                                                         {movie.genre && (
                                                             <Link 
-                                                                to={`/genre?genre=${movie.genre}&media=movies`}
+                                                                to={`/genre?genre=${getGenreParam(movie.genre)}&media=movies`}
                                                                 className="tag" 
                                                                 onClick={e => e.stopPropagation()}
                                                             >
@@ -656,7 +663,7 @@ export default function Movies() {
                                                     <div className="info-top">
                                                         {movie.genre && (
                                                             <Link 
-                                                                to={`/genre?genre=${movie.genre}&media=movies`}
+                                                                to={`/genre?genre=${getGenreParam(movie.genre)}&media=movies`}
                                                                 className="tag" 
                                                                 onClick={e => e.stopPropagation()}
                                                             >

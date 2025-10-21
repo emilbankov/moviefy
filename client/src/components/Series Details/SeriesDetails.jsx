@@ -3,6 +3,13 @@ import { useEffect, useState } from "react";
 import * as seriesService from '../../services/seriesService'
 import { useLoading } from '../../contexts/LoadingContext';
 
+// Helper function to convert genre display name to database name
+const getGenreParam = (genreName) => {
+    if (genreName === 'Sci-Fi') return 'Science Fiction';
+    if (genreName === 'Sci-Fi & Fantasy') return 'Science Fiction';
+    return genreName;
+};
+
 export default function SeriesDetails() {
     const [series, setSeries] = useState([]);
     const [episodes, setEpisodes] = useState([]);
@@ -138,10 +145,10 @@ export default function SeriesDetails() {
                                                     <div className="movies-genre">
                                                         Genre:{" "}
                                                         {series.series.genres.map((genre, index) => (
-                                                            <a key={index} href="#">
+                                                            <Link key={index} to={`/genre?genre=${getGenreParam(genre.name)}&media=series`}>
                                                                 {genre.name}
                                                                 {index < series.series.genres.length - 1 && ", "}
-                                                            </a>
+                                                            </Link>
                                                         ))}
                                                     </div>
                                                     <div className="movies-genre">

@@ -4,6 +4,13 @@ import * as moviesService from '../../services/moviesService'
 import * as seriesService from '../../services/seriesService'
 import { useLoading } from '../../contexts/LoadingContext';
 
+// Helper function to convert genre display name to database name
+const getGenreParam = (genreName) => {
+    if (genreName === 'Sci-Fi') return 'Science Fiction';
+    if (genreName === 'Sci-Fi & Fantasy') return 'Science Fiction';
+    return genreName;
+};
+
 export default function Home() {
     const [bannerMovies, setBannerMovies] = useState([]);
     const [latestMovies, setLatestMovies] = useState([]);
@@ -335,7 +342,7 @@ export default function Home() {
                                                         />
                                                         <div className="info-top">
                                                             <Link 
-                                                                to={`/genre?genre=${trending.genre}&media=movies`}
+                                                                to={`/genre?genre=${getGenreParam(trending.genre)}&media=movies`}
                                                                 className="tag" 
                                                                 onClick={(e) => e.stopPropagation()}
                                                             >
@@ -767,7 +774,7 @@ export default function Home() {
                                                         />
                                                         <div className="info-top">
                                                             <Link 
-                                                                to={`/genre?genre=${popular.genre}&media=movies`}
+                                                                to={`/genre?genre=${getGenreParam(popular.genre)}&media=movies`}
                                                                 className="tag" 
                                                                 onClick={(e) => e.stopPropagation()}
                                                             >
@@ -861,36 +868,38 @@ export default function Home() {
                     <div className="row">
                         {popularCollections.collections && popularCollections.collections.map((collection, index) => (
                             <div className="col-xl-2-3 col-lg-4 col-md-6 col-sm-6 mb-4" key={index}>
-                                <div className="movies-categories-style-2">
-                                    <div className="movie-image">
-                                        <img
-                                            className="img-fluid br-20"
-                                            src={`https://image.tmdb.org/t/p/w500${collection.poster_path}`}
-                                            alt={collection.name}
-                                        />
-                                        <div className="info-top">
-                                            <a href="javascript:void(0)" className="like" />
-                                            <a className="views" href="#">
-                                                <i className="fa-solid fa-star" /> {collection.voteAverage.toFixed(1)}
-                                            </a>
-                                        </div>
-                                        <div className="movie-info-content">
-                                            <a className="time" href="#">
-                                                <i className="far fa-clock me-2" />
-                                                {Math.floor(collection.runtime / 60)}hr : {collection.runtime % 60}min
-                                            </a>
-                                            <h5>
-                                                <Link className="title" to={`/movie/details/${collection.first_movie_id}`}>
-                                                    {collection.name}
-                                                </Link>
-                                            </h5>
-                                            <p>
-                                                {collection.overview}
-                                            </p>
-                                            <Link className="btn btn-link btn-link-1" to={`/movie/details/${collection.first_movie_id}`}><i className="fa-solid fa-play" />Play Now</Link>
+                                <Link to={`/movie/details/${collection.first_movie_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                    <div className="movies-categories-style-2">
+                                        <div className="movie-image">
+                                            <img
+                                                className="img-fluid br-20"
+                                                src={`https://image.tmdb.org/t/p/w500${collection.poster_path}`}
+                                                alt={collection.name}
+                                            />
+                                            <div className="info-top">
+                                                <a href="javascript:void(0)" className="like" onClick={(e) => e.preventDefault()} />
+                                                <a className="views" href="#" onClick={(e) => e.preventDefault()}>
+                                                    <i className="fa-solid fa-star" /> {collection.voteAverage.toFixed(1)}
+                                                </a>
+                                            </div>
+                                            <div className="movie-info-content">
+                                                <a className="time" href="#" onClick={(e) => e.preventDefault()}>
+                                                    <i className="far fa-clock me-2" />
+                                                    {Math.floor(collection.runtime / 60)}hr : {collection.runtime % 60}min
+                                                </a>
+                                                <h5>
+                                                    <span className="title">
+                                                        {collection.name}
+                                                    </span>
+                                                </h5>
+                                                <p>
+                                                    {collection.overview}
+                                                </p>
+                                                <span className="btn btn-link btn-link-1" onClick={(e) => e.stopPropagation()}><i className="fa-solid fa-play" />Play Now</span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                </Link>
                             </div>
                         ))}
                     </div>
@@ -1131,7 +1140,7 @@ export default function Home() {
                                                         />
                                                         <div className="info-top">
                                                             <Link 
-                                                                to={`/genre?genre=${popular.genre}&media=series`}
+                                                                to={`/genre?genre=${getGenreParam(popular.genre)}&media=series`}
                                                                 className="tag" 
                                                                 onClick={(e) => e.stopPropagation()}
                                                             >
