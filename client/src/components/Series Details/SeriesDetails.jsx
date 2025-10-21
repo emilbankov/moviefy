@@ -1,6 +1,7 @@
 import { Link, useLocation, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import * as seriesService from '../../services/seriesService'
+import { useLoading } from '../../contexts/LoadingContext';
 
 export default function SeriesDetails() {
     const [series, setSeries] = useState([]);
@@ -8,18 +9,23 @@ export default function SeriesDetails() {
     const [selectedSeason, setSelectedSeason] = useState(null); // Track selected season
     const { seriesId } = useParams();
     const location = useLocation();
+    const { setLoading } = useLoading();
 
     useEffect(() => {
+        setLoading(true);
         seriesService.getSeriesDetails(seriesId)
             .then(result => setSeries(result))
             .catch(err => {
                 console.log(err);
+            })
+            .finally(() => {
+                setLoading(false);
             });
 
         return () => {
             setSeries('series');
         };
-    }, [location.pathname]);
+    }, [location.pathname, setLoading]);
 
     const handleSeasonClick = (seasonId, seasonNumber) => {
         setSelectedSeason(seasonNumber);

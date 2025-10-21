@@ -1,17 +1,18 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { search } from '../../services/moviesService';
+import { useLoading } from '../../contexts/LoadingContext';
 
 export default function SearchResults() {
     const [searchParams] = useSearchParams();
     const [results, setResults] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
     const query = searchParams.get('q');
+    const { setLoading } = useLoading();
 
     useEffect(() => {
         const fetchResults = async () => {
             if (query) {
-                setIsLoading(true);
+                setLoading(true);
                 try {
                     const data = await search(query);
                     const searchResults = data.results || data;
@@ -19,17 +20,14 @@ export default function SearchResults() {
                 } catch (error) {
                     console.error('Search error:', error);
                     setResults([]);
+                } finally {
+                    setLoading(false);
                 }
-                setIsLoading(false);
             }
         };
 
         fetchResults();
-    }, [query]);
-
-    if (isLoading) {
-        return <div className="container mt-5 text-center">Loading...</div>;
-    }
+    }, [query, setLoading]);
 
     return (
         <div className="container mt-5">
