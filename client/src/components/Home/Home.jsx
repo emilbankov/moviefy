@@ -69,15 +69,52 @@ export default function Home() {
 
     useEffect(() => {
         const handleLoad = () => {
-            const existingScript = document.querySelector('script[src="/js/custom.js"]');
-            if (existingScript) {
-                document.body.removeChild(existingScript);
-            }
+            // Wait for all images to load before initializing carousel
+            const images = document.querySelectorAll('.owl-carousel img');
+            let loadedCount = 0;
+            const totalImages = images.length;
 
-            const script = document.createElement('script');
-            script.src = '/js/custom.js';
-            script.async = true;
-            document.body.appendChild(script);
+            const initCarousel = () => {
+                const existingScript = document.querySelector('script[src="/js/custom.js"]');
+                if (existingScript) {
+                    document.body.removeChild(existingScript);
+                }
+
+                const script = document.createElement('script');
+                script.src = '/js/custom.js';
+                script.async = true;
+                document.body.appendChild(script);
+            };
+
+            if (totalImages === 0) {
+                // No images, initialize immediately
+                initCarousel();
+            } else {
+                // Wait for all images to load
+                images.forEach((img) => {
+                    if (img.complete) {
+                        loadedCount++;
+                    } else {
+                        img.addEventListener('load', () => {
+                            loadedCount++;
+                            if (loadedCount === totalImages) {
+                                initCarousel();
+                            }
+                        });
+                        img.addEventListener('error', () => {
+                            loadedCount++;
+                            if (loadedCount === totalImages) {
+                                initCarousel();
+                            }
+                        });
+                    }
+                });
+
+                // If all images were already loaded
+                if (loadedCount === totalImages) {
+                    initCarousel();
+                }
+            }
         };
 
         // Wait for the window to fully load
