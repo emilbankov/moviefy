@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Routes, Route } from 'react-router-dom';
 
 import Header from './components/Header/Header';
 import Search from './components/Search/Search';
@@ -20,30 +20,33 @@ import TermsConditions from './components/Terms Conditions/TermsConditions';
 import Loader from './components/Loader/Loader';
 import Footer from './components/Footer/Footer';
 import SearchResults from './components/Search Results/SearchResults';
+import ScrollToTop from './components/ScrollToTop/ScrollToTop';
+import { LoadingProvider, useLoading } from './contexts/LoadingContext';
 
-function App() {
-    const [loading, setLoading] = useState(false);
+function AppContent() {
     const [isSearchOpen, setIsSearchOpen] = useState(false);
-    const location = useLocation();
-
-    useEffect(() => {
-        setLoading(true);
-        const randomDelay = Math.random() * 0.4 + 0.2;
-        const timer = setTimeout(() => {
-            setLoading(false);
-        }, randomDelay * 1000);
-
-        return () => clearTimeout(timer);
-    }, [location]);
+    const { loading } = useLoading();
 
     return (
-        <div className='bg-dark'>
+        <div className='bg-dark' style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+            <ScrollToTop />
             <Header onSearchOpen={() => setIsSearchOpen(true)} />
             <Search isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
 
-            {loading && <Loader />}
+            {loading && (
+                <div style={{ 
+                    flex: 1, 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center',
+                    backgroundColor: '#0a0a0a',
+                    minHeight: 'calc(100vh - 200px)'
+                }}>
+                    <Loader />
+                </div>
+            )}
 
-            <div style={{ display: loading ? 'none' : 'block' }}>
+            <div style={{ display: loading ? 'none' : 'block', flex: 1 }}>
                 <Routes>
                     <Route path='/' element={<Home />} />
                     <Route path='/most-popular' element={<MostPopular />} />
@@ -66,6 +69,14 @@ function App() {
             <div id="snow-container"></div>
             <Footer />
         </div>
+    );
+}
+
+function App() {
+    return (
+        <LoadingProvider>
+            <AppContent />
+        </LoadingProvider>
     );
 }
 
