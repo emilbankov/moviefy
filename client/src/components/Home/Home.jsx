@@ -167,28 +167,30 @@ export default function Home() {
                                 >
                                     {bannerMovies.rest_movies.map((movie) => (
                                         <div key={movie.id} className="item">
-                                            <div className="movies-categories movies-style-1">
-                                                <div className="movies-img banner-backdrop">
-                                                    <img
-                                                        className="img-fluid"
-                                                        src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
-                                                        alt={movie.title}
-                                                    />
-                                                    <div className="info-top">
-                                                        <div className="ms-auto">
-                                                            <a href="javascript:void(0)" className="like" />
-                                                            <a className="views" href="#"><i className="fa-solid fa-star" />{movie.vote_average}</a>
+                                            <Link to={`/movie/details/${movie.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                                <div className="movies-categories movies-style-1">
+                                                    <div className="movies-img banner-backdrop">
+                                                        <img
+                                                            className="img-fluid"
+                                                            src={`https://image.tmdb.org/t/p/original${movie.backdrop_path}`}
+                                                            alt={movie.title}
+                                                        />
+                                                        <div className="info-top">
+                                                            <div className="ms-auto">
+                                                                <a href="javascript:void(0)" className="like" onClick={(e) => e.preventDefault()} />
+                                                                <a className="views" href="#" onClick={(e) => e.preventDefault()}><i className="fa-solid fa-star" />{movie.vote_average}</a>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div className="movies-info">
-                                                        <div className="content">
-                                                            <h5><Link className="title" to={`/movie/details/${movie.id}`}>{movie.title}</Link></h5>
-                                                            <a className="time" to={`/movie/details/${movie.id}`}><i className="far fa-clock me-2" />{Math.floor(movie.runtime / 60)}hr : {movie.runtime % 60}mins</a>
+                                                        <div className="movies-info">
+                                                            <div className="content">
+                                                                <h5><span className="title">{movie.title}</span></h5>
+                                                                <span className="time"><i className="far fa-clock me-2" />{Math.floor(movie.runtime / 60)}hr : {movie.runtime % 60}mins</span>
+                                                            </div>
+                                                            <a className="play-btn popup-youtube" href={`https://www.youtube.com/watch?v=${movie.trailer}`} onClick={(e) => e.stopPropagation()}><i className="fa-solid fa-play" /></a>
                                                         </div>
-                                                        <a className="play-btn popup-youtube" href={`https://www.youtube.com/watch?v=${movie.trailer}`}><i className="fa-solid fa-play" /></a>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </Link>
                                         </div>
                                     ))}
                                 </div>
@@ -286,79 +288,82 @@ export default function Home() {
                                 >
                                     {trendingMovies.movies.map((trending) => (
                                         <div className="item" key={trending.id}>
-                                            <div className="movies-categories br-20">
-                                                <div className="movies-img">
-                                                    <img
-                                                        className="img-fluid"
-                                                        src={`https://image.tmdb.org/t/p/w500${trending.poster_path}`}
-                                                        alt={trending.title}
-                                                    />
-                                                    <div className="info-top">
-                                                        <a className="tag" href="#">
-                                                            {trending.genre}
-                                                        </a>
-                                                        <div className="ms-auto">
-                                                            <a href="javascript:void(0)" className="like" />
-                                                            <a className="views" href="#">
-                                                                <i className="fa-solid fa-star" /> {trending.vote_average}
+                                            <Link to={`/movie/details/${trending.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                                <div className="movies-categories br-20">
+                                                    <div className="movies-img">
+                                                        <img
+                                                            className="img-fluid"
+                                                            src={`https://image.tmdb.org/t/p/w500${trending.poster_path}`}
+                                                            alt={trending.title}
+                                                        />
+                                                        <div className="info-top">
+                                                            <a className="tag" href="#" onClick={(e) => e.preventDefault()}>
+                                                                {trending.genre}
                                                             </a>
+                                                            <div className="ms-auto">
+                                                                <a href="javascript:void(0)" className="like" onClick={(e) => e.preventDefault()} />
+                                                                <a className="views" href="#" onClick={(e) => e.preventDefault()}>
+                                                                    <i className="fa-solid fa-star" /> {trending.vote_average}
+                                                                </a>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div className="movies-info">
-                                                        <div className="content">
-                                                            <Link className="time" to={`/movie/details/${trending.id}`}>
-                                                                <i className="far fa-clock me-2" />
-                                                                {Math.floor(trending.runtime / 60)}hr : {trending.runtime % 60}min
-                                                            </Link>
-                                                            <div className="info-content">
-                                                                <div className="movies-title">
-                                                                    <a
-                                                                        className="play-btn popup-youtube"
-                                                                        href={`https://www.youtube.com/watch?v=${trending.trailer}`}
-                                                                    >
-                                                                        <i className="fa-solid fa-play" />
-                                                                    </a>
-                                                                    <h5>
-                                                                        <Link className="title mt-0" to={`/movie/details/${trending.id}`}>
-                                                                            {trending.title}
-                                                                        </Link>
-                                                                    </h5>
-                                                                </div>
-                                                                <div className="share-info">
-                                                                    <a href="javascript:void(0)" className="add-icon" />
-                                                                    <div className="share-box">
-                                                                        <a href="#">
-                                                                            <i className="fas fa-share-alt" />
+                                                        <div className="movies-info">
+                                                            <div className="content">
+                                                                <span className="time">
+                                                                    <i className="far fa-clock me-2" />
+                                                                    {Math.floor(trending.runtime / 60)}hr : {trending.runtime % 60}min
+                                                                </span>
+                                                                <div className="info-content">
+                                                                    <div className="movies-title">
+                                                                        <a
+                                                                            className="play-btn popup-youtube"
+                                                                            href={`https://www.youtube.com/watch?v=${trending.trailer}`}
+                                                                            onClick={(e) => e.stopPropagation()}
+                                                                        >
+                                                                            <i className="fa-solid fa-play" />
                                                                         </a>
-                                                                        <ul className="list-unstyled share-box-social">
-                                                                            <li>
-                                                                                <a href="#">
-                                                                                    <i className="fab fa-facebook-f" />
-                                                                                </a>
-                                                                            </li>
-                                                                            <li>
-                                                                                <a href="#">
-                                                                                    <i className="fab fa-twitter" />
-                                                                                </a>
-                                                                            </li>
-                                                                            <li>
-                                                                                <a href="#">
-                                                                                    <i className="fab fa-linkedin" />
-                                                                                </a>
-                                                                            </li>
-                                                                            <li>
-                                                                                <a href="#">
-                                                                                    <i className="fab fa-instagram" />
-                                                                                </a>
-                                                                            </li>
-                                                                        </ul>
+                                                                        <h5>
+                                                                            <span className="title mt-0">
+                                                                                {trending.title}
+                                                                            </span>
+                                                                        </h5>
+                                                                    </div>
+                                                                    <div className="share-info">
+                                                                        <a href="javascript:void(0)" className="add-icon" onClick={(e) => e.preventDefault()} />
+                                                                        <div className="share-box">
+                                                                            <a href="#" onClick={(e) => e.preventDefault()}>
+                                                                                <i className="fas fa-share-alt" />
+                                                                            </a>
+                                                                            <ul className="list-unstyled share-box-social">
+                                                                                <li>
+                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
+                                                                                        <i className="fab fa-facebook-f" />
+                                                                                    </a>
+                                                                                </li>
+                                                                                <li>
+                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
+                                                                                        <i className="fab fa-twitter" />
+                                                                                    </a>
+                                                                                </li>
+                                                                                <li>
+                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
+                                                                                        <i className="fab fa-linkedin" />
+                                                                                    </a>
+                                                                                </li>
+                                                                                <li>
+                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
+                                                                                        <i className="fab fa-instagram" />
+                                                                                    </a>
+                                                                                </li>
+                                                                            </ul>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </Link>
                                         </div>
                                     ))}
 
@@ -711,79 +716,82 @@ export default function Home() {
                                 >
                                     {popularMovies.movies.map((popular) => (
                                         <div className="item" key={popular.id}>
-                                            <div className="movies-categories br-20">
-                                                <div className="movies-img">
-                                                    <img
-                                                        className="img-fluid"
-                                                        src={`https://image.tmdb.org/t/p/w500${popular.poster_path}`}
-                                                        alt={popular.title}
-                                                    />
-                                                    <div className="info-top">
-                                                        <a className="tag" href="#">
-                                                            {popular.genre}
-                                                        </a>
-                                                        <div className="ms-auto">
-                                                            <a href="javascript:void(0)" className="like" />
-                                                            <a className="views" href="#">
-                                                                <i className="fa-solid fa-star" /> {popular.vote_average}
+                                            <Link to={`/movie/details/${popular.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                                <div className="movies-categories br-20">
+                                                    <div className="movies-img">
+                                                        <img
+                                                            className="img-fluid"
+                                                            src={`https://image.tmdb.org/t/p/w500${popular.poster_path}`}
+                                                            alt={popular.title}
+                                                        />
+                                                        <div className="info-top">
+                                                            <a className="tag" href="#" onClick={(e) => e.preventDefault()}>
+                                                                {popular.genre}
                                                             </a>
+                                                            <div className="ms-auto">
+                                                                <a href="javascript:void(0)" className="like" onClick={(e) => e.preventDefault()} />
+                                                                <a className="views" href="#" onClick={(e) => e.preventDefault()}>
+                                                                    <i className="fa-solid fa-star" /> {popular.vote_average}
+                                                                </a>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div className="movies-info">
-                                                        <div className="content">
-                                                            <Link className="time" to={`/movie/details/${popular.id}`}>
-                                                                <i className="far fa-clock me-2" />
-                                                                {Math.floor(popular.runtime / 60)}hr : {popular.runtime % 60}min
-                                                            </Link>
-                                                            <div className="info-content">
-                                                                <div className="movies-title">
-                                                                    <a
-                                                                        className="play-btn popup-youtube"
-                                                                        href={`https://www.youtube.com/watch?v=${popular.trailer}`}
-                                                                    >
-                                                                        <i className="fa-solid fa-play" />
-                                                                    </a>
-                                                                    <h5>
-                                                                        <Link className="title mt-0" to={`/movie/details/${popular.id}`}>
-                                                                            {popular.title}
-                                                                        </Link>
-                                                                    </h5>
-                                                                </div>
-                                                                <div className="share-info">
-                                                                    <a href="javascript:void(0)" className="add-icon" />
-                                                                    <div className="share-box">
-                                                                        <a href="#">
-                                                                            <i className="fas fa-share-alt" />
+                                                        <div className="movies-info">
+                                                            <div className="content">
+                                                                <span className="time">
+                                                                    <i className="far fa-clock me-2" />
+                                                                    {Math.floor(popular.runtime / 60)}hr : {popular.runtime % 60}min
+                                                                </span>
+                                                                <div className="info-content">
+                                                                    <div className="movies-title">
+                                                                        <a
+                                                                            className="play-btn popup-youtube"
+                                                                            href={`https://www.youtube.com/watch?v=${popular.trailer}`}
+                                                                            onClick={(e) => e.stopPropagation()}
+                                                                        >
+                                                                            <i className="fa-solid fa-play" />
                                                                         </a>
-                                                                        <ul className="list-unstyled share-box-social">
-                                                                            <li>
-                                                                                <a href="#">
-                                                                                    <i className="fab fa-facebook-f" />
-                                                                                </a>
-                                                                            </li>
-                                                                            <li>
-                                                                                <a href="#">
-                                                                                    <i className="fab fa-twitter" />
-                                                                                </a>
-                                                                            </li>
-                                                                            <li>
-                                                                                <a href="#">
-                                                                                    <i className="fab fa-linkedin" />
-                                                                                </a>
-                                                                            </li>
-                                                                            <li>
-                                                                                <a href="#">
-                                                                                    <i className="fab fa-instagram" />
-                                                                                </a>
-                                                                            </li>
-                                                                        </ul>
+                                                                        <h5>
+                                                                            <span className="title mt-0">
+                                                                                {popular.title}
+                                                                            </span>
+                                                                        </h5>
+                                                                    </div>
+                                                                    <div className="share-info">
+                                                                        <a href="javascript:void(0)" className="add-icon" onClick={(e) => e.preventDefault()} />
+                                                                        <div className="share-box">
+                                                                            <a href="#" onClick={(e) => e.preventDefault()}>
+                                                                                <i className="fas fa-share-alt" />
+                                                                            </a>
+                                                                            <ul className="list-unstyled share-box-social">
+                                                                                <li>
+                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
+                                                                                        <i className="fab fa-facebook-f" />
+                                                                                    </a>
+                                                                                </li>
+                                                                                <li>
+                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
+                                                                                        <i className="fab fa-twitter" />
+                                                                                    </a>
+                                                                                </li>
+                                                                                <li>
+                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
+                                                                                        <i className="fab fa-linkedin" />
+                                                                                    </a>
+                                                                                </li>
+                                                                                <li>
+                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
+                                                                                        <i className="fab fa-instagram" />
+                                                                                    </a>
+                                                                                </li>
+                                                                            </ul>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </Link>
                                         </div>
                                     ))}
 
@@ -1068,76 +1076,79 @@ export default function Home() {
                                 >
                                     {popularSeries.series.map((popular) => (
                                         <div className="item" key={popular.id}>
-                                            <div className="movies-categories br-20">
-                                                <div className="movies-img">
-                                                    <img
-                                                        className="img-fluid"
-                                                        src={`https://image.tmdb.org/t/p/w500${popular.poster_path}`}
-                                                        alt={popular.title}
-                                                    />
-                                                    <div className="info-top">
-                                                        <a className="tag" href="#">
-                                                            {popular.genre}
-                                                        </a>
-                                                        <div className="ms-auto">
-                                                            <a href="javascript:void(0)" className="like" />
-                                                            <a className="views" href="#">
-                                                                <i className="fa-solid fa-star" /> {popular.vote_average}
+                                            <Link to={`/series/details/${popular.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                                <div className="movies-categories br-20">
+                                                    <div className="movies-img">
+                                                        <img
+                                                            className="img-fluid"
+                                                            src={`https://image.tmdb.org/t/p/w500${popular.poster_path}`}
+                                                            alt={popular.title}
+                                                        />
+                                                        <div className="info-top">
+                                                            <a className="tag" href="#" onClick={(e) => e.preventDefault()}>
+                                                                {popular.genre}
                                                             </a>
+                                                            <div className="ms-auto">
+                                                                <a href="javascript:void(0)" className="like" onClick={(e) => e.preventDefault()} />
+                                                                <a className="views" href="#" onClick={(e) => e.preventDefault()}>
+                                                                    <i className="fa-solid fa-star" /> {popular.vote_average}
+                                                                </a>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div className="movies-info">
-                                                        <div className="content">
-                                                            <a className="time" href="#">SS {popular.seasons} <span className="dot"></span> EPS {popular.episodes}</a>
-                                                            <div className="info-content">
-                                                                <div className="movies-title">
-                                                                    <a
-                                                                        className="play-btn popup-youtube"
-                                                                        href={`https://www.youtube.com/watch?v=${popular.trailer}`}
-                                                                    >
-                                                                        <i className="fa-solid fa-play" />
-                                                                    </a>
-                                                                    <h6>
-                                                                        <Link className="title mt-0" to={`/series/details/${popular.id}`}>
-                                                                            {popular.name}
-                                                                        </Link>
-                                                                    </h6>
-                                                                </div>
-                                                                <div className="share-info">
-                                                                    <a href="javascript:void(0)" className="add-icon" />
-                                                                    <div className="share-box">
-                                                                        <a href="#">
-                                                                            <i className="fas fa-share-alt" />
+                                                        <div className="movies-info">
+                                                            <div className="content">
+                                                                <span className="time">SS {popular.seasons} <span className="dot"></span> EPS {popular.episodes}</span>
+                                                                <div className="info-content">
+                                                                    <div className="movies-title">
+                                                                        <a
+                                                                            className="play-btn popup-youtube"
+                                                                            href={`https://www.youtube.com/watch?v=${popular.trailer}`}
+                                                                            onClick={(e) => e.stopPropagation()}
+                                                                        >
+                                                                            <i className="fa-solid fa-play" />
                                                                         </a>
-                                                                        <ul className="list-unstyled share-box-social">
-                                                                            <li>
-                                                                                <a href="#">
-                                                                                    <i className="fab fa-facebook-f" />
-                                                                                </a>
-                                                                            </li>
-                                                                            <li>
-                                                                                <a href="#">
-                                                                                    <i className="fab fa-twitter" />
-                                                                                </a>
-                                                                            </li>
-                                                                            <li>
-                                                                                <a href="#">
-                                                                                    <i className="fab fa-linkedin" />
-                                                                                </a>
-                                                                            </li>
-                                                                            <li>
-                                                                                <a href="#">
-                                                                                    <i className="fab fa-instagram" />
-                                                                                </a>
-                                                                            </li>
-                                                                        </ul>
+                                                                        <h6>
+                                                                            <span className="title mt-0">
+                                                                                {popular.name}
+                                                                            </span>
+                                                                        </h6>
+                                                                    </div>
+                                                                    <div className="share-info">
+                                                                        <a href="javascript:void(0)" className="add-icon" onClick={(e) => e.preventDefault()} />
+                                                                        <div className="share-box">
+                                                                            <a href="#" onClick={(e) => e.preventDefault()}>
+                                                                                <i className="fas fa-share-alt" />
+                                                                            </a>
+                                                                            <ul className="list-unstyled share-box-social">
+                                                                                <li>
+                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
+                                                                                        <i className="fab fa-facebook-f" />
+                                                                                    </a>
+                                                                                </li>
+                                                                                <li>
+                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
+                                                                                        <i className="fab fa-twitter" />
+                                                                                    </a>
+                                                                                </li>
+                                                                                <li>
+                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
+                                                                                        <i className="fab fa-linkedin" />
+                                                                                    </a>
+                                                                                </li>
+                                                                                <li>
+                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
+                                                                                        <i className="fab fa-instagram" />
+                                                                                    </a>
+                                                                                </li>
+                                                                            </ul>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </Link>
                                         </div>
                                     ))}
 
