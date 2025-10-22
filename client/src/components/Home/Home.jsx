@@ -436,8 +436,9 @@ export default function Home() {
                                 <Link to="/genre?genre=Horror" className="categories-img">
                                     <img
                                         className="img-fluid"
-                                        src="images/poster.png"
+                                        src="images/genres/horror.jpg"
                                         alt="#"
+                                        style={{ opacity: 0.5, width: '300px', height: '400px' }}
                                     />
                                     <h3 className="title">
                                         Horror
@@ -466,8 +467,9 @@ export default function Home() {
                                 <Link to="/genre?genre=Action" className="categories-img">
                                     <img
                                         className="img-fluid"
-                                        src="images/movie/categories/02.jpg"
+                                        src="images/genres/action.png"
                                         alt="#"
+                                        style={{ opacity: 0.5, width: '300px', height: '400px' }}
                                     />
                                     <h3 className="title">
                                         Action
@@ -496,8 +498,9 @@ export default function Home() {
                                 <Link to="/genre?genre=Drama" className="categories-img">
                                     <img
                                         className="img-fluid"
-                                        src="images/movie/categories/03.jpg"
+                                        src="images/genres/drama.jpg"
                                         alt="#"
+                                        style={{ opacity: 0.5, width: '300px', height: '400px' }}
                                     />
                                     <h3 className="title">
                                         Drama
@@ -526,8 +529,9 @@ export default function Home() {
                                 <Link to="/genre?genre=Thriller" className="categories-img">
                                     <img
                                         className="img-fluid"
-                                        src="images/movie/categories/04.jpg"
+                                        src="images/genres/thriller.jpg"
                                         alt="#"
+                                        style={{ opacity: 0.5, width: '300px', height: '400px' }}
                                     />
                                     <h3 className="title">
                                         Thriller
@@ -556,8 +560,9 @@ export default function Home() {
                                 <Link to="/genre?genre=Adventure" className="categories-img">
                                     <img
                                         className="img-fluid"
-                                        src="images/movie/categories/03.jpg"
+                                        src="images/genres/adventure.jpg"
                                         alt="#"
+                                        style={{ opacity: 0.5, width: '300px', height: '400px' }}
                                     />
                                     <h3 className="title">
                                         Adventure
@@ -586,8 +591,9 @@ export default function Home() {
                                 <Link to="/genre?genre=Crime" className="categories-img">
                                     <img
                                         className="img-fluid"
-                                        src="images/movie/categories/03.jpg"
+                                        src="images/genres/crime.jpg"
                                         alt="#"
+                                        style={{ opacity: 0.5, width: '300px', height: '400px' }}
                                     />
                                     <h3 className="title">
                                         Crime
@@ -616,8 +622,9 @@ export default function Home() {
                                 <Link to="/genre?genre=Comedy" className="categories-img">
                                     <img
                                         className="img-fluid"
-                                        src="images/movie/categories/02.jpg"
+                                        src="images/genres/comedy.jpg"
                                         alt="#"
+                                        style={{ opacity: 0.5, width: '300px', height: '400px' }}
                                     />
                                     <h3 className="title">
                                         Comedy
@@ -646,8 +653,9 @@ export default function Home() {
                                 <Link to="/genre?genre=Romance" className="categories-img">
                                     <img
                                         className="img-fluid"
-                                        src="images/movie/categories/03.jpg"
+                                        src="images/genres/romance.jpg"
                                         alt="#"
+                                        style={{ opacity: 0.5, width: '300px', height: '400px' }}
                                     />
                                     <h3 className="title">
                                         Romance
@@ -676,8 +684,9 @@ export default function Home() {
                                 <Link to="/genre?genre=Fantasy" className="categories-img">
                                     <img
                                         className="img-fluid"
-                                        src="images/movie/categories/04.jpg"
+                                        src="images/genres/fantasy.jpg"
                                         alt="#"
+                                        style={{ opacity: 0.5, width: '300px', height: '400px' }}
                                     />
                                     <h3 className="title">
                                         Fantasy
@@ -706,8 +715,9 @@ export default function Home() {
                                 <Link to="/genre?genre=Science Fiction" className="categories-img">
                                     <img
                                         className="img-fluid"
-                                        src="images/movie/categories/03.jpg"
+                                        src="images/genres/sci-fi.jpg"
                                         alt="#"
+                                        style={{ opacity: 0.5 }}
                                     />
                                     <h3 className="title">
                                         Sci-Fi
@@ -916,12 +926,24 @@ export default function Home() {
                                             key={series.id}
                                             className="swiper-slide bg-holder"
                                             style={{
-                                                backgroundImage: `url(https://image.tmdb.org/t/p/original${series.backdrop_path})`,
-                                                backgroundPosition: 'center -30px',
-                                                backgroundSize: 'cover'
+                                                position: 'relative'
                                             }}
                                         >
-                                            <div className="container">
+                                            <div 
+                                                style={{
+                                                    position: 'absolute',
+                                                    top: 0,
+                                                    left: 0,
+                                                    width: '100%',
+                                                    height: '100%',
+                                                    backgroundImage: `url(https://image.tmdb.org/t/p/original${series.backdrop_path})`,
+                                                    backgroundPosition: 'center -30px',
+                                                    backgroundSize: 'cover',
+                                                    opacity: 0.4,
+                                                    zIndex: 1
+                                                }}
+                                            />
+                                            <div className="container" style={{ position: 'relative', zIndex: 2 }}>
                                                 <div className="row">
                                                     <div className="col-xxl-6 col-xl-7 col-md-10 col-sm-10 order-sm-1 order-2">
                                                         <div className="movie-details">
@@ -1021,6 +1043,7 @@ export default function Home() {
                                                             className="img-fluid"
                                                             src={`https://image.tmdb.org/t/p/w500${series.backdrop_path}`}
                                                             alt={series.name}
+                                                            // style={{ opacity: 0.5 }}
                                                         />
                                                         <div className="info-top">
                                                             <div className="ms-auto">
