@@ -200,8 +200,11 @@ export default function MovieDetails() {
                                                 <div className="author-img">
                                                     <img
                                                         className="crew img-fluid"
-                                                        src={`https://image.tmdb.org/t/p/w138_and_h175_face${crew.profilePath}`}
+                                                        src={crew.profilePath 
+                                                            ? `https://image.tmdb.org/t/p/w138_and_h175_face${crew.profilePath}` 
+                                                            : '/images/no-image.jpg'}
                                                         alt={crew.name}
+                                                        onError={(e) => { e.target.src = '/images/no-image.jpg'; }}
                                                     />
                                                 </div>
                                                 <div className="author-details">
@@ -215,14 +218,17 @@ export default function MovieDetails() {
                                 <h6 className="author-title">Cast</h6>
                                 <div className="row">
                                     {movie.movies.cast &&
-                                        movie.movies.cast.filter(actor => actor.profilePath).slice(0, 9).map((actor) => (
+                                        movie.movies.cast.slice(0, 9).map((actor) => (
                                             <div className="col-md-4" key={actor.id}>
                                                 <a href="#" className="movie-author">
                                                     <div className="author-img">
                                                         <img
                                                             className="actor img-fluid"
-                                                            src={`https://media.themoviedb.org/t/p/w138_and_h175_face${actor.profilePath}`}
+                                                            src={actor.profilePath 
+                                                                ? `https://media.themoviedb.org/t/p/w138_and_h175_face${actor.profilePath}` 
+                                                                : '/images/no-image.jpg'}
                                                             alt={actor.name}
+                                                            onError={(e) => { e.target.src = '/images/no-image.jpg'; }}
                                                         />
                                                     </div>
                                                     <div className="author-details">
