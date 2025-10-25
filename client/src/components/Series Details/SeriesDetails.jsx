@@ -255,7 +255,14 @@ export default function SeriesDetails() {
                                                 <div className="item">
                                                     <div className="episode-item">
                                                         <a href="#" className="popup-youtube tv-episode">
-                                                            <img className="img-fluid" src={`https://image.tmdb.org/t/p/w500${season.poster_path}`} alt="#" />
+                                                            <img 
+                                                                className="img-fluid" 
+                                                                src={season.poster_path 
+                                                                    ? `https://image.tmdb.org/t/p/w500${season.poster_path}` 
+                                                                    : '/images/no-image-seasons.png'} 
+                                                                alt="#" 
+                                                                onError={(e) => { e.target.src = '/images/no-image-seasons.png'; }}
+                                                            />
                                                             <div className="episode-info">
                                                                 <span className="play-btn"><i className="fa-solid fa-play" /></span>
                                                                 <h6 className="title">
@@ -305,7 +312,14 @@ export default function SeriesDetails() {
                                             <div className="item" key={episode.episode_number}>
                                                 <div className="episode-item">
                                                     <a href={`https://vidsrc.net/embed/tv?tmdb=${series.series.api_id}&season=${selectedSeason}&episode=${episode.episode_number}`} className="play-btn-episodes popup-youtube"><i className="fa-solid fa-play" /></a>
-                                                    <img className="img-fluid" src={`https://image.tmdb.org/t/p/w500${episode.still_path}`} alt="#" />
+                                                    <img 
+                                                        className="img-fluid" 
+                                                        src={episode.still_path 
+                                                            ? `https://image.tmdb.org/t/p/w500${episode.still_path}` 
+                                                            : '/images/no-image-episodes.png'} 
+                                                        alt="#" 
+                                                        onError={(e) => { e.target.src = '/images/no-image-episodes.png'; }}
+                                                    />
                                                     <div className="episode-info">
                                                         <h6 className="title">
                                                             {episode.episode_number}. {episode.name}
