@@ -1277,6 +1277,7 @@ input[type="search"]::-webkit-search-cancel-button:hover {
     text-align: center;
     border: 1px solid #f6be00;
     border-top-left-radius: 50px;
+    touch-action: manipulation;
     border-bottom-left-radius: 50px;
     padding: 0 30px;
     outline: none;
