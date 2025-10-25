@@ -35,34 +35,17 @@ const Header = ({ onSearchOpen }) => {
                         <Link className="navbar-brand" to="/"><img className="img-fluid" src="/images/logo.png" alt="logo" /></Link>
                         <div className="navbar-collapse collapse justify-content-end justify-content-lg-center">
                             <ul className="nav navbar-nav">
-                                <li className="nav-item dropdown">
-                                    <a className="nav-link" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Home<i className="fas fa-chevron-down fa-xs"></i></a>
-                                    <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
-                                        <li><Link className="dropdown-item" to="/"><span>Home</span></Link></li>
-                                        <li><Link className="dropdown-item" to="/most-popular"><span>Most Popular</span></Link></li>
-                                        <li><Link className="dropdown-item" to="/landing-page"><span>Landing Page</span></Link></li>
-                                    </ul>
+                                <li className="nav-item dropdwn">
+                                    <Link className="nav-link" to="/"><span>Home</span></Link>
                                 </li>
-                                <li className="nav-item dropdown">
-                                    <a className="nav-link" href="javascript:void(0)" data-bs-toggle="dropdown">Movie<i className="fas fa-chevron-down fa-xs"></i></a>
-                                    <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
-                                        <li><Link className="dropdown-item" to="/movies"><span>Movie</span></Link></li>
-                                        <li><Link className="dropdown-item" to="/movie-details"><span>Movie Single</span></Link></li>
-                                    </ul>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/most-popular"><span>Most Popular</span></Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/movies"><span>Movies</span></Link>
                                 </li>
                                 <li className=" nav-item dropdown">
-                                    <a className="nav-link" href="javascript:void(0)" data-bs-toggle="dropdown">Series<i className="fas fa-chevron-down fa-xs"></i></a>
-                                    <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
-                                        <li><Link className="dropdown-item" to="/series"><span>Series</span></Link></li>
-                                        <li><Link className="dropdown-item" to="/series-details"><span>Series Single</span></Link></li>
-                                    </ul>
-                                </li>
-                                <li className="nav-item dropdown">
-                                    <a className="nav-link" href="javascript:void(0)" data-bs-toggle="dropdown">Web Series<i className="fas fa-chevron-down fa-xs"></i></a>
-                                    <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
-                                        <li><Link className="dropdown-item" to="/web-series"><span>Web Series</span></Link></li>
-                                        <li><Link className="dropdown-item" to="/web-series-single"><span>Web Series Single</span></Link></li>
-                                    </ul>
+                                    <Link className="nav-link" to="/series"><span>Series</span></Link>
                                 </li>
                                 <li className="dropdown nav-item mega-menu ">
                                     <a className="nav-link" href="javascript:void(0)" data-bs-toggle="dropdown">Pages<i className="fas fa-chevron-down fa-xs"></i></a>
@@ -73,10 +56,7 @@ const Header = ({ onSearchOpen }) => {
                                                     <span className="nav-title">Pages</span>
                                                     <ul className="list-unstyled">
                                                         <li><Link className="dropdown-item" to="/about"><span>About us</span></Link></li>
-                                                        <li><Link className="dropdown-item" to="/faqs"><span>Faqs</span></Link></li>
                                                         <li><Link className="dropdown-item" to="/pricing"><span>Pricing</span></Link></li>
-                                                        <li><Link className="dropdown-item" to="/blog"><span>Blog</span></Link></li>
-                                                        <li><Link className="dropdown-item" to="/blog-single"><span>Blog Single</span></Link></li>
                                                         <li><Link className="dropdown-item" to="/contact"><span>Contact us</span></Link></li>
                                                     </ul>
                                                 </div>
@@ -85,8 +65,6 @@ const Header = ({ onSearchOpen }) => {
                                                     <ul className="list-unstyled">
                                                         <li><Link className="dropdown-item" to="/login-register"><span>Login</span></Link></li>
                                                         <li><Link className="dropdown-submenu" to="/account"><span>My Account</span></Link></li>
-                                                        <li><Link className="dropdown-submenu" to="/coming-soon"><span>Coming Soon</span></Link></li>
-                                                        <li><Link className="dropdown-submenu" to="/error"><span>Error 404</span></Link></li>
                                                         <li><Link className="dropdown-submenu" to="/privacy-policy"><span>Privacy Policy</span></Link></li>
                                                         <li><Link className="dropdown-submenu" to="/terms-and-conditions"><span>T&C</span></Link></li>
                                                     </ul>
