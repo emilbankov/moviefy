@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 
 import Header from './components/Header/Header';
 import Search from './components/Search/Search';
@@ -35,10 +35,10 @@ function AppContent() {
             <Search isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
 
             {loading && (
-                <div style={{ 
-                    flex: 1, 
-                    display: 'flex', 
-                    alignItems: 'center', 
+                <div style={{
+                    flex: 1,
+                    display: 'flex',
+                    alignItems: 'center',
                     justifyContent: 'center',
                     backgroundColor: '#0a0a0a',
                     minHeight: 'calc(100vh - 200px)'
@@ -65,6 +65,9 @@ function AppContent() {
                     <Route path='/terms-and-conditions' element={<TermsConditions />} />
                     <Route path='/search' element={<SearchResults />} />
                     <Route path='/genre' element={<GenreResults />} />
+
+                    <Route path="/404" element={<Navigate to="*" replace />} />
+                    <Route path="*" element={<Error />} />
                 </Routes>
             </div>
 
