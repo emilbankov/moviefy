@@ -316,7 +316,7 @@ export default function Home() {
                             </div>
                             <div className="col-md-12">
                                 <div
-                                    className="owl-carousel owl-nav-center"
+                                    className="owl-carousel owl-nav-center peek-effect"
                                     data-nav-dots="false"
                                     data-nav-arrow="true"
                                     data-items={5}
@@ -325,8 +325,9 @@ export default function Home() {
                                     data-md-items={3}
                                     data-sm-items={2}
                                     data-xs-items={3}
-                                    data-xx-items={2.5}
+                                    data-xx-items={2}
                                     data-space={30}
+                                    data-stage-padding={50}
                                     data-autoheight="true"
                                     data-autoplay="false"
                                     data-loop="false"
@@ -759,7 +760,7 @@ export default function Home() {
                             </div>
                             <div className="col-md-12">
                                 <div
-                                    className="owl-carousel owl-nav-center"
+                                    className="owl-carousel owl-nav-center peek-effect"
                                     data-nav-dots="false"
                                     data-nav-arrow="true"
                                     data-items={5}
@@ -768,8 +769,9 @@ export default function Home() {
                                     data-md-items={3}
                                     data-sm-items={2}
                                     data-xs-items={3}
-                                    data-xx-items={2.5}
+                                    data-xx-items={2}
                                     data-space={30}
+                                    data-stage-padding={50}
                                     data-autoheight="true"
                                     data-autoplay="false"
                                     data-loop="false"
@@ -1139,7 +1141,7 @@ export default function Home() {
                             </div>
                             <div className="col-md-12">
                                 <div
-                                    className="owl-carousel owl-nav-center"
+                                    className="owl-carousel owl-nav-center peek-effect"
                                     data-nav-dots="false"
                                     data-nav-arrow="true"
                                     data-items={5}
@@ -1148,8 +1150,9 @@ export default function Home() {
                                     data-md-items={3}
                                     data-sm-items={2}
                                     data-xs-items={3}
-                                    data-xx-items={2.5}
+                                    data-xx-items={2}
                                     data-space={30}
+                                    data-stage-padding={50}
                                     data-autoheight="true"
                                     data-autoplay="false"
                                     data-loop="false"

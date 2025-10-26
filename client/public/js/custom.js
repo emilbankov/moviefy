@@ -144,6 +144,7 @@ NOTE: This file contains all scripts for the actual Template.
                     $smartspeed = ($this.attr('data-smartspeed')) ? $this.data('smartspeed') : 1000,
                     $autohgt = ($this.data('autoheight')) ? $this.data('autoheight') : false,
                     $space = ($this.attr('data-space')) ? $this.data('space') : 30,
+                    $stagePadding = ($this.attr('data-stage-padding')) ? $this.data('stage-padding') : 0,
                     $animateOut = ($this.attr('data-animateOut')) ? $this.data('animateOut') : false;
                 $(this).owlCarousel({
                     loop: $loop,
@@ -174,6 +175,7 @@ NOTE: This file contains all scripts for the actual Template.
                     },
                     dots: $navdots,
                     autoplayTimeout: $autospeed,
+                    stagePadding: $stagePadding,
                     smartSpeed: $smartspeed,
                     autoHeight: $autohgt,
                     margin: $space,
@@ -185,6 +187,79 @@ NOTE: This file contains all scripts for the actual Template.
             });
         }
     }
+
+    // helper to read translateX from transform string (matrix or matrix3d)
+    function parseTranslateX(transform) {
+        if (!transform || transform === 'none') return 0;
+        const m = transform.match(/matrix(3d)?\((.+)\)/);
+        if (!m) return 0;
+        const vals = m[2].split(',').map(s => parseFloat(s.trim()));
+        return (m[1] === '3d') ? (vals[12] || 0) : (vals[4] || 0);
+    }
+
+    function clampPeekCarousels() {
+        $('.owl-carousel.peek-effect').each(function () {
+            const $carousel = $(this);
+            const $stage = $carousel.find('.owl-stage');
+            const $outer = $carousel.find('.owl-stage-outer');
+            if (!$stage.length || !$outer.length) return;
+
+            // real widths
+            const stageContentWidth = $stage[0].scrollWidth || $stage.outerWidth(true);
+            const outerWidth = $outer[0].getBoundingClientRect().width;
+
+            // data-stage-padding (numeric)
+            const padding = parseInt($carousel.data('stage-padding') || 0, 10) || 0;
+
+            // If you used .owl-carousel.peek-effect .owl-stage-outer { margin-left: -50px; }
+            // read that margin so we compensate. This should be the absolute value.
+            const outerStyleMarginLeft = parseInt($outer.css('margin-left')) || 0;
+            const leftOffset = Math.abs(outerStyleMarginLeft); // e.g. 50
+
+            // compute max negative translate allowed
+            // explanation: stageContentWidth - outerWidth = how much content can be scrolled
+            // Owl adds padding on both sides, so add `padding`. Since we've visually shifted left
+            // by `leftOffset`, subtract it so the allowed translate is further right.
+            let maxTranslate = -(stageContentWidth - outerWidth - 80);
+            // if content fits, no negative translate needed
+            if (stageContentWidth <= outerWidth) maxTranslate = 0;
+
+            // read current transform
+            const currentTransform = window.getComputedStyle($stage[0]).transform;
+            const tx = parseTranslateX(currentTransform);
+
+            // small rounding safety
+            const txRounded = Math.round(tx);
+            const maxRounded = Math.round(maxTranslate);
+
+            // clamp: if current is more negative (smaller) than allowed, set to allowed
+            if (txRounded < maxRounded) {
+                $stage.css('transform', `translate3d(${maxRounded}px, 0px, 0px)`);
+            }
+
+            // also ensure we don't drift positively past 0
+            if (txRounded > 0) {
+                $stage.css('transform', 'translate3d(0px, 0px, 0px)');
+            }
+        });
+    }
+
+    // run after init + on translate/resized (cover all moves)
+    $(document).ready(function () {
+        // slight delay to ensure owl has initialized
+        setTimeout(clampPeekCarousels, 50);
+
+        $('.owl-carousel.peek-effect')
+            .on('initialized.owl.carousel translated.owl.carousel refreshed.owl.carousel resized.owl.carousel', function () {
+                clampPeekCarousels();
+            });
+
+        // also on window resize (just in case)
+        $(window).on('resize', function () {
+            clampPeekCarousels();
+        });
+    });
+
 
     // Magnific Popup
     POTENZA.mediaPopups = function () {

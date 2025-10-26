@@ -5366,6 +5366,15 @@ button {
     right: 290px;
 }
 
+/* Custom: Stage padding compensation for peek effect - use class "peek-effect" on carousel */
+.owl-carousel.peek-effect {
+    overflow: hidden;
+}
+
+.owl-carousel.peek-effect .owl-stage-outer {
+    margin-left: -50px;
+}
+
 @media (max-width: 1600px) {
     .owl-carousel.owl-nav-center.arrow-center .owl-nav button {
         font-size: 30px;
@@ -8648,124 +8657,139 @@ button {
 }
 
 #search .close:hover {
-  color: #ffb321;
+    color: #ffb321;
 }
+
 #search .close i {
-  color: #fff;
+    color: #fff;
 }
+
 #search .search-results {
-  display: flex;
-  flex-direction: column;
-  max-height: 350px; 
-  overflow: hidden; 
-  border-radius: 0 0 50px 50px; 
+    display: flex;
+    flex-direction: column;
+    max-height: 350px;
+    overflow: hidden;
+    border-radius: 0 0 50px 50px;
 }
 
 #search .results-list {
-  flex: 1; 
-  overflow-y: scroll; 
-  overflow-x: hidden; 
-  padding: 0 15px; 
-  padding-bottom: 10px; 
+    flex: 1;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding: 0 15px;
+    padding-bottom: 10px;
 }
 
 #search .results-list::-webkit-scrollbar {
-  display: none; 
+    display: none;
 }
 
 #search .results-list {
-  scrollbar-width: none; 
+    scrollbar-width: none;
 }
 
 #search .search-result-item {
-  cursor: pointer;
-  padding: 10px 0; 
+    cursor: pointer;
+    padding: 10px 0;
 }
 
 #search .search-result-item:last-child {
-  border-bottom: none;
+    border-bottom: none;
 }
+
 #search .search-result-item:hover {
-  background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgba(255, 255, 255, 0.05);
 }
+
 #search .search-result-item .poster {
-  flex-shrink: 0;
-  width: 50px;
-  margin-right: 15px;
+    flex-shrink: 0;
+    width: 50px;
+    margin-right: 15px;
 }
+
 #search .search-result-item .poster img {
-  display: block;
-  width: 100%;
-  border-radius: 4px;
+    display: block;
+    width: 100%;
+    border-radius: 4px;
 }
+
 #search .search-result-item .content {
-  flex-grow: 1;
+    flex-grow: 1;
 }
+
 #search .search-result-item h3 {
-  font-size: 1rem;
-  margin-bottom: 5px;
+    font-size: 1rem;
+    margin-bottom: 5px;
 }
+
 #search .search-result-item p {
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.7);
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.7);
 }
+
 #search .search-result-item p .rating {
-  color: #ffc107;
+    color: #ffc107;
 }
+
 #search .search-result-item p .rating i {
-  margin-right: 5px;
+    margin-right: 5px;
 }
+
 #search .btn:after {
-  background-color: #ffc107;
+    background-color: #ffc107;
 }
+
 #search .close {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  font-size: 1.5rem;
-  color: #fff;
-  background: none;
-  border: none;
-  cursor: pointer;
-  z-index: 10;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 1.5rem;
+    color: #fff;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 10;
 }
+
 #search .close:hover {
-  color: #ffb321;
+    color: #ffb321;
 }
+
 #search .close i {
-  color: #fff;
+    color: #fff;
 }
 
 #search input[type="search"].has-results {
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
 }
 
 #search .button-has-results {
-  border-bottom-right-radius: 0;
+    border-bottom-right-radius: 0;
 }
 
 #search .search-results::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
 }
+
 #search .search-results::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 10px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
 }
 
 #search .view-all-results {
-  flex-shrink: 0; 
-  text-align: center; 
+    flex-shrink: 0;
+    text-align: center;
 }
 
 #search .view-all-results-btn {
-  padding: 12px 25px;
-  font-size: 1rem;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
+    padding: 12px 25px;
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 /* Add responsive styles */
