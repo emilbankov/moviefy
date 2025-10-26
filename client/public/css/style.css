@@ -5379,13 +5379,14 @@ button {
 /* Mobile: 50% width (2 cards per row) - NO Pinterest effect */
 @media (max-width: 575px) {
     section .genre-responsive .col-lg-3 {
-        width: 50%;
-        max-width: 50%;
-        flex: 0 0 50%;
-        margin-bottom: 30px;
+        width: 50% !important;
+        max-width: 50% !important;
+        flex: 0 0 50% !important;
+        margin-bottom: 30px !important;
     }
     
-    /* Remove staggering, but keep consistent vertical spacing */
+    /* Disable ALL margin-top classes (mt-4, mt-md-4, etc.) */
+    section .genre-responsive .col-lg-3,
     section .genre-responsive .movies-categories-iteam {
         margin-top: 0 !important;
     }
@@ -5394,13 +5395,14 @@ button {
 /* Small tablets: 33.33% width (3 cards per row) - NO Pinterest effect */
 @media (min-width: 576px) and (max-width: 767px) {
     section .genre-responsive .col-lg-3 {
-        width: 33.333%;
-        max-width: 33.333%;
-        flex: 0 0 33.333%;
-        margin-bottom: 30px;
+        width: 33.333% !important;
+        max-width: 33.333% !important;
+        flex: 0 0 33.333% !important;
+        margin-bottom: 30px !important;
     }
     
-    /* Remove staggering, but keep consistent vertical spacing */
+    /* Disable ALL margin-top classes (mt-4, mt-md-4, etc.) */
+    section .genre-responsive .col-lg-3,
     section .genre-responsive .movies-categories-iteam {
         margin-top: 0 !important;
     }
@@ -5409,13 +5411,14 @@ button {
 /* Medium: 25% width (4 cards per row) - NO Pinterest effect */
 @media (min-width: 768px) and (max-width: 1199px) {
     section .genre-responsive .col-lg-3 {
-        width: 25%;
-        max-width: 25%;
-        flex: 0 0 25%;
-        margin-bottom: 30px;
+        width: 25% !important;
+        max-width: 25% !important;
+        flex: 0 0 25% !important;
+        margin-bottom: 30px !important;
     }
     
-    /* Remove staggering, but keep consistent vertical spacing */
+    /* Disable ALL margin-top classes (mt-4, mt-md-4, etc.) */
+    section .genre-responsive .col-lg-3,
     section .genre-responsive .movies-categories-iteam {
         margin-top: 0 !important;
     }
@@ -5429,7 +5432,7 @@ button {
         flex: 0 0 20%;
     }
     
-    /* Pinterest effect stays on large screens only */
+    /* Pinterest effect stays on large screens only - mt-4, mt-md-4 classes work here */
 }
 
 @media (max-width: 1600px) {
