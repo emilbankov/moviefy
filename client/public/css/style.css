@@ -5375,6 +5375,63 @@ button {
     margin-left: -50px;
 }
 
+/* Custom: Responsive genre cards - override Bootstrap column widths */
+/* Mobile: 50% width (2 cards per row) - NO Pinterest effect */
+@media (max-width: 575px) {
+    section .genre-responsive .col-lg-3 {
+        width: 50%;
+        max-width: 50%;
+        flex: 0 0 50%;
+        margin-bottom: 30px;
+    }
+    
+    /* Remove staggering, but keep consistent vertical spacing */
+    section .genre-responsive .movies-categories-iteam {
+        margin-top: 0 !important;
+    }
+}
+
+/* Small tablets: 33.33% width (3 cards per row) - NO Pinterest effect */
+@media (min-width: 576px) and (max-width: 767px) {
+    section .genre-responsive .col-lg-3 {
+        width: 33.333%;
+        max-width: 33.333%;
+        flex: 0 0 33.333%;
+        margin-bottom: 30px;
+    }
+    
+    /* Remove staggering, but keep consistent vertical spacing */
+    section .genre-responsive .movies-categories-iteam {
+        margin-top: 0 !important;
+    }
+}
+
+/* Medium: 25% width (4 cards per row) - NO Pinterest effect */
+@media (min-width: 768px) and (max-width: 1199px) {
+    section .genre-responsive .col-lg-3 {
+        width: 25%;
+        max-width: 25%;
+        flex: 0 0 25%;
+        margin-bottom: 30px;
+    }
+    
+    /* Remove staggering, but keep consistent vertical spacing */
+    section .genre-responsive .movies-categories-iteam {
+        margin-top: 0 !important;
+    }
+}
+
+/* Large: 20% width (5 cards per row) - Keep Pinterest effect */
+@media (min-width: 1200px) {
+    section .genre-responsive .col-lg-3 {
+        width: 20%;
+        max-width: 20%;
+        flex: 0 0 20%;
+    }
+    
+    /* Pinterest effect stays on large screens only */
+}
+
 @media (max-width: 1600px) {
     .owl-carousel.owl-nav-center.arrow-center .owl-nav button {
         font-size: 30px;

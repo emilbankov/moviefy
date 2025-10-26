@@ -46,7 +46,7 @@ export default function Home() {
                 setLatestSeries(latestSeriesData);
                 setPopularSeries(popularSeriesData);
                 console.log(latestSeriesData);
-                
+
             })
             .catch(err => {
                 console.error("Error fetching data:", err);
@@ -55,7 +55,7 @@ export default function Home() {
                 setLoading(false);
             });
     }, [setLoading]);
-    
+
     // useEffect(() => {
     //     const existingScript = document.querySelector('script[src="/js/custom.js"]');
     //     if (existingScript) {
@@ -343,9 +343,9 @@ export default function Home() {
                                                             alt={trending.title}
                                                         />
                                                         <div className="info-top">
-                                                            <Link 
+                                                            <Link
                                                                 to={`/genre?genre=${getGenreParam(trending.genre)}&media=movies`}
-                                                                className="tag" 
+                                                                className="tag"
                                                                 onClick={(e) => e.stopPropagation()}
                                                             >
                                                                 {trending.genre}
@@ -432,7 +432,7 @@ export default function Home() {
                             </div>
                         </div>
                     </div>
-                    <div className="row">
+                    <div className="row genre-responsive">
                         <div className="col-lg-3 col-md-6">
                             <div className="movies-categories-iteam">
                                 <Link to="/genre?genre=Horror" className="categories-img">
@@ -440,7 +440,7 @@ export default function Home() {
                                         className="img-fluid"
                                         src="images/genres/horror.jpg"
                                         alt="#"
-                                        style={{ opacity: 0.5, width: '300px', height: '400px' }}
+                                        style={{ opacity: 0.5 }}
                                     />
                                     <h3 className="title">
                                         Horror
@@ -465,13 +465,13 @@ export default function Home() {
                             </div>
                         </div>
                         <div className="col-lg-3 col-md-6">
-                            <div className="movies-categories-iteam mt-4 mt-sm-0 mt-md-4">
+                            <div className="movies-categories-iteam mt-sm-0 mt-md-4">
                                 <Link to="/genre?genre=Action" className="categories-img">
                                     <img
                                         className="img-fluid"
                                         src="images/genres/action.png"
                                         alt="#"
-                                        style={{ opacity: 0.5, width: '300px', height: '400px' }}
+                                        style={{ opacity: 0.5 }}
                                     />
                                     <h3 className="title">
                                         Action
@@ -502,7 +502,7 @@ export default function Home() {
                                         className="img-fluid"
                                         src="images/genres/drama.jpg"
                                         alt="#"
-                                        style={{ opacity: 0.5, width: '300px', height: '400px' }}
+                                        style={{ opacity: 0.5 }}
                                     />
                                     <h3 className="title">
                                         Drama
@@ -533,7 +533,7 @@ export default function Home() {
                                         className="img-fluid"
                                         src="images/genres/thriller.jpg"
                                         alt="#"
-                                        style={{ opacity: 0.5, width: '300px', height: '400px' }}
+                                        style={{ opacity: 0.5 }}
                                     />
                                     <h3 className="title">
                                         Thriller
@@ -564,7 +564,7 @@ export default function Home() {
                                         className="img-fluid"
                                         src="images/genres/adventure.jpg"
                                         alt="#"
-                                        style={{ opacity: 0.5, width: '300px', height: '400px' }}
+                                        style={{ opacity: 0.5 }}
                                     />
                                     <h3 className="title">
                                         Adventure
@@ -595,7 +595,7 @@ export default function Home() {
                                         className="img-fluid"
                                         src="images/genres/crime.jpg"
                                         alt="#"
-                                        style={{ opacity: 0.5, width: '300px', height: '400px' }}
+                                        style={{ opacity: 0.5 }}
                                     />
                                     <h3 className="title">
                                         Crime
@@ -626,7 +626,7 @@ export default function Home() {
                                         className="img-fluid"
                                         src="images/genres/comedy.jpg"
                                         alt="#"
-                                        style={{ opacity: 0.5, width: '300px', height: '400px' }}
+                                        style={{ opacity: 0.5 }}
                                     />
                                     <h3 className="title">
                                         Comedy
@@ -657,7 +657,7 @@ export default function Home() {
                                         className="img-fluid"
                                         src="images/genres/romance.jpg"
                                         alt="#"
-                                        style={{ opacity: 0.5, width: '300px', height: '400px' }}
+                                        style={{ opacity: 0.5 }}
                                     />
                                     <h3 className="title">
                                         Romance
@@ -688,7 +688,7 @@ export default function Home() {
                                         className="img-fluid"
                                         src="images/genres/fantasy.jpg"
                                         alt="#"
-                                        style={{ opacity: 0.5, width: '300px', height: '400px' }}
+                                        style={{ opacity: 0.5 }}
                                     />
                                     <h3 className="title">
                                         Fantasy
@@ -787,9 +787,9 @@ export default function Home() {
                                                             alt={popular.title}
                                                         />
                                                         <div className="info-top">
-                                                            <Link 
+                                                            <Link
                                                                 to={`/genre?genre=${getGenreParam(popular.genre)}&media=movies`}
-                                                                className="tag" 
+                                                                className="tag"
                                                                 onClick={(e) => e.stopPropagation()}
                                                             >
                                                                 {popular.genre}
@@ -933,7 +933,7 @@ export default function Home() {
                                                 position: 'relative'
                                             }}
                                         >
-                                            <div 
+                                            <div
                                                 style={{
                                                     position: 'absolute',
                                                     top: 0,
@@ -1047,7 +1047,7 @@ export default function Home() {
                                                             className="img-fluid"
                                                             src={`https://image.tmdb.org/t/p/w500${series.backdrop_path}`}
                                                             alt={series.name}
-                                                            // style={{ opacity: 0.5 }}
+                                                        // style={{ opacity: 0.5 }}
                                                         />
                                                         <div className="info-top">
                                                             <div className="ms-auto">
@@ -1168,9 +1168,9 @@ export default function Home() {
                                                             alt={popular.title}
                                                         />
                                                         <div className="info-top">
-                                                            <Link 
+                                                            <Link
                                                                 to={`/genre?genre=${getGenreParam(popular.genre)}&media=series`}
-                                                                className="tag" 
+                                                                className="tag"
                                                                 onClick={(e) => e.stopPropagation()}
                                                             >
                                                                 {popular.genre}
