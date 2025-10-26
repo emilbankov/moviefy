@@ -5435,6 +5435,35 @@ button {
     /* Pinterest effect stays on large screens only - mt-4, mt-md-4 classes work here */
 }
 
+/* Custom: Make Latest Movies & Newest Series show 3 items on mobile */
+@media (max-width: 575px) {
+    .col-xl-2.col-lg-4.col-md-6.col-sm-6.col-6 {
+        width: 33.333% !important;
+        max-width: 33.333% !important;
+        flex: 0 0 33.333% !important;
+    }
+    
+    /* Truncate movie/series titles on mobile */
+    .col-xl-2.col-lg-4.col-md-6.col-sm-6.col-6 .title {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 100%;
+    }
+    
+    /* Remove left and right margin from time element */
+    .col-xl-2.col-lg-4.col-md-6.col-sm-6.col-6 .time {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    
+    /* Make movie-info flex column on mobile */
+    .col-xl-2.col-lg-4.col-md-6.col-sm-6.col-6 .movie-info.smaller-text {
+        flex-direction: column !important;
+    }
+}
+
 @media (max-width: 1600px) {
     .owl-carousel.owl-nav-center.arrow-center .owl-nav button {
         font-size: 30px;
