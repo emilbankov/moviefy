@@ -262,7 +262,7 @@ export default function Home() {
                     </div>
                     <div className="row">
                         {latestMovies.movies && latestMovies.movies.map(latest => (
-                            <div key={latest.id} className="col-xl-2 col-lg-4 col-md-6 col-sm-6 mb-4">
+                            <div key={latest.id} className="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-6 mb-4">
                                 <Link to={`/movie/details/${latest.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                                     <div className="movies-categories-style-3">
                                         <div className="movie-image">
@@ -324,7 +324,8 @@ export default function Home() {
                                     data-lg-items={5}
                                     data-md-items={3}
                                     data-sm-items={2}
-                                    data-xs-items={1}
+                                    data-xs-items={3}
+                                    data-xx-items={2.5}
                                     data-space={30}
                                     data-autoheight="true"
                                     data-autoplay="false"
@@ -766,7 +767,8 @@ export default function Home() {
                                     data-lg-items={5}
                                     data-md-items={3}
                                     data-sm-items={2}
-                                    data-xs-items={1}
+                                    data-xs-items={3}
+                                    data-xx-items={2.5}
                                     data-space={30}
                                     data-autoheight="true"
                                     data-autoplay="false"
@@ -877,7 +879,7 @@ export default function Home() {
                     </div>
                     <div className="row">
                         {popularCollections.collections && popularCollections.collections.map((collection, index) => (
-                            <div className="col-xl-2-3 col-lg-4 col-md-6 col-sm-6 mb-4" key={index}>
+                            <div className="col-xl-2-3 col-lg-4 col-md-6 col-sm-6 col-6 mb-4" key={index}>
                                 <Link to={`/movie/details/${collection.first_movie_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                                     <div className="movies-categories-style-2">
                                         <div className="movie-image">
@@ -1086,7 +1088,7 @@ export default function Home() {
                     </div>
                     <div className="row">
                         {latestSeries.series && latestSeries.series.map(latest => (
-                            <div key={latest.id} className="col-xl-2 col-lg-4 col-md-6 col-sm-6 mb-4">
+                            <div key={latest.id} className="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-6 mb-4">
                                 <Link to={`/series/details/${latest.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                                     <div className="movies-categories-style-3">
                                         <div className="movie-image">
@@ -1145,7 +1147,8 @@ export default function Home() {
                                     data-lg-items={5}
                                     data-md-items={3}
                                     data-sm-items={2}
-                                    data-xs-items={1}
+                                    data-xs-items={3}
+                                    data-xx-items={2.5}
                                     data-space={30}
                                     data-autoheight="true"
                                     data-autoplay="false"
