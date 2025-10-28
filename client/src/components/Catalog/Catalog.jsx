@@ -39,89 +39,218 @@ export default function Catalog() {
         fetchMovies();
     }, [activeTab, setLoading]);
 
-    return (
-        <div className="container mt-5">
-            <h2 className="mb-4">Movie Catalog</h2>
-            
-            {/* Tab Navigation */}
-            <div className="catalog-tabs mb-4">
-                <ul className="nav nav-tabs" role="tablist">
-                    <li className="nav-item" role="presentation">
-                        <button 
-                            className={`nav-link ${activeTab === 'latest' ? 'active' : ''}`}
-                            onClick={() => setActiveTab('latest')}
-                        >
-                            Latest Movies
-                        </button>
-                    </li>
-                    <li className="nav-item" role="presentation">
-                        <button 
-                            className={`nav-link ${activeTab === 'popular' ? 'active' : ''}`}
-                            onClick={() => setActiveTab('popular')}
-                        >
-                            Popular Movies
-                        </button>
-                    </li>
-                    <li className="nav-item" role="presentation">
-                        <button 
-                            className={`nav-link ${activeTab === 'trending' ? 'active' : ''}`}
-                            onClick={() => setActiveTab('trending')}
-                        >
-                            Trending Movies
-                        </button>
-                    </li>
-                </ul>
-            </div>
+    const formatRuntime = (minutes) => {
+        if (!minutes) return '2hr : 30mins';
+        const hours = Math.floor(minutes / 60);
+        const mins = minutes % 60;
+        return `${hours}hr : ${mins}mins`;
+    };
 
-            {/* Movies Grid */}
-            <div className="row">
-                {movies.map((movie) => (
-                    <div key={movie.id || movie._id} className="col-md-4 col-lg-3 mb-4">
-                        <Link 
-                            to={`/movie/details/${movie.id}`}
-                            style={{ textDecoration: 'none', color: 'inherit' }}
-                        >
-                            <div className="movie-card">
-                                <div className="poster">
-                                    <img 
-                                        src={movie.poster_path ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}` : '/images/placeholder-movie.jpg'} 
-                                        alt={movie.title || movie.name} 
-                                        className="img-fluid"
-                                    />
+    const formatViews = (count) => {
+        if (!count) return Math.floor(Math.random() * 100) + 'K';
+        if (count >= 1000000) return (count / 1000000).toFixed(1) + 'M';
+        if (count >= 1000) return (count / 1000).toFixed(0) + 'K';
+        return count.toString();
+    };
+
+    const getGenreName = (genreId) => {
+        const genres = {
+            28: 'Action',
+            12: 'Adventure',
+            16: 'Animation',
+            35: 'Comedy',
+            80: 'Crime',
+            99: 'Documentary',
+            18: 'Drama',
+            10751: 'Family',
+            14: 'Fantasy',
+            36: 'History',
+            27: 'Horror',
+            10402: 'Music',
+            9648: 'Mystery',
+            10749: 'Romance',
+            878: 'Sci-Fi',
+            10770: 'TV Movie',
+            53: 'Thriller',
+            10752: 'War',
+            37: 'Western'
+        };
+        return genres[genreId] || null;
+    };
+
+    return (
+        <>
+            <section className="space-ptb">
+                <div className="container">
+                    <div className="row">
+                        <div className="col-md-12">
+                            <div className="categories-tabs">
+                                <div className="section-title">
+                                    <h2 className="title">Movie Catalog</h2>
                                 </div>
-                                <div className="content p-3">
-                                    <h3 className="h5 mb-2">{movie.title || movie.name}</h3>
-                                    <p className="mb-2">
-                                        <span className="rating me-2">
-                                            <i className="fas fa-star"></i>
-                                            {movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A'}
-                                        </span>
-                                        {movie.release_date && (
-                                            <span className="year">
-                                                {movie.release_date.split('-')[0]}
-                                            </span>
-                                        )}
-                                    </p>
-                                    {movie.overview && (
-                                        <p className="overview text-muted small">
-                                            {movie.overview.length > 100 
-                                                ? `${movie.overview.substring(0, 100)}...` 
-                                                : movie.overview
-                                            }
-                                        </p>
-                                    )}
+                                <div className="tabs">
+                                    <ul
+                                        className="nav nav-tabs nav-pills"
+                                        id="pills-tab"
+                                        role="tablist"
+                                    >
+                                        <li className="nav-item" role="presentation">
+                                            <button
+                                                className={`nav-link ${activeTab === 'latest' ? 'active' : ''}`}
+                                                id="latest-movies"
+                                                data-bs-toggle="pill"
+                                                data-bs-target="#pills-latest"
+                                                type="button"
+                                                role="tab"
+                                                aria-controls="pills-latest"
+                                                aria-selected={activeTab === 'latest'}
+                                                onClick={() => setActiveTab('latest')}
+                                            >
+                                                Latest Movies
+                                            </button>
+                                        </li>
+                                        <li className="nav-item" role="presentation">
+                                            <button
+                                                className={`nav-link ${activeTab === 'popular' ? 'active' : ''}`}
+                                                id="popular-movies"
+                                                data-bs-toggle="pill"
+                                                data-bs-target="#pills-popular"
+                                                type="button"
+                                                role="tab"
+                                                aria-controls="pills-popular"
+                                                aria-selected={activeTab === 'popular'}
+                                                onClick={() => setActiveTab('popular')}
+                                            >
+                                                Popular Movies
+                                            </button>
+                                        </li>
+                                        <li className="nav-item" role="presentation">
+                                            <button
+                                                className={`nav-link ${activeTab === 'trending' ? 'active' : ''}`}
+                                                id="trending-movies"
+                                                data-bs-toggle="pill"
+                                                data-bs-target="#pills-trending"
+                                                type="button"
+                                                role="tab"
+                                                aria-controls="pills-trending"
+                                                aria-selected={activeTab === 'trending'}
+                                                onClick={() => setActiveTab('trending')}
+                                            >
+                                                Trending Movies
+                                            </button>
+                                        </li>
+                                    </ul>
                                 </div>
                             </div>
-                        </Link>
+                        </div>
                     </div>
-                ))}
-            </div>
-            
-            {movies.length === 0 && (
-                <div className="text-center">
-                    <p>No movies found</p>
+                    <div className="row">
+                        {movies.map((movie) => {
+                            const posterUrl = movie.poster_path 
+                                ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` 
+                                : '/images/no-image.jpg';
+                            const genre = movie.genre_ids && movie.genre_ids[0] 
+                                ? getGenreName(movie.genre_ids[0]) 
+                                : null;
+
+                            return (
+                                <div key={movie.id || movie._id} className="col-xxl-3 col-lg-4 col-md-6 mb-4">
+                                    <div className="movies-categories">
+                                        <div className="movies-img">
+                                            <img
+                                                className="img-fluid"
+                                                src={posterUrl}
+                                                alt={movie.title || movie.name}
+                                                onError={(e) => { e.target.src = '/images/no-image.jpg'; }}
+                                            />
+                                            <div className="info-top">
+                                                {genre && (
+                                                    <Link className="tag" to="#">
+                                                        {genre}
+                                                    </Link>
+                                                )}
+                                                <div className="ms-auto">
+                                                    <a href="javascript:void(0)" className="like" />
+                                                    <a className="views" href="#">
+                                                        <i className="far fa-eye" /> {formatViews(movie.popularity)}
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div className="movies-info">
+                                                <div className="content">
+                                                    <a className="time" href="#">
+                                                        <i className="far fa-clock me-2" />
+                                                        {formatRuntime(movie.runtime)}
+                                                    </a>
+                                                    <div className="info-content">
+                                                        <div className="movies-title">
+                                                            <h5>
+                                                                <Link
+                                                                    className="title mt-0"
+                                                                    to={`/movie/details/${movie.id}`}
+                                                                >
+                                                                    {movie.title || movie.name}
+                                                                </Link>
+                                                            </h5>
+                                                        </div>
+                                                        <div className="share-info">
+                                                            <a
+                                                                href="javascript:void(0)"
+                                                                className="add-icon"
+                                                            />
+                                                            <div className="share-box">
+                                                                <a href="#">
+                                                                    {" "}
+                                                                    <i className="fas fa-share-alt" />{" "}
+                                                                </a>
+                                                                <ul className="list-unstyled share-box-social">
+                                                                    <li>
+                                                                        {" "}
+                                                                        <a href="#">
+                                                                            <i className="fab fa-facebook-f" />
+                                                                        </a>{" "}
+                                                                    </li>
+                                                                    <li>
+                                                                        {" "}
+                                                                        <a href="#">
+                                                                            <i className="fab fa-twitter" />
+                                                                        </a>
+                                                                    </li>
+                                                                    <li>
+                                                                        {" "}
+                                                                        <a href="#">
+                                                                            <i className="fab fa-linkedin" />
+                                                                        </a>
+                                                                    </li>
+                                                                    <li>
+                                                                        {" "}
+                                                                        <a href="#">
+                                                                            <i className="fab fa-instagram" />
+                                                                        </a>{" "}
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    {movies.length === 0 && (
+                        <div className="row">
+                            <div className="col-md-12 text-center">
+                                <div className="py-5">
+                                    <h3 className="text-white-50">No movies found</h3>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
-            )}
-        </div>
+            </section>
+        </>
     );
 } 
