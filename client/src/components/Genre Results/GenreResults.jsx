@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { getGenres } from '../../services/moviesService';
 import { useLoading } from '../../contexts/LoadingContext';
 
 export default function GenreResults() {
     const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
     const [apiData, setApiData] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const genre = searchParams.get('genre');
@@ -41,6 +42,11 @@ export default function GenreResults() {
     const totalPages = apiData?.total_pages || 1;
     const itemsPerPage = apiData?.items_on_page || 30;
 
+    // Handle tab change
+    const handleTabChange = (newMedia) => {
+        navigate(`/genre?genre=${genre}&media=${newMedia}`);
+    };
+
     const paginate = (pageNumber) => {
         setCurrentPage(pageNumber);
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -75,14 +81,67 @@ export default function GenreResults() {
 
     return (
         <>
-            <section className="space-ptb bg-dark">
+            <section className="space-ptb">
                 <div className="container">
                     <div className="row">
                         <div className="col-md-12">
-                            <div className="section-title">
-                                <h2 className="title">
-                                    {genre} {media === 'movies' ? 'Movies' : media === 'series' ? 'TV Shows' : 'Movies & TV Shows'}
-                                </h2>
+                            <div className="categories-tabs">
+                                <div className="section-title">
+                                    <h2 className="title">{genre}</h2>
+                                </div>
+                                <div className="tabs">
+                                    <ul
+                                        className="nav nav-tabs nav-pills"
+                                        id="pills-tab"
+                                        role="tablist"
+                                    >
+                                        <li className="nav-item" role="presentation">
+                                            <button
+                                                className={`nav-link ${media === 'all' ? 'active' : ''}`}
+                                                id="all-content"
+                                                data-bs-toggle="pill"
+                                                data-bs-target="#pills-all"
+                                                type="button"
+                                                role="tab"
+                                                aria-controls="pills-all"
+                                                aria-selected={media === 'all'}
+                                                onClick={() => handleTabChange('all')}
+                                            >
+                                                All
+                                            </button>
+                                        </li>
+                                        <li className="nav-item" role="presentation">
+                                            <button
+                                                className={`nav-link ${media === 'movies' ? 'active' : ''}`}
+                                                id="movies-only"
+                                                data-bs-toggle="pill"
+                                                data-bs-target="#pills-movies"
+                                                type="button"
+                                                role="tab"
+                                                aria-controls="pills-movies"
+                                                aria-selected={media === 'movies'}
+                                                onClick={() => handleTabChange('movies')}
+                                            >
+                                                Movies
+                                            </button>
+                                        </li>
+                                        <li className="nav-item" role="presentation">
+                                            <button
+                                                className={`nav-link ${media === 'series' ? 'active' : ''}`}
+                                                id="series-only"
+                                                data-bs-toggle="pill"
+                                                data-bs-target="#pills-series"
+                                                type="button"
+                                                role="tab"
+                                                aria-controls="pills-series"
+                                                aria-selected={media === 'series'}
+                                                onClick={() => handleTabChange('series')}
+                                            >
+                                                Series
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
