@@ -622,35 +622,38 @@ export default function MovieDetails() {
                                     {movie.movies.collection.map((item) => (
                                         <div className="item" key={item.id}>
                                             <Link to={`/movie/details/${item.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                                                <div className="movies-categories-style-3">
-                                                    <div className="movie-image">
+                                                <div className="movies-categories br-20">
+                                                    <div className="movies-img">
                                                         <img
                                                             className="img-fluid"
                                                             src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
                                                             alt={item.title}
                                                         />
-                                                    </div>
-                                                    <div className="movie-info-content">
-                                                        <h6>
-                                                            <span className="title">{item.title}</span>
-                                                        </h6>
-                                                        <div className="movie-info smaller-text">
-                                                            <span className="year">
-                                                                {item.year || (item.release_date ? new Date(item.release_date).getFullYear() : 'N/A')}
-                                                            </span>
-                                                            <a className="time" href="#" onClick={(e) => e.preventDefault()}>
-                                                                <i className="far fa-clock me-2" />
-                                                                {item.runtime ? `${Math.floor(item.runtime / 60)}hr : ${item.runtime % 60}min` : 'N/A'}
-                                                            </a>
-                                                            <div className="info-tag">
+                                                        <div className="info-top">
+                                                            <span className="tag">{item.genre}</span>
+                                                            <div className="ms-auto">
+                                                                <a href="javascript:void(0)" className="like" onClick={(e) => e.preventDefault()} />
                                                                 <a className="views" href="#" onClick={(e) => e.preventDefault()}>
-                                                                    <i className="far fa-eye" />
-                                                                </a>
-                                                                <a href="#" className="like" onClick={(e) => e.preventDefault()} />
-                                                                <a className="rating" href="#" onClick={(e) => e.preventDefault()}>
-                                                                    <i className="fa-solid fa-star" /> {item.vote_average ? item.vote_average : 'N/A'}/10
+                                                                    <i className="fa-solid fa-star" /> {item.vote_average}
                                                                 </a>
                                                             </div>
+                                                        </div>
+                                                        <div className="movies-info">
+                                                            <div className="content">
+                                                                <h5><span className="title mt-0">{item.title}</span></h5>
+                                                                <span className="time">
+                                                                    {item.year || (item.release_date ? new Date(item.release_date).getFullYear() : 'N/A')}
+                                                                    <i className="far fa-clock me-2 ms-2" />
+                                                                    {Math.floor(item.runtime / 60)}hr : {item.runtime % 60}mins
+                                                                </span>
+                                                            </div>
+                                                            <a
+                                                                className="play-btn popup-youtube"
+                                                                href={`https://www.youtube.com/watch?v=${item.trailer}`}
+                                                                onClick={(e) => e.stopPropagation()}
+                                                            >
+                                                                <i className="fa-solid fa-play" />
+                                                            </a>
                                                         </div>
                                                     </div>
                                                 </div>
