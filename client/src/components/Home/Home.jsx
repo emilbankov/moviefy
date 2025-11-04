@@ -45,7 +45,7 @@ export default function Home() {
                 setBannerSeries(bannerSeries);
                 setLatestSeries(latestSeriesData);
                 setPopularSeries(popularSeriesData);
-                console.log(latestSeriesData);
+                console.log(popularSeriesData);
 
             })
             .catch(err => {
@@ -360,7 +360,8 @@ export default function Home() {
                                                         <div className="movies-info">
                                                             <div className="content">
                                                                 <span className="time">
-                                                                    <i className="far fa-clock me-2" />
+                                                                    <span className="year" style={{ fontSize: '14px' }}>{trending.year}</span>{" "}
+                                                                    <i className="far fa-clock me-2" style={{ marginLeft: "8px" }} />
                                                                     {Math.floor(trending.runtime / 60)}hr : {trending.runtime % 60}min
                                                                 </span>
                                                                 <div className="info-content">
@@ -804,7 +805,8 @@ export default function Home() {
                                                         <div className="movies-info">
                                                             <div className="content">
                                                                 <span className="time">
-                                                                    <i className="far fa-clock me-2" />
+                                                                    <span className="year" style={{ fontSize: '14px' }}>{popular.year}</span>{" "}
+                                                                    <i className="far fa-clock me-2" style={{ marginLeft: "8px" }} />
                                                                     {Math.floor(popular.runtime / 60)}hr : {popular.runtime % 60}min
                                                                 </span>
                                                                 <div className="info-content">
@@ -1108,7 +1110,10 @@ export default function Home() {
                                             </h6>
                                             <div className="movie-info smaller-text">
                                                 <span className="year">{latest.year}</span>
-                                                <a className="time" href="#">SS {latest.seasons} <span className="dot"></span> EPS {latest.episodes}</a>
+                                                <a className="time" href="#">
+                                                    <i className="far fa-clock me-2" />
+                                                    SS {latest.seasons} <span className="dot"></span> EPS {latest.episodes}
+                                                </a>
                                                 <div className="info-tag">
                                                     <a className="views" href="#">
                                                         <i className="far fa-eye" />
@@ -1184,7 +1189,11 @@ export default function Home() {
                                                         </div>
                                                         <div className="movies-info">
                                                             <div className="content">
-                                                                <span className="time">SS {popular.seasons} <span className="dot"></span> EPS {popular.episodes}</span>
+                                                                <span className="time">
+                                                                    <span className="year" style={{ fontSize: '14px' }}>{popular.year}</span>{" "}
+                                                                    <i className="far fa-clock me-2" style={{ marginLeft: "8px" }} />
+                                                                    SS {popular.seasons} <span className="dot"></span> EPS {popular.episodes}
+                                                                </span>
                                                                 <div className="info-content">
                                                                     <div className="movies-title">
                                                                         <a
