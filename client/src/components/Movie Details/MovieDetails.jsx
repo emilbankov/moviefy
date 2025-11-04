@@ -598,104 +598,63 @@ export default function MovieDetails() {
                         <div className="row">
                             <div className="col-md-12">
                                 <div className="section-title">
-                                    <h2 className="title">Movie Collection</h2>
+                                    <h2 className="title">{movie.movies.collection_name}</h2>
                                 </div>
                             </div>
                             <div className="col-md-12">
                                 <div
-                                    className="owl-carousel owl-nav-center"
+                                    className="owl-carousel owl-nav-center peek-effect"
                                     data-nav-dots="false"
                                     data-nav-arrow="true"
-                                    data-items={4}
-                                    data-xl-items={4}
-                                    data-lg-items={4}
+                                    data-items={5}
+                                    data-xl-items={5}
+                                    data-lg-items={5}
                                     data-md-items={3}
                                     data-sm-items={2}
-                                    data-xs-items={1}
+                                    data-xs-items={3}
+                                    data-xx-items={2}
                                     data-space={30}
+                                    data-stage-padding={50}
                                     data-autoheight="true"
                                     data-autoplay="false"
                                     data-loop="false"
                                 >
                                     {movie.movies.collection.map((item) => (
                                         <div className="item" key={item.id}>
-                                            <div className="movies-categories">
-                                                <div className="movies-img">
-                                                    <img
-                                                        className="img-fluid"
-                                                        src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-                                                        alt={item.title}
-                                                    />
-                                                    <div className="info-top">
-                                                        <Link 
-                                                            to={`/genre?genre=${getGenreParam(item.genre)}&media=movies`}
-                                                            className="tag"
-                                                        >
-                                                            {item.genre}
-                                                        </Link>
-                                                        <div className="ms-auto">
-                                                            <a href="javascript:void(0)" className="like" />
-                                                            <a className="views" href="#">
-                                                                <i className="fa-solid fa-star" /> {item.vote_average}
-                                                            </a>
-                                                        </div>
+                                            <Link to={`/movie/details/${item.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                                <div className="movies-categories-style-3">
+                                                    <div className="movie-image">
+                                                        <img
+                                                            className="img-fluid"
+                                                            src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
+                                                            alt={item.title}
+                                                        />
                                                     </div>
-                                                    <div className="movies-info">
-                                                        <div className="content">
-                                                            <span className="time">
+                                                    <div className="movie-info-content">
+                                                        <h6>
+                                                            <span className="title">{item.title}</span>
+                                                        </h6>
+                                                        <div className="movie-info smaller-text">
+                                                            <span className="year">
                                                                 {item.year || (item.release_date ? new Date(item.release_date).getFullYear() : 'N/A')}
-                                                                <i className="far fa-clock me-2 ms-2" />
-                                                                {Math.floor(item.runtime / 60)}hr : {item.runtime % 60}mins
                                                             </span>
-                                                            <div className="info-content">
-                                                                <div className="movies-title">
-                                                                    <a
-                                                                        className="play-btn popup-youtube"
-                                                                        href={`https://www.youtube.com/watch?v=${item.trailer}`}
-                                                                    >
-                                                                        <i className="fa-solid fa-play" />
-                                                                    </a>
-                                                                    <h5>
-                                                                        <Link className="title mt-0" to={`/movie/details/${item.id}`}>
-                                                                            {item.title}
-                                                                        </Link>
-                                                                    </h5>
-                                                                </div>
-                                                                <div className="share-info">
-                                                                    <a href="javascript:void(0)" className="add-icon" />
-                                                                    <div className="share-box">
-                                                                        <a href="#">
-                                                                            <i className="fas fa-share-alt" />
-                                                                        </a>
-                                                                        <ul className="list-unstyled share-box-social">
-                                                                            <li>
-                                                                                <a href="#">
-                                                                                    <i className="fab fa-facebook-f" />
-                                                                                </a>
-                                                                            </li>
-                                                                            <li>
-                                                                                <a href="#">
-                                                                                    <i className="fab fa-twitter" />
-                                                                                </a>
-                                                                            </li>
-                                                                            <li>
-                                                                                <a href="#">
-                                                                                    <i className="fab fa-linkedin" />
-                                                                                </a>
-                                                                            </li>
-                                                                            <li>
-                                                                                <a href="#">
-                                                                                    <i className="fab fa-instagram" />
-                                                                                </a>
-                                                                            </li>
-                                                                        </ul>
-                                                                    </div>
-                                                                </div>
+                                                            <a className="time" href="#" onClick={(e) => e.preventDefault()}>
+                                                                <i className="far fa-clock me-2" />
+                                                                {item.runtime ? `${Math.floor(item.runtime / 60)}hr : ${item.runtime % 60}min` : 'N/A'}
+                                                            </a>
+                                                            <div className="info-tag">
+                                                                <a className="views" href="#" onClick={(e) => e.preventDefault()}>
+                                                                    <i className="far fa-eye" />
+                                                                </a>
+                                                                <a href="#" className="like" onClick={(e) => e.preventDefault()} />
+                                                                <a className="rating" href="#" onClick={(e) => e.preventDefault()}>
+                                                                    <i className="fa-solid fa-star" /> {item.vote_average ? item.vote_average : 'N/A'}/10
+                                                                </a>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </Link>
                                         </div>
                                     ))}
                                 </div>

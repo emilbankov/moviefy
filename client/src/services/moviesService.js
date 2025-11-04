@@ -12,4 +12,4 @@ export const getPopularMovies = async () => await get(`${baseUrl}/movies/popular
 export const getGenres = async (media, genres, size, page = 1) => await get(`${baseUrl}/${media}/genres?genres=${genres}&size=${size}&page=${page}`);
 export const getPopularCollections = async () => await get(`${baseUrl}/movies/collections?names=${collections}`);
 export const getMovieDetails = async (movieId) => await get(`${baseUrl}/movies/${movieId}`);
-export const search = async (query, page = 1, size = 30) => await get(`${baseUrl}/search?query=${query}&page=${page}&size=${size}`);
+export const search = async (media, query, page = 1, size = 30) => await get(`${baseUrl}/${media}/search?query=${query}&page=${page}&size=${size}`);
