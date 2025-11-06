@@ -341,6 +341,7 @@ NOTE: This file contains all scripts for the actual Template.
             $('#search, #search button.close').on('click keyup', function (event) {
                 if (event.target == this || event.target.className == 'close' || event.keyCode == 27) {
                     $(this).removeClass('open');
+                    document.body.style.overflow = '';
                 }
             });
         }
