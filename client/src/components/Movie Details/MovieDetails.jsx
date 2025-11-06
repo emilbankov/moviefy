@@ -12,6 +12,7 @@ const getGenreParam = (genreName) => {
 
 export default function MovieDetails() {
     const [movie, setMovie] = useState([]);
+    const [showMoviePlayer, setShowMoviePlayer] = useState(false);
     const { movieId } = useParams();
     const location = useLocation();
     const { setLoading } = useLoading();
@@ -87,94 +88,121 @@ export default function MovieDetails() {
         };
     }, [movie.movies]);
 
+    // Reinitialize popup functionality when movie player closes
+    useEffect(() => {
+        if (!showMoviePlayer && movie.movies) {
+            // Wait a bit for DOM to update, then reinitialize Magnific Popup
+            const timer = setTimeout(() => {
+                if (window.jQuery && window.jQuery.magnificPopup && window.jQuery('.popup-youtube').length > 0) {
+                    // Destroy existing popup bindings and reinitialize
+                    window.jQuery('.popup-youtube').off('click').magnificPopup({
+                        type: 'iframe',
+                        mainClass: 'mfp-fade',
+                        removalDelay: 160,
+                        preloader: false,
+                        fixedContentPos: false
+                    });
+                }
+            }, 100);
+            return () => clearTimeout(timer);
+        }
+    }, [showMoviePlayer, movie.movies]);
+
     return (
         <>
             {movie.movies && (
                 <section className="single-movie-details space-pb bg-holder bg-overlay-dark-99" style={{ backgroundImage: "url(/images/bg/03.jpg)" }}>
                     <div className="container position-relative">
-                        <div className="row g-0">
-                            <div className="movie-details-bg col-12 bg-overlay-dark-4" style={{ backgroundImage: `url(https://image.tmdb.org/t/p/original${movie.movies.backdrop_path || ''})` }}>
+                        <div className="movie-details-bg col-12 bg-overlay-dark-4" style={{ backgroundImage: showMoviePlayer ? 'none' : `url(https://image.tmdb.org/t/p/original${movie.movies.backdrop_path || ''})`, padding: showMoviePlayer ? 0 : undefined }}>
+                            {showMoviePlayer ? (
+                                <div style={{
+                                    width: '100%',
+                                    height: '100%',
+                                    minHeight: '70vh',
+                                    position: 'relative',
+                                    display: 'flex',
+                                    alignItems: 'stretch',
+                                    justifyContent: 'center',
+                                    background: '#000',
+                                    margin: 0,
+                                    padding: 0
+                                }}>
+                                    <button
+                                        className="btn btn-sm btn-light"
+                                        style={{ position: 'absolute', top: 20, right: 20, zIndex: 10 }}
+                                        onClick={() => setShowMoviePlayer(false)}
+                                    >
+                                        Back to Details
+                                    </button>
+                                    <iframe
+                                        src={`https://vidsrc.net/embed/movie?tmdb=${movie.movies.api_id}`}
+                                        frameBorder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowFullScreen
+                                        title="Movie Player"
+                                        style={{
+                                            width: '100%',
+                                            height: '100%',
+                                            minHeight: '70vh',
+                                            background: '#000',
+                                            margin: 0,
+                                            padding: 0
+                                        }}
+                                    />
+                                </div>
+                            ) : (
                                 <div className="row position-relative">
                                     <div className="col-xxl-6 col-xl-7 col-lg-6 col-md-8 col-sm-12 order-md-1 order-2">
                                         <div className="movie-details">
                                             <div className="movie-info">
                                                 <h2 className="title">{movie.movies.title}</h2>
                                                 <div className="movies-language">
-                                                    Language:{" "} English{" "}
-                                                    <a className="rating" href="#"><i className="fa-solid fa-star" />
-                                                        {" "}{movie.movies.vote_average}/10
-                                                    </a>
+                                                    Language: English
+                                                    <a className="rating" href="#"><i className="fa-solid fa-star" /> {movie.movies.vote_average}/10</a>
                                                 </div>
                                                 <div className="movies-genre">
-                                                    Genre:{" "}
-                                                    {movie.movies.genres.map((genre, index) => (
+                                                    Genre: {movie.movies.genres.map((genre, index) => (
                                                         <Link key={index} to={`/genre?genre=${getGenreParam(genre.name)}&media=movies`}>
-                                                            {genre.name}
-                                                            {index < movie.movies.genres.length - 1 && ", "}
+                                                            {genre.name}{index < movie.movies.genres.length - 1 && ", "}
                                                         </Link>
                                                     ))}
                                                 </div>
                                                 <div className="movies-genre">
-                                                    Studio:{" "}
-                                                    {movie.movies.production_companies.map((company, index) => (
+                                                    Studio: {movie.movies.production_companies.map((company, index) => (
                                                         <span key={index}>
-                                                            {company.name}
-                                                            {index < movie.movies.production_companies.length - 1 && ", "}
+                                                            {company.name}{index < movie.movies.production_companies.length - 1 && ", "}
                                                         </span>
                                                     ))}
                                                 </div>
                                                 <div className="d-sm-flex">
                                                     <span className="year">{new Date(movie.movies.release_date).getFullYear()}</span>
-                                                    <a className="time" href="#">
-                                                        <i className="far fa-clock me-2" />
-                                                        {Math.floor(movie.movies.runtime / 60)}hr : {movie.movies.runtime % 60}mins
-                                                    </a>
-                                                    <span className="quality">
-                                                        Quality: <a href="#">720p, 1080p</a>
-                                                    </span>
+                                                    <a className="time" href="#"><i className="far fa-clock me-2" />{Math.floor(movie.movies.runtime / 60)}hr : {movie.movies.runtime % 60}mins</a>
+                                                    <span className="quality">Quality: <a href="#">720p, 1080p</a></span>
                                                 </div>
                                                 <div className="d-sm-flex my-2">
                                                     <a href="javascript:void(0)" className="add-icon me-3"> Add to List</a>
                                                     <div className="share-box">
                                                         <a href="#"><i className="fas fa-share-alt" /> Share</a>
                                                         <ul className="list-unstyled share-box-social">
-                                                            <li>
-                                                                <a href="#">
-                                                                    <i className="fab fa-facebook-f" />
-                                                                </a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="#">
-                                                                    <i className="fab fa-twitter" />
-                                                                </a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="#">
-                                                                    <i className="fab fa-linkedin" />
-                                                                </a>
-                                                            </li>
-                                                            <li>
-                                                                <a href="#">
-                                                                    <i className="fab fa-instagram" />
-                                                                </a>
-                                                            </li>
+                                                            <li><a href="#"><i className="fab fa-facebook-f" /></a></li>
+                                                            <li><a href="#"><i className="fab fa-twitter" /></a></li>
+                                                            <li><a href="#"><i className="fab fa-linkedin" /></a></li>
+                                                            <li><a href="#"><i className="fab fa-instagram" /></a></li>
                                                         </ul>
                                                     </div>
                                                 </div>
                                                 <p className="mb-4">{movie.movies.overview}</p>
-                                                <a className="btn btn-primary popup-youtube" href={`https://www.youtube.com/watch?v=${movie.movies.trailer}`}><i className="fa-solid fa-play" />
-                                                    Watch Trailer
-                                                </a>
+                                                <a className="btn btn-primary popup-youtube" href={`https://www.youtube.com/watch?v=${movie.movies.trailer}`}><i className="fa-solid fa-play" /> Watch Trailer</a>
                                             </div>
                                         </div>
                                     </div>
                                     <div className="col-xxl-6 col-xl-5 col-lg-6 col-md-4 col-sm-12 align-self-center order-md-2 order-1">
                                         <div className="video movie-video-btn mb-4 mb-md-0">
-                                            <a className="video-btn btn-animation popup-youtube" href={`https://vidsrc.net/embed/movie?tmdb=${movie.movies.api_id}`}><i className="fa-solid fa-play" /></a>
+                                            <a className="video-btn btn-animation" onClick={e => { e.preventDefault(); setShowMoviePlayer(true); }} href="#"><i className="fa-solid fa-play" /></a>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            )}
                         </div>
                         <div className="row mt-4 mt-lg-5">
                             <div className="col-md-12">
