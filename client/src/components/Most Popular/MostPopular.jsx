@@ -19,11 +19,7 @@ export default function MostPopular() {
         const getMovieDetails = async () => {
             setLoading(true);
             try {
-                console.log('Fetching movie details for ID: 64132');
                 const movieDetails = await moviesService.getMovieDetails(64132);
-                console.log('Movie details:', movieDetails);
-                console.log('Movie title:', movieDetails.movies?.title || 'N/A');
-                console.log('Overview:', movieDetails.movies?.overview || 'N/A');
                 setMovie(movieDetails);
             } catch (error) {
                 console.error('Error fetching movie details:', error);
