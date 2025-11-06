@@ -13,7 +13,7 @@ export default function Search({ isOpen, onClose }) {
         debounce(async (searchQuery) => {
             if (searchQuery.trim().length > 0) {
                 try {
-                    const data = await search(searchQuery);
+                    const data = await search('all', searchQuery);
                     const searchResults = data.results || data;
                     setResults(searchResults);
                     setItemsOnPage(data.total_items);
