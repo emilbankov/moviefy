@@ -14,6 +14,8 @@ export default function SeriesDetails() {
     const [series, setSeries] = useState([]);
     const [episodes, setEpisodes] = useState([]);
     const [selectedSeason, setSelectedSeason] = useState(null); // Track selected season
+    const [showMoviePlayer, setShowMoviePlayer] = useState(false);
+    const [playingEpisode, setPlayingEpisode] = useState({ season: null, episode: null });
     const { seriesId } = useParams();
     const location = useLocation();
     const { setLoading } = useLoading();
@@ -98,6 +100,26 @@ export default function SeriesDetails() {
         };
     }, [series.series, series.series?.seasons, episodes, selectedSeason]);
 
+    // Reinitialize popup functionality when movie player closes
+    useEffect(() => {
+        if (!showMoviePlayer && series.series) {
+            // Wait a bit for DOM to update, then reinitialize Magnific Popup
+            const timer = setTimeout(() => {
+                if (window.jQuery && window.jQuery.magnificPopup && window.jQuery('.popup-youtube').length > 0) {
+                    // Destroy existing popup bindings and reinitialize
+                    window.jQuery('.popup-youtube').off('click').magnificPopup({
+                        type: 'iframe',
+                        mainClass: 'mfp-fade',
+                        removalDelay: 160,
+                        preloader: false,
+                        fixedContentPos: false
+                    });
+                }
+            }, 100);
+            return () => clearTimeout(timer);
+        }
+    }, [showMoviePlayer, series.series]);
+
     const handleScroll = (event) => {
         event.preventDefault();
         const episodesSection = document.getElementById('episodes');
@@ -131,8 +153,48 @@ export default function SeriesDetails() {
                     <div className="container position-relative">
                         <div className="row">
                             <div className="col-12 ">
-                                <div className="movie-details-bg bg-overlay-dark-4" style={{ backgroundImage: `url(https://image.tmdb.org/t/p/original${series.series.backdrop_path || ''})` }}>
-                                    <div className="row position-relative">
+                                <div className="movie-details-bg bg-overlay-dark-4" style={{ backgroundImage: showMoviePlayer ? 'none' : `url(https://image.tmdb.org/t/p/original${series.series.backdrop_path || ''})`, padding: showMoviePlayer ? 0 : undefined }}>
+                                    {showMoviePlayer ? (
+                                        <div style={{
+                                            width: '100%',
+                                            height: '100%',
+                                            minHeight: '70vh',
+                                            position: 'relative',
+                                            display: 'flex',
+                                            alignItems: 'stretch',
+                                            justifyContent: 'center',
+                                            background: '#000',
+                                            margin: 0,
+                                            padding: 0
+                                        }}>
+                                            <button
+                                                className="btn btn-sm btn-light"
+                                                style={{ position: 'absolute', top: 20, right: 20, zIndex: 10 }}
+                                                onClick={() => {
+                                                    setShowMoviePlayer(false);
+                                                    setPlayingEpisode({ season: null, episode: null });
+                                                }}
+                                            >
+                                                Back to Details
+                                            </button>
+                                            <iframe
+                                                src={`https://vidsrc.net/embed/tv?tmdb=${series.series.api_id}${playingEpisode.season ? `&season=${playingEpisode.season}` : ''}${playingEpisode.episode ? `&episode=${playingEpisode.episode}` : ''}`}
+                                                frameBorder="0"
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                allowFullScreen
+                                                title="Series Player"
+                                                style={{
+                                                    width: '100%',
+                                                    height: '100%',
+                                                    minHeight: '70vh',
+                                                    background: '#000',
+                                                    margin: 0,
+                                                    padding: 0
+                                                }}
+                                            />
+                                        </div>
+                                    ) : (
+                                        <div className="row position-relative">
                                         <div className="col-xxl-6 col-xl-7 col-lg-6 col-md-8 col-sm-12 order-md-1 order-2">
                                             <div className="movie-details">
                                                 <div className="movie-info">
@@ -224,6 +286,7 @@ export default function SeriesDetails() {
                                             </div>
                                         </div>
                                     </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -311,7 +374,17 @@ export default function SeriesDetails() {
                                             return (
                                             <div className="item" key={episode.episode_number}>
                                                 <div className="episode-item">
-                                                    <a href={`https://vidsrc.net/embed/tv?tmdb=${series.series.api_id}&season=${selectedSeason}&episode=${episode.episode_number}`} className="play-btn-episodes popup-youtube"><i className="fa-solid fa-play" /></a>
+                                                    <a 
+                                                        href="#" 
+                                                        className="play-btn-episodes" 
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            setPlayingEpisode({ season: selectedSeason, episode: episode.episode_number });
+                                                            setShowMoviePlayer(true);
+                                                        }}
+                                                    >
+                                                        <i className="fa-solid fa-play" />
+                                                    </a>
                                                     <img 
                                                         className="img-fluid" 
                                                         src={episode.still_path 
