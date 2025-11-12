@@ -12,9 +12,9 @@ const getGenreParam = (genreName) => {
 
 export default function MostPopular() {
     const [movie, setMovie] = useState(null);
+    const [popularCollections, setPopularCollections] = useState([]);
     const { setLoading } = useLoading();
-    
-    // Make request to get movie details with ID 64132
+
     useEffect(() => {
         const getMovieDetails = async () => {
             setLoading(true);
@@ -31,6 +31,20 @@ export default function MostPopular() {
         getMovieDetails();
     }, [setLoading]);
 
+    // Fetch popular collections
+    useEffect(() => {
+        const getCollections = async () => {
+            try {
+                const collections = await moviesService.getPopularCollections();
+                setPopularCollections(collections);
+            } catch (error) {
+                console.error('Error fetching collections:', error);
+            }
+        };
+
+        getCollections();
+    }, []);
+
     useEffect(() => {
         const initPieChart = () => {
             const $pieChart = $('.pie-chart-percentage');
@@ -42,13 +56,13 @@ export default function MostPopular() {
                     const pieChartWidth = $elem.attr('data-width') || "4";
                     const pieChartColor = $elem.attr('data-color') || "#f6be00";
                     const pieChartTrackColor = $elem.attr('data-trackcolor') || "#fff";
-    
+
                     $elem.find('span, i').css({
                         'line-height': pieChartSize + 'px',
                         'width': pieChartSize + 'px',
                         'height': pieChartSize + 'px'
                     });
-    
+
                     $elem.appear(function () {
                         $elem.easyPieChart({
                             size: Number(pieChartSize),
@@ -66,9 +80,9 @@ export default function MostPopular() {
                 });
             }
         };
-    
+
         initPieChart();
-    
+
         return () => {
             const $pieChart = $('.pie-chart-percentage');
             if ($pieChart.length) {
@@ -77,12 +91,12 @@ export default function MostPopular() {
                     if ($.fn.easyPieChart) {
                         $elem.easyPieChart('destroy');
                     }
-                    $elem.off(); 
+                    $elem.off();
                 });
             }
         };
-    }, []); 
-    
+    }, []);
+
     return (
         <>
             <section className="banner banner-2 bg-holder" style={{ backgroundImage: movie?.movies?.backdrop_path ? `url(https://image.tmdb.org/t/p/original${movie.movies.backdrop_path})` : 'url(images/banner/home-02/01.jpg)' }}>
@@ -139,6 +153,59 @@ export default function MostPopular() {
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </section>
+
+            <section className="space-ptb">
+                <div className="container">
+                    <div className="row">
+                        <div className="col-md-12">
+                            <div className="section-title">
+                                <h2 className="title">All Time Favorite Movie Collections</h2>
+                                <a href="web-series.html" className="btn-link">
+                                    More Collections
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row">
+                        {popularCollections.collections && popularCollections.collections.map((collection, index) => (
+                            <div className="col-xl-2-3 col-lg-4 col-md-6 col-sm-6 col-6 mb-4" key={index}>
+                                <Link to={`/collection/${collection.first_movie_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                    <div className="movies-categories-style-2">
+                                        <div className="movie-image">
+                                            <img
+                                                className="img-fluid br-20"
+                                                src={`https://image.tmdb.org/t/p/w500${collection.poster_path}`}
+                                                alt={collection.name}
+                                            />
+                                            <div className="info-top">
+                                                <a href="javascript:void(0)" className="like" onClick={(e) => e.preventDefault()} />
+                                                <a className="views" href="#" onClick={(e) => e.preventDefault()}>
+                                                    <i className="fa-solid fa-star" /> {collection.voteAverage.toFixed(1)}
+                                                </a>
+                                            </div>
+                                            <div className="movie-info-content">
+                                                <a className="time" href="#" onClick={(e) => e.preventDefault()}>
+                                                    <i className="far fa-clock me-2" />
+                                                    {Math.floor(collection.runtime / 60)}hr : {collection.runtime % 60}min
+                                                </a>
+                                                <h5>
+                                                    <span className="title">
+                                                        {collection.name}
+                                                    </span>
+                                                </h5>
+                                                <p>
+                                                    {collection.overview}
+                                                </p>
+                                                <span className="btn btn-link btn-link-1" onClick={(e) => e.stopPropagation()}><i className="fa-solid fa-play" />Play Now</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Link>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </section>
