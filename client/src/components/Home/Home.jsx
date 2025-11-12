@@ -180,7 +180,7 @@ export default function Home() {
                                             <span>{bannerMovies.first_movie.production_companies[0].name}</span>
                                         </div>
                                     </div>
-                                    <Link to={`/movie/details/${bannerMovies.first_movie.id}`} className="btn btn-primary me-2"><i className="fa-solid fa-play" />Play Now</Link>
+                                    <Link to={`/movie/details/${bannerMovies.first_movie.api_id}`} className="btn btn-primary me-2"><i className="fa-solid fa-play" />Play Now</Link>
                                     <a href="#" className="btn btn-light"><i className="fa-solid fa-circle-plus" />Add to List</a>
                                 </div>
                             </div>
@@ -211,7 +211,7 @@ export default function Home() {
                                 >
                                     {bannerMovies.rest_movies.map((movie) => (
                                         <div key={movie.id} className="item">
-                                            <Link to={`/movie/details/${movie.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                            <Link to={`/movie/details/${movie.api_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                                                 <div className="movies-categories movies-style-1">
                                                     <div className="movies-img banner-backdrop">
                                                         <img
@@ -263,7 +263,7 @@ export default function Home() {
                     <div className="row">
                         {latestMovies.movies && latestMovies.movies.map(latest => (
                             <div key={latest.id} className="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-6 mb-4">
-                                <Link to={`/movie/details/${latest.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                <Link to={`/movie/details/${latest.api_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                                     <div className="movies-categories-style-3">
                                         <div className="movie-image">
                                             <img
@@ -334,7 +334,7 @@ export default function Home() {
                                 >
                                     {trendingMovies.movies.map((trending) => (
                                         <div className="item" key={trending.id}>
-                                            <Link to={`/movie/details/${trending.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                            <Link to={`/movie/details/${trending.api_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                                                 <div className="movies-categories br-20">
                                                     <div className="movies-img">
                                                         <img
@@ -779,7 +779,7 @@ export default function Home() {
                                 >
                                     {popularMovies.movies.map((popular) => (
                                         <div className="item" key={popular.id}>
-                                            <Link to={`/movie/details/${popular.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                            <Link to={`/movie/details/${popular.api_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                                                 <div className="movies-categories br-20">
                                                     <div className="movies-img">
                                                         <img
@@ -884,7 +884,7 @@ export default function Home() {
                     <div className="row">
                         {popularCollections.collections && popularCollections.collections.map((collection, index) => (
                             <div className="col-xl-2-3 col-lg-4 col-md-6 col-sm-6 col-6 mb-4" key={index}>
-                                <Link to={`/movie/details/${collection.first_movie_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                <Link to={`/collection/${collection.first_movie_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                                     <div className="movies-categories-style-2">
                                         <div className="movie-image">
                                             <img
@@ -1018,7 +1018,7 @@ export default function Home() {
                                                                 <p className="series-overview">{series.overview.length > 270 ? `${series.overview.substring(0, 270)}...` : series.overview}</p>
                                                             </div>
                                                         </div>
-                                                        <Link to={`/series/details/${series.id}`} className="btn btn-primary me-2"><i className="fa-solid fa-play" />Play Now</Link>
+                                                        <Link to={`/series/details/${series.api_id}`} className="btn btn-primary me-2"><i className="fa-solid fa-play" />Play Now</Link>
                                                         <a href="#" className="btn btn-light"><i className="fa-solid fa-circle-plus" />Add to List</a>
                                                     </div>
                                                     <div className="col-xxl-6 ol-xl-5 col-md-2 col-sm-2 align-self-center order-sm-2 order-1">
@@ -1093,7 +1093,7 @@ export default function Home() {
                     <div className="row">
                         {latestSeries.series && latestSeries.series.map(latest => (
                             <div key={latest.id} className="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-6 mb-4">
-                                <Link to={`/series/details/${latest.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                <Link to={`/series/details/${latest.api_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                                     <div className="movies-categories-style-3">
                                         <div className="movie-image">
                                             <img
@@ -1164,7 +1164,7 @@ export default function Home() {
                                 >
                                     {popularSeries.series.map((popular) => (
                                         <div className="item" key={popular.id}>
-                                            <Link to={`/series/details/${popular.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                            <Link to={`/series/details/${popular.api_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                                                 <div className="movies-categories br-20">
                                                     <div className="movies-img">
                                                         <img

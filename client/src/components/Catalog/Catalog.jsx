@@ -187,7 +187,7 @@ export default function Catalog() {
                                                             <h5>
                                                                 <Link
                                                                     className="title mt-0"
-                                                                    to={`/movie/details/${movie.id}`}
+                                                                    to={`/movie/details/${movie.api_id}`}
                                                                 >
                                                                     {movie.title || movie.name}
                                                                 </Link>

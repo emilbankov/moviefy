@@ -414,7 +414,7 @@ export default function Movies() {
                             >
                                 {trendingMovies?.map((movie) => (
                                     <div className="item" key={movie.id}>
-                                        <Link to={`/movie/details/${movie.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                        <Link to={`/movie/details/${movie.api_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                                             <div className="movies-categories br-20">
                                                 <div className="movies-img">
                                                     <img
@@ -533,7 +533,7 @@ export default function Movies() {
                             >
                                 {latestMovies.map((movie) => (
                                     <div className="item" key={movie.id}>
-                                        <Link to={`/movie/details/${movie.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                        <Link to={`/movie/details/${movie.api_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                                             <div className="movies-categories br-20">
                                                 <div className="movies-img">
                                                     <img
@@ -652,7 +652,7 @@ export default function Movies() {
                             >
                                 {popularMovies.map((movie) => (
                                     <div className="item" key={movie.id}>
-                                        <Link to={`/movie/details/${movie.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                        <Link to={`/movie/details/${movie.api_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                                             <div className="movies-categories br-20">
                                                 <div className="movies-img">
                                                     <img

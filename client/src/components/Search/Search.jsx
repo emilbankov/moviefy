@@ -95,7 +95,7 @@ export default function Search({ isOpen, onClose }) {
                                     key={item.id || item._id} 
                                     className="search-result-item"
                                     onClick={() => {
-                                        navigate(`/${item.type}/details/${item.id}`);
+                                        navigate(`/${item.type}/details/${item.api_id}`);
                                         handleClose();
                                     }}
                                 >

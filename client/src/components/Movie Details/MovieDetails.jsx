@@ -649,7 +649,7 @@ export default function MovieDetails() {
                                 >
                                     {movie.movies.collection.map((item) => (
                                         <div className="item" key={item.id}>
-                                            <Link to={`/movie/details/${item.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                            <Link to={`/movie/details/${item.api_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                                                 <div className="movies-categories br-20">
                                                     <div className="movies-img">
                                                         <img
