@@ -21,6 +21,7 @@ import Loader from './components/Loader/Loader';
 import Footer from './components/Footer/Footer';
 import SearchResults from './components/Search Results/SearchResults';
 import GenreResults from './components/Genre Results/GenreResults';
+import CollectionDetails from './components/Collection Details/CollectionDetails';
 import ScrollToTop from './components/ScrollToTop/ScrollToTop';
 import { LoadingProvider, useLoading } from './contexts/LoadingContext';
 
@@ -65,6 +66,7 @@ function AppContent() {
                     <Route path='/terms-and-conditions' element={<TermsConditions />} />
                     <Route path='/search' element={<SearchResults />} />
                     <Route path='/genre' element={<GenreResults />} />
+                    <Route path='/collection/:movieId' element={<CollectionDetails />} />
 
                     <Route path="/404" element={<Navigate to="*" replace />} />
                     <Route path="*" element={<Error />} />
