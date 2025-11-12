@@ -884,7 +884,7 @@ export default function Home() {
                     <div className="row">
                         {popularCollections.collections && popularCollections.collections.map((collection, index) => (
                             <div className="col-xl-2-3 col-lg-4 col-md-6 col-sm-6 col-6 mb-4" key={index}>
-                                <Link to={`/collection/${collection.first_movie_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                <Link to={`/collection/${collection.first_movie_api_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                                     <div className="movies-categories-style-2">
                                         <div className="movie-image">
                                             <img
