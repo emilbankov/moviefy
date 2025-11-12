@@ -148,7 +148,7 @@ export default function GenreResults() {
                     <div className="row">
                         {results && results.length > 0 ? (
                             results.map((item) => (
-                                <div key={item.id || item._id} className="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-4">
+                                <div key={item.api_id} className="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-4">
                                     <Link 
                                         to={item.type === 'series' ? `/series/details/${item.api_id}` : `/movie/details/${item.api_id}`}
                                         style={{ textDecoration: 'none', color: 'inherit' }}
