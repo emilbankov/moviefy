@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { getMovieDetails } from '../../services/moviesService';
+import * as moviesService from '../../services/moviesService';
 import { useLoading } from '../../contexts/LoadingContext';
 
 export default function CollectionDetails() {
@@ -13,9 +13,9 @@ export default function CollectionDetails() {
             if (movieId) {
                 setLoading(true);
                 try {
-                    const data = await getMovieDetails(movieId);
-                    console.log('Movie details data:', data);
+                    const data = await moviesService.getCollectionById(movieId);
                     setMovieData(data);
+                    console.log(data);
                 } catch (error) {
                     console.error('Movie details fetch error:', error);
                     setMovieData(null);
@@ -31,7 +31,7 @@ export default function CollectionDetails() {
     const collectionMovies = movieData?.movies?.collection || [];
     const currentMovie = movieData?.movies;
     const collection = currentMovie ? [currentMovie, ...collectionMovies] : collectionMovies;
-    const collectionTitle = movieData?.movies?.collection_name || 'Collection';
+    const collectionTitle = movieData?.collection_name || 'Collection';
 
     return (
         <section className="space-ptb">
@@ -44,8 +44,8 @@ export default function CollectionDetails() {
                     </div>
                 </div>
                 <div className="row">
-                    {collection && collection.length > 0 ? (
-                        collection.map((movie) => (
+                    {movieData?.movies && movieData?.movies?.length > 0 ? (
+                        movieData?.movies?.map((movie) => (
                             <div key={movie.id} className="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-4">
                                 <Link to={`/movie/details/${movie.api_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                                     <div className="movies-categories-style-3">
