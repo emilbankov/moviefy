@@ -35,6 +35,7 @@ export default function Home() {
             seriesService.getBannerSeries(),
             seriesService.getLatestSeries(),
             seriesService.getPopularSeries(),
+
         ])
             .then(([banner, latest, trending, popular, collections, bannerSeries, latestSeriesData, popularSeriesData]) => {
                 setBannerMovies(banner);
@@ -45,7 +46,7 @@ export default function Home() {
                 setBannerSeries(bannerSeries);
                 setLatestSeries(latestSeriesData);
                 setPopularSeries(popularSeriesData);
-                console.log(popularSeriesData);
+            console.log(popularCollections)
 
             })
             .catch(err => {
@@ -152,7 +153,7 @@ export default function Home() {
                                 <div className="movie-details-info movies-info">
                                     <h1 className="title">{bannerMovies.first_movie.title}</h1>
                                     <div className="d-flex">
-                                        <span className="year m-0">{bannerMovies.first_movie.release_date.split("-")[0]}</span>
+                                        <span className="year m-0">{bannerMovies.first_movie?.year || ''}</span>
                                         <span className="dot as-c"></span>
                                         <span className="time">{Math.floor(bannerMovies.first_movie.runtime / 60)} hr {bannerMovies.first_movie.runtime % 60} min</span>
                                     </div>
@@ -240,7 +241,7 @@ export default function Home() {
                                 </div>
                             </div>
                             <div className="col-md-2 col-sm-3 align-self-center text-center py-4 py-sm-0">
-                                <a href="movie.html" className="btn btn-link text-dark text-uppercase">
+                                <a href="movie.html" className="btn btn-link text-white text-uppercase">
                                     See All <i className="fa-solid fa-arrow-right" />
                                 </a>
                             </div>
@@ -882,9 +883,9 @@ export default function Home() {
                         </div>
                     </div>
                     <div className="row">
-                        {popularCollections.collections && popularCollections.collections.map((collection, index) => (
+                        {popularCollections.popular && popularCollections.popular.map((collection, index) => (
                             <div className="col-xl-2-3 col-lg-4 col-md-6 col-sm-6 col-6 mb-4" key={index}>
-                                <Link to={`/collection/${collection.first_movie_api_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                <Link to={`/collection/${collection.api_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                                     <div className="movies-categories-style-2">
                                         <div className="movie-image">
                                             <img
@@ -895,7 +896,7 @@ export default function Home() {
                                             <div className="info-top">
                                                 <a href="javascript:void(0)" className="like" onClick={(e) => e.preventDefault()} />
                                                 <a className="views" href="#" onClick={(e) => e.preventDefault()}>
-                                                    <i className="fa-solid fa-star" /> {collection.voteAverage.toFixed(1)}
+                                                    <i className="fa-solid fa-star" /> {collection.vote_average.toFixed(1)}
                                                 </a>
                                             </div>
                                             <div className="movie-info-content">
