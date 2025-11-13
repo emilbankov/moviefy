@@ -19,8 +19,9 @@ export default function MostPopular() {
         const getMovieDetails = async () => {
             setLoading(true);
             try {
-                const movieDetails = await moviesService.getMovieDetails(64132);
+                const movieDetails = await moviesService.getMovieDetails(912649);
                 setMovie(movieDetails);
+                console.log(movieDetails);
             } catch (error) {
                 console.error('Error fetching movie details:', error);
             } finally {
@@ -183,7 +184,7 @@ export default function MostPopular() {
                                             <div className="info-top">
                                                 <a href="javascript:void(0)" className="like" onClick={(e) => e.preventDefault()} />
                                                 <a className="views" href="#" onClick={(e) => e.preventDefault()}>
-                                                    <i className="fa-solid fa-star" /> {collection.voteAverage.toFixed(1)}
+                                                    <i className="fa-solid fa-star" /> {collection.vote_average.toFixed(1)}
                                                 </a>
                                             </div>
                                             <div className="movie-info-content">
