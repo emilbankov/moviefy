@@ -38,7 +38,7 @@ export default function GenreResults() {
     }, [genre, media]);
 
     // Get results and pagination info from API response
-    const results = apiData ? (apiData.results || apiData.movies || apiData.series || []) : [];
+    const results = apiData ? (apiData[media] || apiData.results || []) : [];
     const totalPages = apiData?.total_pages || 1;
     const itemsPerPage = apiData?.items_on_page || 30;
 
