@@ -19,10 +19,9 @@ import PrivacyPolicy from './components/Privacy Policy/PrivacyPolicy';
 import TermsConditions from './components/Terms Conditions/TermsConditions';
 import Loader from './components/Loader/Loader';
 import Footer from './components/Footer/Footer';
-import SearchResults from './components/Search Results/SearchResults';
-import GenreResults from './components/Genre Results/GenreResults';
 import CollectionDetails from './components/Collection Details/CollectionDetails';
 import ScrollToTop from './components/ScrollToTop/ScrollToTop';
+import Results from './components/Results/Results';
 import { LoadingProvider, useLoading } from './contexts/LoadingContext';
 
 function AppContent() {
@@ -64,8 +63,8 @@ function AppContent() {
                     <Route path='/error' element={<Error />} />
                     <Route path='/privacy-policy' element={<PrivacyPolicy />} />
                     <Route path='/terms-and-conditions' element={<TermsConditions />} />
-                    <Route path='/search' element={<SearchResults />} />
-                    <Route path='/genre' element={<GenreResults />} />
+                    <Route path='/search' element={<Results />} />
+                    <Route path='/genre' element={<Results />} />
                     <Route path='/collection/:movieId' element={<CollectionDetails />} />
 
                     <Route path="/404" element={<Navigate to="*" replace />} />
