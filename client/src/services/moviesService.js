@@ -10,7 +10,7 @@ export const getLatestMovies = async () => await get(`${baseUrl}/movies/latest?s
 export const getTrendingMovies = async () => await get(`${baseUrl}/movies/trending`);
 export const getPopularMovies = async () => await get(`${baseUrl}/movies/popular`);
 export const getGenres = async (media, genres, size, page = 1) => await get(`${baseUrl}/${media}/genres?genres=${genres}&size=${size}&page=${page}`);
-export const getPopularCollections = async () => await get(`${baseUrl}/movies/collections/popular`);
+export const getPopularCollections = async (page = 1, size = 20) => await get(`${baseUrl}/movies/collections/popular?page=${page}&size=${size}`);
 export const getMovieDetails = async (movieId) => await get(`${baseUrl}/movies/${movieId}`);
 export const search = async (media, query) => await get(`${baseUrl}/${media}/search?query=${query}`);
 export const getCollectionById = async (collectionId) => await get(`${baseUrl}/movies/collection/${collectionId}`);

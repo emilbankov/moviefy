@@ -317,7 +317,18 @@ export default function SeriesDetails() {
                                             <Link key={season.id} onClick={() => handleSeasonClick(season.id, season.season_number)}>
                                                 <div className="item">
                                                     <div className="episode-item">
-                                                        <a href="#" className="popup-youtube tv-episode">
+                                                        <a
+                                                            href={series?.series?.trailer ? `https://www.youtube.com/watch?v=${series.series.trailer}` : '#'}
+                                                            className={`tv-episode ${series?.series?.trailer ? 'popup-youtube' : ''}`}
+                                                            onClick={(e) => {
+                                                                // Prevent triggering season selection when playing trailer
+                                                                e.stopPropagation();
+                                                                // If no trailer, prevent default navigation to '#'
+                                                                if (!series?.series?.trailer) {
+                                                                    e.preventDefault();
+                                                                }
+                                                            }}
+                                                        >
                                                             <img 
                                                                 className="img-fluid" 
                                                                 src={season.poster_path 
