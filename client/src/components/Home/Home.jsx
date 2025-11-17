@@ -31,7 +31,7 @@ export default function Home() {
             moviesService.getLatestMovies(),
             moviesService.getTrendingMovies(),
             moviesService.getPopularMovies(),
-            moviesService.getPopularCollections(),
+            moviesService.getPopularCollections(1, 10),
             seriesService.getBannerSeries(),
             seriesService.getLatestSeries(),
             seriesService.getPopularSeries(),

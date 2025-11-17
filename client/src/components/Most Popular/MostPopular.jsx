@@ -12,7 +12,9 @@ const getGenreParam = (genreName) => {
 
 export default function MostPopular() {
     const [movie, setMovie] = useState(null);
-    const [popularCollections, setPopularCollections] = useState([]);
+    const [popularCollections, setPopularCollections] = useState({ popular: [], page: 1, total_pages: 1 });
+    const [currentPage, setCurrentPage] = useState(1);
+    const pageSize = 20;
     const { setLoading } = useLoading();
 
     useEffect(() => {
@@ -32,11 +34,11 @@ export default function MostPopular() {
         getMovieDetails();
     }, [setLoading]);
 
-    // Fetch popular collections
+    // Fetch popular collections with pagination
     useEffect(() => {
         const getCollections = async () => {
             try {
-                const collections = await moviesService.getPopularCollections();
+                const collections = await moviesService.getPopularCollections(currentPage, pageSize);
                 setPopularCollections(collections);
             } catch (error) {
                 console.error('Error fetching collections:', error);
@@ -44,7 +46,27 @@ export default function MostPopular() {
         };
 
         getCollections();
-    }, []);
+    }, [currentPage]);
+
+    // Pagination helpers identical to Results component
+    const totalPages = popularCollections?.total_pages || 1;
+    const paginate = (pageNumber) => {
+        setCurrentPage(pageNumber);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const getPageNumbers = () => {
+        const pageNumbers = [];
+        if (totalPages <= 3) {
+            for (let i = 1; i <= totalPages; i++) pageNumbers.push(i);
+        } else {
+            let start = Math.max(1, currentPage - 1);
+            let end = Math.min(totalPages, start + 2);
+            if (end - start < 2) start = Math.max(1, end - 2);
+            for (let i = start; i <= end; i++) pageNumbers.push(i);
+        }
+        return pageNumbers;
+    };
 
     useEffect(() => {
         const initPieChart = () => {
@@ -164,16 +186,13 @@ export default function MostPopular() {
                         <div className="col-md-12">
                             <div className="section-title">
                                 <h2 className="title">All Time Favorite Movie Collections</h2>
-                                <a href="web-series.html" className="btn-link">
-                                    More Collections
-                                </a>
                             </div>
                         </div>
                     </div>
                     <div className="row">
-                        {popularCollections.collections && popularCollections.collections.map((collection, index) => (
+                        {(popularCollections.popular || popularCollections.collections) && (popularCollections.popular || popularCollections.collections).map((collection, index) => (
                             <div className="col-xl-2-3 col-lg-4 col-md-6 col-sm-6 col-6 mb-4" key={index}>
-                                <Link to={`/collection/${collection.first_movie_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                <Link to={`/collection/${collection.api_id || collection.first_movie_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                                     <div className="movies-categories-style-2">
                                         <div className="movie-image">
                                             <img
@@ -208,6 +227,187 @@ export default function MostPopular() {
                             </div>
                         ))}
                     </div>
+                    {((popularCollections.total_pages || 1) > 1) && (
+                        <div className="row mt-5">
+                            <div className="col-12">
+                                <nav aria-label="Page navigation">
+                                    <ul className="pagination justify-content-center flex-wrap" style={{ gap: '8px' }}>
+                                        <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                                            <button
+                                                className="page-link"
+                                                onClick={() => currentPage > 1 && paginate(1)}
+                                                disabled={currentPage === 1}
+                                                style={{
+                                                    backgroundColor: currentPage === 1 ? '#333' : '#0a0a0a',
+                                                    border: '1px solid #f6be00',
+                                                    color: currentPage === 1 ? '#666' : '#f6be00',
+                                                    padding: '10px 16px',
+                                                    borderRadius: '5px',
+                                                    cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                                                    transition: 'all 0.3s ease',
+                                                    fontSize: '14px',
+                                                    fontWeight: '500'
+                                                }}
+                                                onMouseEnter={(e) => {
+                                                    if (currentPage !== 1) {
+                                                        e.target.style.backgroundColor = '#f6be00';
+                                                        e.target.style.color = '#0a0a0a';
+                                                    }
+                                                }}
+                                                onMouseLeave={(e) => {
+                                                    if (currentPage !== 1) {
+                                                        e.target.style.backgroundColor = '#0a0a0a';
+                                                        e.target.style.color = '#f6be00';
+                                                    }
+                                                }}
+                                            >
+                                                <i className="fas fa-angles-left me-1"></i>
+                                            </button>
+                                        </li>
+
+                                        <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                                            <button
+                                                className="page-link"
+                                                onClick={() => currentPage > 1 && paginate(currentPage - 1)}
+                                                disabled={currentPage === 1}
+                                                style={{
+                                                    backgroundColor: currentPage === 1 ? '#333' : '#0a0a0a',
+                                                    border: '1px solid #f6be00',
+                                                    color: currentPage === 1 ? '#666' : '#f6be00',
+                                                    padding: '10px 16px',
+                                                    borderRadius: '5px',
+                                                    cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                                                    transition: 'all 0.3s ease',
+                                                    fontSize: '14px',
+                                                    fontWeight: '500'
+                                                }}
+                                                onMouseEnter={(e) => {
+                                                    if (currentPage !== 1) {
+                                                        e.target.style.backgroundColor = '#f6be00';
+                                                        e.target.style.color = '#0a0a0a';
+                                                    }
+                                                }}
+                                                onMouseLeave={(e) => {
+                                                    if (currentPage !== 1) {
+                                                        e.target.style.backgroundColor = '#0a0a0a';
+                                                        e.target.style.color = '#f6be00';
+                                                    }
+                                                }}
+                                            >
+                                                <i className="fas fa-chevron-left me-1"></i>
+                                            </button>
+                                        </li>
+
+                                        {getPageNumbers().map((number) => (
+                                            <li key={number} className={`page-item ${currentPage === number ? 'active' : ''}`}>
+                                                <button
+                                                    className="page-link"
+                                                    onClick={() => paginate(number)}
+                                                    style={{
+                                                        backgroundColor: currentPage === number ? '#f6be00' : '#0a0a0a',
+                                                        border: '1px solid #f6be00',
+                                                        color: currentPage === number ? '#0a0a0a' : '#f6be00',
+                                                        padding: '10px 16px',
+                                                        borderRadius: '5px',
+                                                        cursor: 'pointer',
+                                                        transition: 'all 0.3s ease',
+                                                        minWidth: '45px',
+                                                        fontSize: '14px',
+                                                        fontWeight: currentPage === number ? '600' : '500'
+                                                    }}
+                                                    onMouseEnter={(e) => {
+                                                        if (currentPage !== number) {
+                                                            e.target.style.backgroundColor = '#f6be00';
+                                                            e.target.style.color = '#0a0a0a';
+                                                        }
+                                                    }}
+                                                    onMouseLeave={(e) => {
+                                                        if (currentPage !== number) {
+                                                            e.target.style.backgroundColor = '#0a0a0a';
+                                                            e.target.style.color = '#f6be00';
+                                                        }
+                                                    }}
+                                                >
+                                                    {number}
+                                                </button>
+                                            </li>
+                                        ))}
+
+                                        <li className={`page-item ${currentPage === (popularCollections.total_pages || 1) ? 'disabled' : ''}`}>
+                                            <button
+                                                className="page-link"
+                                                onClick={() => currentPage < (popularCollections.total_pages || 1) && paginate(currentPage + 1)}
+                                                disabled={currentPage === (popularCollections.total_pages || 1)}
+                                                style={{
+                                                    backgroundColor: currentPage === (popularCollections.total_pages || 1) ? '#333' : '#0a0a0a',
+                                                    border: '1px solid #f6be00',
+                                                    color: currentPage === (popularCollections.total_pages || 1) ? '#666' : '#f6be00',
+                                                    padding: '10px 16px',
+                                                    borderRadius: '5px',
+                                                    cursor: currentPage === (popularCollections.total_pages || 1) ? 'not-allowed' : 'pointer',
+                                                    transition: 'all 0.3s ease',
+                                                    fontSize: '14px',
+                                                    fontWeight: '500'
+                                                }}
+                                                onMouseEnter={(e) => {
+                                                    if (currentPage !== (popularCollections.total_pages || 1)) {
+                                                        e.target.style.backgroundColor = '#f6be00';
+                                                        e.target.style.color = '#0a0a0a';
+                                                    }
+                                                }}
+                                                onMouseLeave={(e) => {
+                                                    if (currentPage !== (popularCollections.total_pages || 1)) {
+                                                        e.target.style.backgroundColor = '#0a0a0a';
+                                                        e.target.style.color = '#f6be00';
+                                                    }
+                                                }}
+                                            >
+                                                <i className="fas fa-chevron-right ms-1"></i>
+                                            </button>
+                                        </li>
+
+                                        <li className={`page-item ${currentPage === (popularCollections.total_pages || 1) ? 'disabled' : ''}`}>
+                                            <button
+                                                className="page-link"
+                                                onClick={() => currentPage < (popularCollections.total_pages || 1) && paginate(popularCollections.total_pages || 1)}
+                                                disabled={currentPage === (popularCollections.total_pages || 1)}
+                                                style={{
+                                                    backgroundColor: currentPage === (popularCollections.total_pages || 1) ? '#333' : '#0a0a0a',
+                                                    border: '1px solid #f6be00',
+                                                    color: currentPage === (popularCollections.total_pages || 1) ? '#666' : '#f6be00',
+                                                    padding: '10px 16px',
+                                                    borderRadius: '5px',
+                                                    cursor: currentPage === (popularCollections.total_pages || 1) ? 'not-allowed' : 'pointer',
+                                                    transition: 'all 0.3s ease',
+                                                    fontSize: '14px',
+                                                    fontWeight: '500'
+                                                }}
+                                                onMouseEnter={(e) => {
+                                                    if (currentPage !== (popularCollections.total_pages || 1)) {
+                                                        e.target.style.backgroundColor = '#f6be00';
+                                                        e.target.style.color = '#0a0a0a';
+                                                    }
+                                                }}
+                                                onMouseLeave={(e) => {
+                                                    if (currentPage !== (popularCollections.total_pages || 1)) {
+                                                        e.target.style.backgroundColor = '#0a0a0a';
+                                                        e.target.style.color = '#f6be00';
+                                                    }
+                                                }}
+                                            >
+                                                <i className="fas fa-angles-right ms-1"></i>
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </nav>
+                                <div className="text-center mt-3">
+                                    <p className="text-white-50" style={{ fontSize: '14px' }}>
+                                        Page {currentPage} of {popularCollections.total_pages || 1} ({popularCollections.items_on_page || pageSize} items per page)
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </section>
 
