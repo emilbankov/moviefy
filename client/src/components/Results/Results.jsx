@@ -5,16 +5,16 @@ import { getPopularSeries, getTrendingSeries, getLatestSeries } from '../../serv
 import { useLoading } from '../../contexts/LoadingContext';
 
 export default function Results() {
+  // NOTE: we now get setSearchParams so we can read/write the page in the URL
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { setLoading } = useLoading();
 
   const [apiData, setApiData] = useState(null);
   
-  // Read page from URL params, default to 1
-  const urlPage = searchParams.get('page');
-  const [currentPage, setCurrentPage] = useState(urlPage ? parseInt(urlPage, 10) : 1);
-  
+  // page is *derived* from URL params — this keeps browser history correct
+  const currentPage = searchParams.get('page') ? parseInt(searchParams.get('page'), 10) : 1;
+
   const [pageInput, setPageInput] = useState('');
   const sectionRef = useRef(null);
   const didMountRef = useRef(false);
@@ -70,6 +70,18 @@ export default function Results() {
     setForceRefetch(prev => prev + 1);
   };
 
+  /* -------------------------
+     Helper: update page in URL
+     - preserves other query params
+     - creates a history entry so Back/Forward works
+     ------------------------- */
+  const updatePageInParams = (newPage) => {
+    const paramsObj = Object.fromEntries([...searchParams]);
+    // always set page as string
+    paramsObj.page = String(newPage);
+    setSearchParams(paramsObj);
+  };
+
   useEffect(() => {
     const fetchResults = async () => {
       if (!mode) return;
@@ -87,7 +99,7 @@ export default function Results() {
           // Catalog mode: fetch by media/category with pagination
           if (media === 'movies' || media === 'all') {
             const size = 30;
-            switch (category.toLowerCase()) {
+            switch (category?.toLowerCase()) {
               case 'trending':
                 data = await getTrendingMovies(currentPage, size);
                 break;
@@ -111,7 +123,7 @@ export default function Results() {
           } else if (media === 'series') {
             // Series endpoints now support pagination; request 30 per page
             const size = 30;
-            switch (category.toLowerCase()) {
+            switch (category?.toLowerCase()) {
               case 'trending':
               case 'latest':
                 data = await getLatestSeries(currentPage, size);
@@ -134,55 +146,21 @@ export default function Results() {
     };
 
     fetchResults();
-  }, [mode, query, genre, media, category, currentPage, setLoading, forceRefetch]); // Changed genreChanged to forceRefetch
+  }, [mode, query, genre, media, category, currentPage, setLoading, forceRefetch, selectedGenres]); // keep selectedGenres so latest uses correct genres
 
-  // Update URL when page changes (remove replace: true to add history entries)
+  // Reset to first page when primary criteria changes — update URL page to 1
   useEffect(() => {
-    const newSearchParams = new URLSearchParams(searchParams);
-    
-    if (currentPage > 1) {
-      newSearchParams.set('page', currentPage.toString());
-    } else {
-      newSearchParams.delete('page');
-    }
-    
-    // Only update URL if it's different to avoid infinite loops
-    const currentSearch = searchParams.toString();
-    const newSearch = newSearchParams.toString();
-    
-    if (currentSearch !== newSearch) {
-      // Remove { replace: true } to add new history entries instead of replacing
-      setSearchParams(newSearchParams);
-    }
-  }, [currentPage, searchParams, setSearchParams]);
-
-  // Listen for browser back/forward navigation
-  useEffect(() => {
-    const handlePopState = () => {
-      const newUrlPage = new URLSearchParams(window.location.search).get('page');
-      const newPage = newUrlPage ? parseInt(newUrlPage, 10) : 1;
-      if (newPage !== currentPage) {
-        setCurrentPage(newPage);
-      }
-    };
-
-    window.addEventListener('popstate', handlePopState);
-    
-    return () => {
-      window.removeEventListener('popstate', handlePopState);
-    };
-  }, [currentPage]);
-
-  // Reset to first page when primary criteria changes (but don't reset URL here)
-  useEffect(() => {
-    setCurrentPage(1);
+    // only update URL if it isn't already page 1
+    if (currentPage !== 1) updatePageInParams(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode, query, genre, media, category]);
 
-  // Separate effect to reset page when genres change
+  // Reset page to 1 when selecting genres (user expects new filter to start from page 1)
   useEffect(() => {
-    if (selectedGenres.length > 0) {
-      setCurrentPage(1);
+    if (selectedGenres.length > 0 && currentPage !== 1) {
+      updatePageInParams(1);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedGenres]);
 
   const selectResults = () => {
@@ -214,15 +192,18 @@ export default function Results() {
     }
   };
 
+  // PAGINATION: update URL (this creates history entries)
   const paginate = (pageNumber) => {
-    setCurrentPage(pageNumber);
+    // clamp page
+    const target = Math.max(1, Math.min(totalPages || 1, pageNumber));
+    updatePageInParams(target);
   };
 
   const goToPage = () => {
     const parsed = parseInt(pageInput, 10);
     if (!isNaN(parsed)) {
       const target = Math.max(1, Math.min(totalPages || 1, parsed));
-      setCurrentPage(target);
+      updatePageInParams(target);
       setPageInput('');
     }
   };
@@ -292,17 +273,17 @@ export default function Results() {
                   <div className="genre-filters-container">
                     <h6>Filter by Genres:</h6>
                     <div className="genre-buttons">
-                      {hardcodedGenres.map(genre => (
+                      {hardcodedGenres.map(genreItem => (
                         <label
-                          key={genre.id}
-                          className={`genre-checkbox ${selectedGenres.includes(genre.id) ? 'selected' : ''}`}
+                          key={genreItem.id}
+                          className={`genre-checkbox ${selectedGenres.includes(genreItem.id) ? 'selected' : ''}`}
                         >
                           <input
                             type="checkbox"
-                            checked={selectedGenres.includes(genre.id)}
-                            onChange={() => handleGenreToggle(genre.id)}
+                            checked={selectedGenres.includes(genreItem.id)}
+                            onChange={() => handleGenreToggle(genreItem.id)}
                           />
-                          <span>{genre.name}</span>
+                          <span>{genreItem.name}</span>
                         </label>
                       ))}
                     </div>
@@ -700,18 +681,6 @@ export default function Results() {
                           fontSize: '14px',
                           fontWeight: '500'
                         }}
-                        onMouseEnter={(e) => {
-                          if (currentPage !== 1) {
-                            e.target.style.backgroundColor = '#f6be00';
-                            e.target.style.color = '#0a0a0a';
-                          }
-                        }}
-                        onMouseLeave={(e) => {
-                          if (currentPage !== 1) {
-                            e.target.style.backgroundColor = '#0a0a0a';
-                            e.target.style.color = '#f6be00';
-                          }
-                        }}
                       >
                         <i className="fas fa-angles-left me-1"></i>
                       </button>
@@ -732,18 +701,6 @@ export default function Results() {
                           transition: 'all 0.3s ease',
                           fontSize: '14px',
                           fontWeight: '500'
-                        }}
-                        onMouseEnter={(e) => {
-                          if (currentPage !== 1) {
-                            e.target.style.backgroundColor = '#f6be00';
-                            e.target.style.color = '#0a0a0a';
-                          }
-                        }}
-                        onMouseLeave={(e) => {
-                          if (currentPage !== 1) {
-                            e.target.style.backgroundColor = '#0a0a0a';
-                            e.target.style.color = '#f6be00';
-                          }
                         }}
                       >
                         <i className="fas fa-chevron-left me-1"></i>
@@ -767,18 +724,6 @@ export default function Results() {
                             fontSize: '14px',
                             fontWeight: currentPage === number ? '600' : '500'
                           }}
-                          onMouseEnter={(e) => {
-                            if (currentPage !== number) {
-                              e.target.style.backgroundColor = '#f6be00';
-                              e.target.style.color = '#0a0a0a';
-                            }
-                          }}
-                          onMouseLeave={(e) => {
-                            if (currentPage !== number) {
-                              e.target.style.backgroundColor = '#0a0a0a';
-                              e.target.style.color = '#f6be00';
-                            }
-                          }}
                         >
                           {number}
                         </button>
@@ -801,18 +746,6 @@ export default function Results() {
                           fontSize: '14px',
                           fontWeight: '500'
                         }}
-                        onMouseEnter={(e) => {
-                          if (currentPage !== totalPages) {
-                            e.target.style.backgroundColor = '#f6be00';
-                            e.target.style.color = '#0a0a0a';
-                          }
-                        }}
-                        onMouseLeave={(e) => {
-                          if (currentPage !== totalPages) {
-                            e.target.style.backgroundColor = '#0a0a0a';
-                            e.target.style.color = '#f6be00';
-                          }
-                        }}
                       >
                         <i className="fas fa-chevron-right ms-1"></i>
                       </button>
@@ -833,18 +766,6 @@ export default function Results() {
                           transition: 'all 0.3s ease',
                           fontSize: '14px',
                           fontWeight: '500'
-                        }}
-                        onMouseEnter={(e) => {
-                          if (currentPage !== totalPages) {
-                            e.target.style.backgroundColor = '#f6be00';
-                            e.target.style.color = '#0a0a0a';
-                          }
-                        }}
-                        onMouseLeave={(e) => {
-                          if (currentPage !== totalPages) {
-                            e.target.style.backgroundColor = '#0a0a0a';
-                            e.target.style.color = '#f6be00';
-                          }
                         }}
                       >
                         <i className="fas fa-angles-right ms-1"></i>
