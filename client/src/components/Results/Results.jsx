@@ -44,7 +44,7 @@ export default function Results() {
                 data = await getTrendingMovies(currentPage, size);
                 break;
               case 'latest':
-                data = await getLatestMovies(currentPage, size);
+                data = await getLatestMovies(currentPage, size, "");
                 break;
               case 'popular':
               default:
@@ -492,10 +492,19 @@ export default function Results() {
                                 item.year || 'N/A'}
                             </span>
                             <a className="time" href="#" onClick={(e) => e.preventDefault()}>
-                              <i className="far fa-clock me-2" />
-                              {typeof item.runtime === 'number' && !isNaN(item.runtime)
-                                ? `${Math.floor(item.runtime / 60)}hr : ${item.runtime % 60}min`
-                                : 'N/A'}
+                              {isSeriesItem(item) ? (
+                                <>
+                                  <i className="far fa-clock me-2" />
+                                  SS {item?.seasons ?? 'N/A'} <span className="dot"></span> EPS {item?.episodes ?? 'N/A'}
+                                </>
+                              ) : (
+                                <>
+                                  <i className="far fa-clock me-2" />
+                                  {typeof item.runtime === 'number' && !isNaN(item.runtime)
+                                    ? `${Math.floor(item.runtime / 60)}hr : ${item.runtime % 60}min`
+                                    : 'N/A'}
+                                </>
+                              )}
                             </a>
                             <div className="info-tag">
                               <a className="views" href="#" onClick={(e) => e.preventDefault()}>

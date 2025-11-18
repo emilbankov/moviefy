@@ -28,7 +28,7 @@ export default function Home() {
         setLoading(true);
         Promise.all([
             moviesService.getBannerMovies(),
-            moviesService.getLatestMovies(1, 12),
+            moviesService.getLatestMovies(1, 12, ""),
             moviesService.getTrendingMovies(1, 10),
             moviesService.getPopularMovies(1, 10),
             moviesService.getPopularCollections(1, 10),

@@ -4,7 +4,7 @@ const baseUrl = 'https://moviefy-vwnq.onrender.com';
 const collection = 'The Avengers Collection';
 
 export const getBannerMovies = async () => await get(`${baseUrl}/movies/collection?name=${collection}`);
-export const getLatestMovies = async (page, size) => await get(`${baseUrl}/movies/latest?page=${page}&size=${size}`);
+export const getLatestMovies = async (page, size, genres) => await get(`${baseUrl}/movies/latest?page=${page}&size=${size}&genres=${genres}`);
 export const getTrendingMovies = async (page, size) => await get(`${baseUrl}/movies/trending?page=${page}&size=${size}`);
 export const getPopularMovies = async (page, size) => await get(`${baseUrl}/movies/popular?page=${page}&size=${size}`);
 export const getGenres = async (media, genres, size, page = 1) => await get(`${baseUrl}/${media}/genres?genres=${genres}&size=${size}&page=${page}`);
