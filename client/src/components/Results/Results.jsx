@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
-import { search, getGenres } from '../../services/moviesService';
+import { search, getGenres, getPopularMovies, getTrendingMovies, getLatestMovies, getPopularCollections } from '../../services/moviesService';
+import { getPopularSeries, getTrendingSeries, getLatestSeries } from '../../services/seriesService';
 import { useLoading } from '../../contexts/LoadingContext';
 
 export default function Results() {
@@ -14,8 +15,9 @@ export default function Results() {
   const query = searchParams.get('q');
   const genre = searchParams.get('genre');
   const media = searchParams.get('media') || 'all';
+  const category = searchParams.get('category'); // catalog category: popular | trending | latest
 
-  const mode = query ? 'search' : genre ? 'genre' : null;
+  const mode = query ? 'search' : genre ? 'genre' : category ? 'catalog' : null;
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -24,11 +26,49 @@ export default function Results() {
       try {
         let data;
         if (mode === 'search') {
+          // Note: current moviesService.search may ignore page/size; backend can be updated later.
           data = await search(media, query, currentPage, 30);
           console.log('Search results:', data);
-        } else {
+        } else if (mode === 'genre') {
           data = await getGenres(media, genre, 30, currentPage);
           console.log('Genre results:', data);
+        } else if (mode === 'catalog') {
+          // Catalog mode: fetch by media/category with pagination
+          if (media === 'movies' || media === 'all') {
+            const size = 30;
+            switch (category.toLowerCase()) {
+              case 'trending':
+                data = await getTrendingMovies(currentPage, size);
+                break;
+              case 'latest':
+                data = await getLatestMovies(currentPage, size);
+                break;
+              case 'popular':
+              default:
+                data = await getPopularMovies(currentPage, size);
+                break;
+            }
+            console.log('Catalog movies:', media, category, data);
+          } else if (media === 'collections') {
+            const size = 20; // collections: 20 per page
+            data = await getPopularCollections(currentPage, size);
+            console.log('Catalog collections:', category, data);
+          } else if (media === 'series') {
+            // Series endpoints currently do not support page param; fallback to non-paginated.
+            switch ((category || 'popular').toLowerCase()) {
+              case 'trending':
+                data = await getTrendingSeries();
+                break;
+              case 'latest':
+                data = await getLatestSeries();
+                break;
+              case 'popular':
+              default:
+                data = await getPopularSeries();
+                break;
+            }
+            console.log('Catalog series:', category, data);
+          }
         }
         setApiData(data);
       } catch (error) {
@@ -40,30 +80,39 @@ export default function Results() {
     };
 
     fetchResults();
-  }, [mode, query, genre, media, currentPage, setLoading]);
+  }, [mode, query, genre, media, category, currentPage, setLoading]);
 
   // Reset to first page when primary criteria changes
   useEffect(() => {
     setCurrentPage(1);
-  }, [mode, query, genre, media]);
+  }, [mode, query, genre, media, category]);
 
   const selectResults = () => {
     if (!apiData) return [];
     if (mode === 'search') {
       return apiData.results || apiData.movies || apiData.series || [];
     }
-    return apiData[media] || apiData.results || [];
+    if (mode === 'genre') {
+      return apiData[media] || apiData.results || [];
+    }
+    // catalog
+    if (media === 'movies' || media === 'all') return apiData.movies || [];
+    if (media === 'series') return apiData.series || [];
+    if (media === 'collections') return apiData.popular || apiData.collections || [];
+    return apiData.results || [];
   };
 
   const results = selectResults();
   const totalPages = apiData?.total_pages || 1;
-  const itemsPerPage = apiData?.items_on_page || 30;
+  const itemsPerPage = apiData?.items_on_page || (Array.isArray(results) ? results.length : 30);
 
   const handleTabChange = (newMedia) => {
     if (mode === 'search') {
       navigate(`/search?q=${query}&media=${newMedia}`);
     } else if (mode === 'genre') {
       navigate(`/genre?genre=${genre}&media=${newMedia}`);
+    } else if (mode === 'catalog') {
+      navigate(`/catalog?media=${newMedia}&category=${category}`);
     }
   };
 
@@ -92,7 +141,18 @@ export default function Results() {
     return false;
   };
 
-  const title = mode === 'search' ? `Search Results for "${query}"` : genre || 'Results';
+  const isCollectionItem = () => mode === 'catalog' && media === 'collections';
+
+  const title = (() => {
+    if (mode === 'search') return `Search Results for "${query}"`;
+    if (mode === 'genre') return genre || 'Results';
+    if (mode === 'catalog') {
+      const catLabel = (category || 'popular').replace(/\b\w/g, c => c.toUpperCase());
+      const mediaLabel = media.replace(/\b\w/g, c => c.toUpperCase());
+      return `${catLabel} ${mediaLabel}`;
+    }
+    return 'Results';
+  })();
 
   if (!mode) {
     return (
@@ -175,7 +235,7 @@ export default function Results() {
               results.map((item) => (
                 <div key={item.api_id} className="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-4">
                   <Link
-                    to={isSeriesItem(item) ? `/series/details/${item.api_id}` : `/movie/details/${item.api_id}`}
+                    to={isCollectionItem() ? `/collection/${item.api_id}` : (isSeriesItem(item) ? `/series/details/${item.api_id}` : `/movie/details/${item.api_id}`)}
                     style={{ textDecoration: 'none', color: 'inherit' }}
                   >
                     <div className="movies-categories-style-3">
