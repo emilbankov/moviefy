@@ -429,7 +429,7 @@ export default function Results() {
                   key={item.api_id}
                   className={isCollectionItem()
                     ? 'col-xl-2-3 col-lg-4 col-md-6 col-sm-6 col-6 mb-4'
-                    : 'col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-4'}
+                    : 'col-xl-2 col-lg-4 col-md-6 col-sm-6 col-6 mb-4'}
                 >
                   <Link
                     to={isCollectionItem() ? `/collection/${item.api_id}` : (isSeriesItem(item) ? `/series/details/${item.api_id}` : `/movie/details/${item.api_id}`)}
@@ -491,16 +491,12 @@ export default function Results() {
                                 item.first_air_date ? new Date(item.first_air_date).getFullYear() :
                                 item.year || 'N/A'}
                             </span>
-                            {isSeriesItem(item) && !item.runtime ? (
-                              <a className="time" href="#" onClick={(e) => e.preventDefault()}>
-                                SS {item.seasons || item.number_of_seasons || 'N/A'} <span className="dot"></span> EPS {item.episodes || item.number_of_episodes || 'N/A'}
-                              </a>
-                            ) : (
-                              <a className="time" href="#" onClick={(e) => e.preventDefault()}>
-                                <i className="far fa-clock me-2" />
-                                {item.runtime ? `${Math.floor(item.runtime / 60)}hr : ${item.runtime % 60}min` : 'N/A'}
-                              </a>
-                            )}
+                            <a className="time" href="#" onClick={(e) => e.preventDefault()}>
+                              <i className="far fa-clock me-2" />
+                              {typeof item.runtime === 'number' && !isNaN(item.runtime)
+                                ? `${Math.floor(item.runtime / 60)}hr : ${item.runtime % 60}min`
+                                : 'N/A'}
+                            </a>
                             <div className="info-tag">
                               <a className="views" href="#" onClick={(e) => e.preventDefault()}>
                                 <i className="far fa-eye" />
