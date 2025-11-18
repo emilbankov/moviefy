@@ -1,16 +1,14 @@
 import { get, post, put, del } from '../lib/request.js';
 
 const baseUrl = 'https://moviefy-vwnq.onrender.com';
-const collection = 'Home Alone Collection';
-const collections = 'The Fast and the Furious Collection, Die Hard Collection, The Avengers Collection, Harry Potter Collection, The Dark Knight Collection, Star Wars Collection, The Godfather Collection, Jurassic Park Collection, Venom Collection, Top Gun Collection';
-const seriesCollection = 'The Penguin, Squid Game, Money Heist, Hawaii Five-0';
+const collection = 'The Avengers Collection';
 
 export const getBannerMovies = async () => await get(`${baseUrl}/movies/collection?name=${collection}`);
-export const getLatestMovies = async () => await get(`${baseUrl}/movies/latest?size=12`);
-export const getTrendingMovies = async () => await get(`${baseUrl}/movies/trending`);
-export const getPopularMovies = async () => await get(`${baseUrl}/movies/popular`);
+export const getLatestMovies = async (page, size) => await get(`${baseUrl}/movies/latest?page=${page}&size=${size}`);
+export const getTrendingMovies = async (page, size) => await get(`${baseUrl}/movies/trending?page=${page}&size=${size}`);
+export const getPopularMovies = async (page, size) => await get(`${baseUrl}/movies/popular?page=${page}&size=${size}`);
 export const getGenres = async (media, genres, size, page = 1) => await get(`${baseUrl}/${media}/genres?genres=${genres}&size=${size}&page=${page}`);
-export const getPopularCollections = async (page = 1, size = 20) => await get(`${baseUrl}/movies/collections/popular?page=${page}&size=${size}`);
+export const getPopularCollections = async (page, size) => await get(`${baseUrl}/movies/collections/popular?page=${page}&size=${size}`);
 export const getMovieDetails = async (movieId) => await get(`${baseUrl}/movies/${movieId}`);
 export const search = async (media, query) => await get(`${baseUrl}/${media}/search?query=${query}`);
 export const getCollectionById = async (collectionId) => await get(`${baseUrl}/movies/collection/${collectionId}`);

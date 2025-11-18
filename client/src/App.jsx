@@ -65,6 +65,7 @@ function AppContent() {
                     <Route path='/terms-and-conditions' element={<TermsConditions />} />
                     <Route path='/search' element={<Results />} />
                     <Route path='/genre' element={<Results />} />
+                    <Route path='/catalog' element={<Results />} />
                     <Route path='/collection/:movieId' element={<CollectionDetails />} />
 
                     <Route path="/404" element={<Navigate to="*" replace />} />
