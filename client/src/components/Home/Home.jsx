@@ -46,9 +46,9 @@ export default function Home() {
                 setBannerSeries(bannerSeries);
                 setLatestSeries(latestSeriesData);
                 setPopularSeries(popularSeriesData);
-            console.log(popularCollections)
-            console.log(bannerMovies);
-            
+                console.log(popularCollections)
+                console.log(bannerMovies);
+
 
             })
             .catch(err => {
@@ -150,8 +150,9 @@ export default function Home() {
                 <div className="shape-02"><img className="img-fluid" src="images/banner/home-01/shape-02.png" alt="#" /></div>
                 <div className="container">
                     {bannerMovies.first_movie && (
-                        <div className="row banner-img" style={{ backgroundImage: `url(https://image.tmdb.org/t/p/original${bannerMovies.first_movie.backdrop_path || ''})` }}>
-                            <div className="col-xxl-6 col-xl-7 col-md-9 order-md-1 order-2">
+                        <div className="row banner-img" style={{ backgroundImage: `url(https://image.tmdb.org/t/p/original${bannerMovies.first_movie.backdrop_path || ''})`, position: 'relative' }}>
+                            <div style={{ position: 'absolute', top: 0, left: -12, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.6)', pointerEvents: 'none', zIndex: 0 }} />
+                            <div className="col-xxl-6 col-xl-7 col-md-9 order-md-1 order-2" style={{ position: 'relative', zIndex: 1 }}>
                                 <div className="movie-details-info movies-info">
                                     <h1 className="title">{bannerMovies.first_movie.title}</h1>
                                     <div className="d-flex">
@@ -187,7 +188,7 @@ export default function Home() {
                                     <a href="#" className="btn btn-light"><i className="fa-solid fa-circle-plus" />Add to List</a>
                                 </div>
                             </div>
-                            <div className="col-xxl-2 col-xl-3 col-md-3 align-self-center order-md-2 order-1 justify-content-start justify-content-md-center d-flex ms-xl-play-button-movies">
+                            <div className="col-xxl-2 col-xl-3 col-md-3 align-self-center order-md-2 order-1 justify-content-start justify-content-md-center d-flex ms-xl-play-button-movies" style={{ position: 'relative', zIndex: 1 }}>
                                 <div className="video">
                                     <a className="video-btn btn-animation popup-youtube" href={`https://www.youtube.com/watch?v=${bannerMovies.first_movie.trailer}`}><i className="fa-solid fa-play" /></a>
                                 </div>
@@ -914,7 +915,15 @@ export default function Home() {
                                                 <p>
                                                     {collection.overview}
                                                 </p>
-                                                <span className="btn btn-link btn-link-1" onClick={(e) => e.stopPropagation()}><i className="fa-solid fa-play" />Play Now</span>
+                                                <span
+                                                    className="btn btn-link btn-link-1"
+                                                    style={{ color: 'white', textDecoration: "none" }}
+                                                    onMouseEnter={(e) => { e.currentTarget.style.color = '#ffc107'; }}
+                                                    onMouseLeave={(e) => { e.currentTarget.style.color = 'white'; }}
+                                                    onClick={(e) => e.stopPropagation()}
+                                                >
+                                                    <i className="fa-solid fa-play" />Play Now
+                                                </span>
                                             </div>
                                         </div>
                                     </div>

@@ -233,51 +233,95 @@ export default function Results() {
           <div className="row">
             {results && results.length > 0 ? (
               results.map((item) => (
-                <div key={item.api_id} className="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div
+                  key={item.api_id}
+                  className={isCollectionItem()
+                    ? 'col-xl-2-3 col-lg-4 col-md-6 col-sm-6 col-6 mb-4'
+                    : 'col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-4'}
+                >
                   <Link
                     to={isCollectionItem() ? `/collection/${item.api_id}` : (isSeriesItem(item) ? `/series/details/${item.api_id}` : `/movie/details/${item.api_id}`)}
                     style={{ textDecoration: 'none', color: 'inherit' }}
                   >
-                    <div className="movies-categories-style-3">
-                      <div className="movie-image">
-                        <img
-                          className="img-fluid"
-                          src={item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : 'images/movie/movie-01.jpg'}
-                          alt={item.title || item.name}
-                        />
-                      </div>
-                      <div className="movie-info-content">
-                        <h6>
-                          <span className="title">{item.title || item.name}</span>
-                        </h6>
-                        <div className="movie-info smaller-text">
-                          <span className="year">
-                            {item.release_date ? new Date(item.release_date).getFullYear() :
-                              item.first_air_date ? new Date(item.first_air_date).getFullYear() :
-                              item.year || 'N/A'}
-                          </span>
-                          {isSeriesItem(item) && !item.runtime ? (
-                            <a className="time" href="#" onClick={(e) => e.preventDefault()}>
-                              SS {item.seasons || item.number_of_seasons || 'N/A'} <span className="dot"></span> EPS {item.episodes || item.number_of_episodes || 'N/A'}
+                    {isCollectionItem() ? (
+                      <div className="movies-categories-style-2">
+                        <div className="movie-image">
+                          <img
+                            className="img-fluid br-20"
+                            src={item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : 'images/movie/movie-01.jpg'}
+                            alt={item.name || item.title}
+                          />
+                          <div className="info-top">
+                            <a href="javascript:void(0)" className="like" onClick={(e) => e.preventDefault()} />
+                            <a className="views" href="#" onClick={(e) => e.preventDefault()}>
+                              <i className="fa-solid fa-star" /> {item.vote_average ? (typeof item.vote_average === 'number' ? item.vote_average.toFixed(1) : item.vote_average) : 'N/A'}
                             </a>
-                          ) : (
+                          </div>
+                          <div className="movie-info-content">
                             <a className="time" href="#" onClick={(e) => e.preventDefault()}>
                               <i className="far fa-clock me-2" />
                               {item.runtime ? `${Math.floor(item.runtime / 60)}hr : ${item.runtime % 60}min` : 'N/A'}
                             </a>
-                          )}
-                          <div className="info-tag">
-                            <a className="views" href="#" onClick={(e) => e.preventDefault()}>
-                              <i className="far fa-eye" />
-                            </a>
-                            <a href="#" className="like" onClick={(e) => e.preventDefault()} />
-                            <a className="rating" href="#" onClick={(e) => e.preventDefault()}>
-                              <i className="fa-solid fa-star" /> {item.vote_average ? (typeof item.vote_average === 'number' ? item.vote_average.toFixed(1) : item.vote_average) : 'N/A'}/10
-                            </a>
+                            <h5>
+                              <span className="title">{item.name || item.title}</span>
+                            </h5>
+                            <p>
+                              {item.overview || ''}
+                            </p>
+                            <span
+                              className="btn btn-link btn-link-1"
+                              style={{ color: 'white', textDecoration: "none" }}
+                              onMouseEnter={(e) => { e.currentTarget.style.color = '#ffc107'; }}
+                              onMouseLeave={(e) => { e.currentTarget.style.color = 'white'; }}
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <i className="fa-solid fa-play" />Play Now
+                            </span>
                           </div>
                         </div>
                       </div>
-                    </div>
+                    ) : (
+                      <div className="movies-categories-style-3">
+                        <div className="movie-image">
+                          <img
+                            className="img-fluid"
+                            src={item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : 'images/movie/movie-01.jpg'}
+                            alt={item.title || item.name}
+                          />
+                        </div>
+                        <div className="movie-info-content">
+                          <h6>
+                            <span className="title">{item.title || item.name}</span>
+                          </h6>
+                          <div className="movie-info smaller-text">
+                            <span className="year">
+                              {item.release_date ? new Date(item.release_date).getFullYear() :
+                                item.first_air_date ? new Date(item.first_air_date).getFullYear() :
+                                item.year || 'N/A'}
+                            </span>
+                            {isSeriesItem(item) && !item.runtime ? (
+                              <a className="time" href="#" onClick={(e) => e.preventDefault()}>
+                                SS {item.seasons || item.number_of_seasons || 'N/A'} <span className="dot"></span> EPS {item.episodes || item.number_of_episodes || 'N/A'}
+                              </a>
+                            ) : (
+                              <a className="time" href="#" onClick={(e) => e.preventDefault()}>
+                                <i className="far fa-clock me-2" />
+                                {item.runtime ? `${Math.floor(item.runtime / 60)}hr : ${item.runtime % 60}min` : 'N/A'}
+                              </a>
+                            )}
+                            <div className="info-tag">
+                              <a className="views" href="#" onClick={(e) => e.preventDefault()}>
+                                <i className="far fa-eye" />
+                              </a>
+                              <a href="#" className="like" onClick={(e) => e.preventDefault()} />
+                              <a className="rating" href="#" onClick={(e) => e.preventDefault()}>
+                                <i className="fa-solid fa-star" /> {item.vote_average ? (typeof item.vote_average === 'number' ? item.vote_average.toFixed(1) : item.vote_average) : 'N/A'}/10
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </Link>
                 </div>
               ))
