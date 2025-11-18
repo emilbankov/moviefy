@@ -28,9 +28,9 @@ export default function Home() {
         setLoading(true);
         Promise.all([
             moviesService.getBannerMovies(),
-            moviesService.getLatestMovies(),
-            moviesService.getTrendingMovies(),
-            moviesService.getPopularMovies(),
+            moviesService.getLatestMovies(1, 12),
+            moviesService.getTrendingMovies(1, 10),
+            moviesService.getPopularMovies(1, 10),
             moviesService.getPopularCollections(1, 10),
             seriesService.getBannerSeries(),
             seriesService.getLatestSeries(),
@@ -47,6 +47,8 @@ export default function Home() {
                 setLatestSeries(latestSeriesData);
                 setPopularSeries(popularSeriesData);
             console.log(popularCollections)
+            console.log(bannerMovies);
+            
 
             })
             .catch(err => {
@@ -241,9 +243,9 @@ export default function Home() {
                                 </div>
                             </div>
                             <div className="col-md-2 col-sm-3 align-self-center text-center py-4 py-sm-0">
-                                <a href="movie.html" className="btn btn-link text-white text-uppercase">
+                                <Link to="/catalog?media=movies&category=popular" className="btn btn-link text-white text-uppercase">
                                     See All <i className="fa-solid fa-arrow-right" />
-                                </a>
+                                </Link>
                             </div>
                         </div>
                     )}
@@ -255,9 +257,9 @@ export default function Home() {
                         <div className="col-md-12">
                             <div className="section-title">
                                 <h2 className="title">Latest Movie Releases</h2>
-                                <a href="movie.html" className="btn-link">
+                                <Link to="/catalog?media=movies&category=latest" className="btn-link">
                                     More Movies
-                                </a>
+                                </Link>
                             </div>
                         </div>
                     </div>
@@ -310,9 +312,9 @@ export default function Home() {
                             <div className="col-md-12">
                                 <div className="section-title">
                                     <h2 className="title">Trending Movies</h2>
-                                    <a href="movie.html" className="btn-link">
+                                    <Link to="/catalog?media=movies&category=trending" className="btn-link">
                                         More Movies
-                                    </a>
+                                    </Link>
                                 </div>
                             </div>
                             <div className="col-md-12">
@@ -755,9 +757,9 @@ export default function Home() {
                             <div className="col-md-12">
                                 <div className="section-title">
                                     <h2 className="title">All Time Most Popular Movies</h2>
-                                    <a href="movie.html" className="btn-link">
+                                    <Link to="/catalog?media=movies&category=popular" className="btn-link">
                                         More Movies
-                                    </a>
+                                    </Link>
                                 </div>
                             </div>
                             <div className="col-md-12">
@@ -876,9 +878,9 @@ export default function Home() {
                         <div className="col-md-12">
                             <div className="section-title">
                                 <h2 className="title">All Time Favorite Movie Collections</h2>
-                                <a href="web-series.html" className="btn-link">
+                                <Link to="/catalog?media=collections&category=popular" className="btn-link">
                                     More Collections
-                                </a>
+                                </Link>
                             </div>
                         </div>
                     </div>
@@ -1085,9 +1087,9 @@ export default function Home() {
                         <div className="col-md-12">
                             <div className="section-title">
                                 <h2 className="title">Newest Series</h2>
-                                <a href="movie.html" className="btn-link">
+                                <Link to="/catalog?media=series&category=latest" className="btn-link">
                                     More Series
-                                </a>
+                                </Link>
                             </div>
                         </div>
                     </div>
@@ -1140,9 +1142,9 @@ export default function Home() {
                             <div className="col-md-12">
                                 <div className="section-title">
                                     <h2 className="title">All Time Most Popular Series</h2>
-                                    <a href="movie.html" className="btn-link">
+                                    <Link to="/catalog?media=series&category=popular" className="btn-link">
                                         More Series
-                                    </a>
+                                    </Link>
                                 </div>
                             </div>
                             <div className="col-md-12">
