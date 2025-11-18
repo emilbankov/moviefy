@@ -11,24 +11,26 @@ export default function Results() {
   const { setLoading } = useLoading();
 
   const [apiData, setApiData] = useState(null);
-  
+
   // page is *derived* from URL params — this keeps browser history correct
   const currentPage = searchParams.get('page') ? parseInt(searchParams.get('page'), 10) : 1;
 
   const [pageInput, setPageInput] = useState('');
   const sectionRef = useRef(null);
   const didMountRef = useRef(false);
+  const pageResetRef = useRef(false);
 
   const query = searchParams.get('q');
   const genre = searchParams.get('genre');
   const media = searchParams.get('media') || 'all';
   const category = searchParams.get('category'); // catalog category: popular | trending | latest
-  
+
   const mode = query ? 'search' : genre ? 'genre' : category ? 'catalog' : null;
 
   const [selectedGenres, setSelectedGenres] = useState([]);
   const [genreChanged, setGenreChanged] = useState(false);
   const [forceRefetch, setForceRefetch] = useState(0); // New state for forcing refetch
+  const [filtersExpanded, setFiltersExpanded] = useState(false);
 
   const hardcodedGenres = [
     { id: 28, name: 'Action' },
@@ -53,7 +55,7 @@ export default function Results() {
   ];
 
   const handleGenreToggle = (genreId) => {
-    setSelectedGenres(prev => 
+    setSelectedGenres(prev =>
       prev.includes(genreId)
         ? prev.filter(id => id !== genreId)
         : [...prev, genreId]
@@ -105,7 +107,7 @@ export default function Results() {
                 break;
               case 'latest':
                 // Pass selected genres as array of names
-                const genreNames = selectedGenres.length > 0 
+                const genreNames = selectedGenres.length > 0
                   ? selectedGenres.map(id => hardcodedGenres.find(g => g.id === id)?.name).filter(Boolean)
                   : [];
                 data = await getLatestMovies(currentPage, size, genreNames);
@@ -146,10 +148,16 @@ export default function Results() {
     };
 
     fetchResults();
-  }, [mode, query, genre, media, category, currentPage, setLoading, forceRefetch, selectedGenres]); // keep selectedGenres so latest uses correct genres
+  }, [mode, query, genre, media, category, currentPage, setLoading, forceRefetch]); // Remove selectedGenres from here // keep selectedGenres so latest uses correct genres
 
   // Reset to first page when primary criteria changes — update URL page to 1
   useEffect(() => {
+    // Skip page reset on initial mount to preserve URL page parameter when navigating back
+    if (!pageResetRef.current) {
+      pageResetRef.current = true;
+      return;
+    }
+    
     // only update URL if it isn't already page 1
     if (currentPage !== 1) updatePageInParams(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -264,51 +272,60 @@ export default function Results() {
 
   return (
     <>
-      <section>
+      <section ref={sectionRef}>
         <div className="container">
           <div className="row genres-container">
             {mode === 'catalog' && media === 'movies' && category === 'latest' && (
               <div className="row">
                 <div className="col-12">
                   <div className="genre-filters-container">
-                    <h6>Filter by Genres:</h6>
-                    <div className="genre-buttons">
-                      {hardcodedGenres.map(genreItem => (
-                        <label
-                          key={genreItem.id}
-                          className={`genre-checkbox ${selectedGenres.includes(genreItem.id) ? 'selected' : ''}`}
-                        >
-                          <input
-                            type="checkbox"
-                            checked={selectedGenres.includes(genreItem.id)}
-                            onChange={() => handleGenreToggle(genreItem.id)}
-                          />
-                          <span>{genreItem.name}</span>
-                        </label>
-                      ))}
+                    <div 
+                      className="genre-filters-header"
+                      onClick={() => setFiltersExpanded(!filtersExpanded)}
+                      style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                    >
+                      <h6 style={{ margin: 0 }}>Filter by Genres:</h6>
+                      <span className={`genre-toggle-icon ${filtersExpanded ? 'expanded' : ''}`}>
+                        {filtersExpanded ? '▼' : '▶'}
+                      </span>
                     </div>
-                    <div className="genre-actions" style={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      gap: '15px',
-                      marginTop: '20px',
-                      flexWrap: 'wrap'
-                    }}>
-                      <button 
-                        className="genre-search-btn"
-                        onClick={handleSearch}
-                      >
-                        Filter
-                      </button>
-                      {selectedGenres.length > 0 && (
-                        <button 
-                          className="genre-reset-btn"
-                          onClick={handleResetFilters}
-                        >
-                          Reset Filters
-                        </button>
-                      )}
-                    </div>
+                    {filtersExpanded && (
+                      <>
+                        <div className="genre-buttons">
+                          {hardcodedGenres.map(genreItem => (
+                            <button
+                              key={genreItem.id}
+                              className={`genre-filter-btn ${selectedGenres.includes(genreItem.id) ? 'selected' : ''}`}
+                              onClick={() => handleGenreToggle(genreItem.id)}
+                            >
+                              {genreItem.name}
+                            </button>
+                          ))}
+                        </div>
+                        <div className="genre-actions" style={{
+                          display: 'flex',
+                          justifyContent: 'center',
+                          gap: '15px',
+                          marginTop: '20px',
+                          flexWrap: 'wrap'
+                        }}>
+                          <button 
+                            className="genre-search-btn"
+                            onClick={handleSearch}
+                          >
+                            Filter
+                          </button>
+                          {selectedGenres.length > 0 && (
+                            <button 
+                              className="genre-reset-btn"
+                              onClick={handleResetFilters}
+                            >
+                              Reset Filters
+                            </button>
+                          )}
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
@@ -316,7 +333,7 @@ export default function Results() {
           </div>
         </div>
       </section>
-      <section ref={sectionRef}>
+      <section>
         <div className="container">
           <div className="row">
             <div className="col-md-12">

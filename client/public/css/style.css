@@ -9022,11 +9022,40 @@ button {
   border: 1px solid #f6be00;
 }
 
-.genre-filters-container h6 {
+.genre-filters-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #333;
+    margin-bottom: 15px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+  }
+
+.genre-filters-header:hover {
+  opacity: 0.8;
+}
+
+.genre-filters-header h6 {
   font-size: 16px;
   font-weight: 600;
   color: #f6be00;
-  margin-bottom: 15px;
+  margin: 0;
+}
+
+.genre-toggle-icon {
+  font-size: 14px;
+  color: #f6be00;
+  transition: transform 0.3s ease;
+  font-weight: bold;
+}
+
+.genre-toggle-icon.expanded {
+  transform: rotate(0deg);
 }
 
 .genre-buttons {
@@ -9037,38 +9066,28 @@ button {
   justify-content: center;
 }
 
-.genre-checkbox {
-  display: flex !important;
-  align-items: center !important;
-  gap: 8px !important;
-  cursor: pointer !important;
-  background-color: #000000 !important;
-  color: #f6be00 !important;
-  padding: 8px 16px !important;
-  border-radius: 25px !important;
-  border: 1px solid #f6be00 !important;
-  transition: all 0.3s ease !important;
-  font-size: 14px !important;
-  font-weight: 500 !important;
-  white-space: nowrap !important;
-  min-width: fit-content !important;
+.genre-filter-btn {
+  background-color: #000000;
+  color: #f6be00;
+  border: 1px solid #f6be00;
+  padding: 8px 16px;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  min-width: fit-content;
 }
 
-.genre-checkbox:hover {
-  background-color: #f6be00 !important;
-  color: #0a0a0a !important;
+.genre-filter-btn:hover {
+  background-color: #f6be00;
+  color: #0a0a0a;
 }
 
-.genre-checkbox input[type="checkbox"] {
-  margin: 0 !important;
-  width: 16px !important;
-  height: 16px !important;
-  accent-color: #f6be00 !important;
-}
-
-.genre-checkbox.selected {
-  background-color: #f6be00 !important;
-  color: #0a0a0a !important;
+.genre-filter-btn.selected {
+  background-color: #f6be00;
+  color: #0a0a0a;
 }
 
 .genre-actions {
@@ -9131,13 +9150,26 @@ button {
     margin-bottom: 20px;
   }
   
+  .genre-filters-header {
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+  }
+  
+  .genre-filters-header h6 {
+    font-size: 14px;
+  }
+  
+  .genre-toggle-icon {
+    font-size: 12px;
+  }
+  
   .genre-buttons {
     gap: 8px;
   }
   
-  .genre-checkbox {
-    padding: 6px 12px !important;
-    font-size: 13px !important;
+  .genre-filter-btn {
+    padding: 6px 12px;
+    font-size: 13px;
   }
 
   .genre-actions {
@@ -9159,13 +9191,21 @@ button {
 }
 
 @media (max-width: 480px) {
+  .genre-filters-header h6 {
+    font-size: 13px;
+  }
+  
+  .genre-toggle-icon {
+    font-size: 11px;
+  }
+  
   .genre-buttons {
     gap: 6px;
   }
   
-  .genre-checkbox {
-    padding: 5px 10px !important;
-    font-size: 12px !important;
+  .genre-filter-btn {
+    padding: 5px 10px;
+    font-size: 12px;
   }
 
   .genre-actions {
