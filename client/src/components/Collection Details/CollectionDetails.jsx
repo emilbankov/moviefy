@@ -46,7 +46,7 @@ export default function CollectionDetails() {
                 <div className="row">
                     {movieData?.movies && movieData?.movies?.length > 0 ? (
                         movieData?.movies?.map((movie) => (
-                            <div key={movie.id} className="col-xl-2 col-lg-3 col-md-4 col-sm-6 mb-4">
+                            <div key={movie.id} className="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-6 mb-4">
                                 <Link to={`/movie/details/${movie.api_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                                     <div className="movies-categories-style-3">
                                         <div className="movie-image">
