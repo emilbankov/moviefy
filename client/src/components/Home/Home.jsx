@@ -46,10 +46,7 @@ export default function Home() {
                 setBannerSeries(bannerSeries);
                 setLatestSeries(latestSeriesData);
                 setPopularSeries(popularSeriesData);
-                console.log(popularCollections)
-                console.log(bannerMovies);
-
-
+console.log(bannerMovies);
             })
             .catch(err => {
                 console.error("Error fetching data:", err);
@@ -244,7 +241,7 @@ export default function Home() {
                                 </div>
                             </div>
                             <div className="col-md-2 col-sm-3 align-self-center text-center py-4 py-sm-0">
-                                <Link to="/catalog?media=movies&category=popular" className="btn btn-link text-white text-uppercase">
+                                <Link to={`/collection/${bannerMovies.collection_api_id}`} className="btn btn-link text-white text-uppercase">
                                     See All <i className="fa-solid fa-arrow-right" />
                                 </Link>
                             </div>
