@@ -22,6 +22,50 @@ export default function Results() {
 
   const mode = query ? 'search' : genre ? 'genre' : category ? 'catalog' : null;
 
+  const [selectedGenres, setSelectedGenres] = useState([]);
+  const [genreChanged, setGenreChanged] = useState(false);
+  const [forceRefetch, setForceRefetch] = useState(0); // New state for forcing refetch
+
+  const hardcodedGenres = [
+    { id: 28, name: 'Action' },
+    { id: 12, name: 'Adventure' },
+    { id: 16, name: 'Animation' },
+    { id: 35, name: 'Comedy' },
+    { id: 80, name: 'Crime' },
+    { id: 99, name: 'Documentary' },
+    { id: 18, name: 'Drama' },
+    { id: 10751, name: 'Family' },
+    { id: 14, name: 'Fantasy' },
+    { id: 36, name: 'History' },
+    { id: 27, name: 'Horror' },
+    { id: 10402, name: 'Music' },
+    { id: 9648, name: 'Mystery' },
+    { id: 10749, name: 'Romance' },
+    { id: 878, name: 'Sci-Fi' },
+    { id: 10770, name: 'TV Movie' },
+    { id: 53, name: 'Thriller' },
+    { id: 10752, name: 'War' },
+    { id: 37, name: 'Western' }
+  ];
+
+  const handleGenreToggle = (genreId) => {
+    setSelectedGenres(prev => 
+      prev.includes(genreId)
+        ? prev.filter(id => id !== genreId)
+        : [...prev, genreId]
+    );
+    // Removed the forceRefetch trigger from here
+  };
+
+  const handleSearch = () => {
+    setForceRefetch(prev => prev + 1);
+  };
+
+  const handleResetFilters = () => {
+    setSelectedGenres([]);
+    setForceRefetch(prev => prev + 1);
+  };
+
   useEffect(() => {
     const fetchResults = async () => {
       if (!mode) return;
@@ -44,7 +88,11 @@ export default function Results() {
                 data = await getTrendingMovies(currentPage, size);
                 break;
               case 'latest':
-                data = await getLatestMovies(currentPage, size, "");
+                // Pass selected genres as array of names
+                const genreNames = selectedGenres.length > 0 
+                  ? selectedGenres.map(id => hardcodedGenres.find(g => g.id === id)?.name).filter(Boolean)
+                  : [];
+                data = await getLatestMovies(currentPage, size, genreNames);
                 break;
               case 'popular':
               default:
@@ -82,12 +130,19 @@ export default function Results() {
     };
 
     fetchResults();
-  }, [mode, query, genre, media, category, currentPage, setLoading]);
+  }, [mode, query, genre, media, category, currentPage, setLoading, forceRefetch]); // Changed genreChanged to forceRefetch
 
-  // Reset to first page when primary criteria changes
+  // Reset to first page when primary criteria changes OR when genres change
   useEffect(() => {
     setCurrentPage(1);
-  }, [mode, query, genre, media, category]);
+  }, [mode, query, genre, media, category]); // Removed selectedGenres from here
+
+  // Separate effect to reset page when genres change
+  useEffect(() => {
+    if (selectedGenres.length > 0) {
+      setCurrentPage(1);
+    }
+  }, [selectedGenres]);
 
   const selectResults = () => {
     if (!apiData) return [];
@@ -187,7 +242,59 @@ export default function Results() {
 
   return (
     <>
-      <section ref={sectionRef} className="space-ptb">
+      <section>
+        <div className="container">
+          <div className="row genres-container">
+            {mode === 'catalog' && media === 'movies' && category === 'latest' && (
+              <div className="row">
+                <div className="col-12">
+                  <div className="genre-filters-container">
+                    <h6>Filter by Genres:</h6>
+                    <div className="genre-buttons">
+                      {hardcodedGenres.map(genre => (
+                        <label
+                          key={genre.id}
+                          className={`genre-checkbox ${selectedGenres.includes(genre.id) ? 'selected' : ''}`}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={selectedGenres.includes(genre.id)}
+                            onChange={() => handleGenreToggle(genre.id)}
+                          />
+                          <span>{genre.name}</span>
+                        </label>
+                      ))}
+                    </div>
+                    <div className="genre-actions" style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      gap: '15px',
+                      marginTop: '20px',
+                      flexWrap: 'wrap'
+                    }}>
+                      <button 
+                        className="genre-search-btn"
+                        onClick={handleSearch}
+                      >
+                        Filter
+                      </button>
+                      {selectedGenres.length > 0 && (
+                        <button 
+                          className="genre-reset-btn"
+                          onClick={handleResetFilters}
+                        >
+                          Reset Filters
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+      <section ref={sectionRef}>
         <div className="container">
           <div className="row">
             <div className="col-md-12">
@@ -421,7 +528,7 @@ export default function Results() {
               </div>
             </div>
           </div>
-          
+
           <div className="row">
             {results && results.length > 0 ? (
               results.map((item) => (
@@ -489,7 +596,7 @@ export default function Results() {
                             <span className="year">
                               {item.release_date ? new Date(item.release_date).getFullYear() :
                                 item.first_air_date ? new Date(item.first_air_date).getFullYear() :
-                                item.year || 'N/A'}
+                                  item.year || 'N/A'}
                             </span>
                             <a className="time" href="#" onClick={(e) => e.preventDefault()}>
                               {isSeriesItem(item) ? (
