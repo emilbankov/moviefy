@@ -259,7 +259,7 @@ export default function Home() {
                             <div className="section-title">
                                 <h2 className="title">Latest Movie Releases</h2>
                                 <Link to="/catalog?media=movies&category=latest" className="btn-link">
-                                    More Movies
+                                    More movies
                                 </Link>
                             </div>
                         </div>
@@ -314,7 +314,7 @@ export default function Home() {
                                 <div className="section-title">
                                     <h2 className="title">Trending Movies</h2>
                                     <Link to="/catalog?media=movies&category=trending" className="btn-link">
-                                        More Movies
+                                        More movies
                                     </Link>
                                 </div>
                             </div>
@@ -759,7 +759,7 @@ export default function Home() {
                                 <div className="section-title">
                                     <h2 className="title">All Time Most Popular Movies</h2>
                                     <Link to="/catalog?media=movies&category=popular" className="btn-link">
-                                        More Movies
+                                        More movies
                                     </Link>
                                 </div>
                             </div>
@@ -880,7 +880,7 @@ export default function Home() {
                             <div className="section-title">
                                 <h2 className="title">All Time Favorite Movie Collections</h2>
                                 <Link to="/catalog?media=collections&category=popular" className="btn-link">
-                                    More Collections
+                                    More collections
                                 </Link>
                             </div>
                         </div>
@@ -1097,7 +1097,7 @@ export default function Home() {
                             <div className="section-title">
                                 <h2 className="title">Newest Series</h2>
                                 <Link to="/catalog?media=series&category=latest" className="btn-link">
-                                    More Series
+                                    More series
                                 </Link>
                             </div>
                         </div>
@@ -1152,7 +1152,7 @@ export default function Home() {
                                 <div className="section-title">
                                     <h2 className="title">All Time Most Popular Series</h2>
                                     <Link to="/catalog?media=series&category=popular" className="btn-link">
-                                        More Series
+                                        More series
                                     </Link>
                                 </div>
                             </div>

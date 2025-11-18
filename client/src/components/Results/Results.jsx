@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { search, getGenres, getPopularMovies, getTrendingMovies, getLatestMovies, getPopularCollections } from '../../services/moviesService';
 import { getPopularSeries, getTrendingSeries, getLatestSeries } from '../../services/seriesService';
@@ -11,6 +11,9 @@ export default function Results() {
 
   const [apiData, setApiData] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [pageInput, setPageInput] = useState('');
+  const sectionRef = useRef(null);
+  const didMountRef = useRef(false);
 
   const query = searchParams.get('q');
   const genre = searchParams.get('genre');
@@ -117,8 +120,23 @@ export default function Results() {
 
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  const goToPage = () => {
+    const parsed = parseInt(pageInput, 10);
+    if (!isNaN(parsed)) {
+      const target = Math.max(1, Math.min(totalPages || 1, parsed));
+      setCurrentPage(target);
+      setPageInput('');
+    }
+  };
+
+  useEffect(() => {
+    if (didMountRef.current && sectionRef.current) {
+      sectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    didMountRef.current = true;
+  }, [currentPage]);
 
   const getPageNumbers = () => {
     const pageNumbers = [];
@@ -169,13 +187,185 @@ export default function Results() {
 
   return (
     <>
-      <section className="space-ptb">
+      <section ref={sectionRef} className="space-ptb">
         <div className="container">
           <div className="row">
             <div className="col-md-12">
               <div className="categories-tabs">
-                <div className="section-title">
-                  <h2 className="title">{title}</h2>
+                <div className="section-title d-flex align-items-center justify-content-between flex-wrap" style={{ gap: '12px' }}>
+                  <h2 className="title mb-0">{title}</h2>
+                  {totalPages > 1 && (
+                    <nav aria-label="Page navigation" className="ms-auto">
+                      <ul className="pagination justify-content-end flex-wrap mb-0" style={{ gap: '8px' }}>
+                        <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                          <button
+                            className="page-link"
+                            onClick={() => currentPage > 1 && paginate(1)}
+                            disabled={currentPage === 1}
+                            style={{
+                              backgroundColor: currentPage === 1 ? '#333' : '#0a0a0a',
+                              border: '1px solid #f6be00',
+                              color: currentPage === 1 ? '#666' : '#f6be00',
+                              padding: '10px 16px',
+                              borderRadius: '5px',
+                              cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                              transition: 'all 0.3s ease',
+                              fontSize: '14px',
+                              fontWeight: '500'
+                            }}
+                            onMouseEnter={(e) => {
+                              if (currentPage !== 1) {
+                                e.target.style.backgroundColor = '#f6be00';
+                                e.target.style.color = '#0a0a0a';
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              if (currentPage !== 1) {
+                                e.target.style.backgroundColor = '#0a0a0a';
+                                e.target.style.color = '#f6be00';
+                              }
+                            }}
+                          >
+                            <i className="fas fa-angles-left me-1"></i>
+                          </button>
+                        </li>
+
+                        <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                          <button
+                            className="page-link"
+                            onClick={() => currentPage > 1 && paginate(currentPage - 1)}
+                            disabled={currentPage === 1}
+                            style={{
+                              backgroundColor: currentPage === 1 ? '#333' : '#0a0a0a',
+                              border: '1px solid #f6be00',
+                              color: currentPage === 1 ? '#666' : '#f6be00',
+                              padding: '10px 16px',
+                              borderRadius: '5px',
+                              cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                              transition: 'all 0.3s ease',
+                              fontSize: '14px',
+                              fontWeight: '500'
+                            }}
+                            onMouseEnter={(e) => {
+                              if (currentPage !== 1) {
+                                e.target.style.backgroundColor = '#f6be00';
+                                e.target.style.color = '#0a0a0a';
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              if (currentPage !== 1) {
+                                e.target.style.backgroundColor = '#0a0a0a';
+                                e.target.style.color = '#f6be00';
+                              }
+                            }}
+                          >
+                            <i className="fas fa-chevron-left me-1"></i>
+                          </button>
+                        </li>
+
+                        {getPageNumbers().map((number) => (
+                          <li key={number} className={`page-item ${currentPage === number ? 'active' : ''}`}>
+                            <button
+                              className="page-link"
+                              onClick={() => paginate(number)}
+                              style={{
+                                backgroundColor: currentPage === number ? '#f6be00' : '#0a0a0a',
+                                border: '1px solid #f6be00',
+                                color: currentPage === number ? '#0a0a0a' : '#f6be00',
+                                padding: '10px 16px',
+                                borderRadius: '5px',
+                                cursor: 'pointer',
+                                transition: 'all 0.3s ease',
+                                minWidth: '45px',
+                                fontSize: '14px',
+                                fontWeight: currentPage === number ? '600' : '500'
+                              }}
+                              onMouseEnter={(e) => {
+                                if (currentPage !== number) {
+                                  e.target.style.backgroundColor = '#f6be00';
+                                  e.target.style.color = '#0a0a0a';
+                                }
+                              }}
+                              onMouseLeave={(e) => {
+                                if (currentPage !== number) {
+                                  e.target.style.backgroundColor = '#0a0a0a';
+                                  e.target.style.color = '#f6be00';
+                                }
+                              }}
+                            >
+                              {number}
+                            </button>
+                          </li>
+                        ))}
+
+                        <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                          <button
+                            className="page-link"
+                            onClick={() => currentPage < totalPages && paginate(currentPage + 1)}
+                            disabled={currentPage === totalPages}
+                            style={{
+                              backgroundColor: currentPage === totalPages ? '#333' : '#0a0a0a',
+                              border: '1px solid #f6be00',
+                              color: currentPage === totalPages ? '#666' : '#f6be00',
+                              padding: '10px 16px',
+                              borderRadius: '5px',
+                              cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                              transition: 'all 0.3s ease',
+                              fontSize: '14px',
+                              fontWeight: '500'
+                            }}
+                            onMouseEnter={(e) => {
+                              if (currentPage !== totalPages) {
+                                e.target.style.backgroundColor = '#f6be00';
+                                e.target.style.color = '#0a0a0a';
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              if (currentPage !== totalPages) {
+                                e.target.style.backgroundColor = '#0a0a0a';
+                                e.target.style.color = '#f6be00';
+                              }
+                            }}
+                          >
+                            <i className="fas fa-chevron-right ms-1"></i>
+                          </button>
+                        </li>
+
+                        <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                          <button
+                            className="page-link"
+                            onClick={() => currentPage < totalPages && paginate(totalPages)}
+                            disabled={currentPage === totalPages}
+                            style={{
+                              backgroundColor: currentPage === totalPages ? '#333' : '#0a0a0a',
+                              border: '1px solid #f6be00',
+                              color: currentPage === totalPages ? '#666' : '#f6be00',
+                              padding: '10px 16px',
+                              borderRadius: '5px',
+                              cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                              transition: 'all 0.3s ease',
+                              fontSize: '14px',
+                              fontWeight: '500'
+                            }}
+                            onMouseEnter={(e) => {
+                              if (currentPage !== totalPages) {
+                                e.target.style.backgroundColor = '#f6be00';
+                                e.target.style.color = '#0a0a0a';
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              if (currentPage !== totalPages) {
+                                e.target.style.backgroundColor = '#0a0a0a';
+                                e.target.style.color = '#f6be00';
+                              }
+                            }}
+                          >
+                            <i className="fas fa-angles-right ms-1"></i>
+                          </button>
+                        </li>
+                      </ul>
+                    </nav>
+                  )}
                 </div>
                 {(mode === 'search' || mode === 'genre' || (mode === 'catalog' && media === 'all')) && (
                   <div className="tabs">
@@ -231,6 +421,7 @@ export default function Results() {
               </div>
             </div>
           </div>
+          
           <div className="row">
             {results && results.length > 0 ? (
               results.map((item) => (
@@ -506,8 +697,62 @@ export default function Results() {
                         <i className="fas fa-angles-right ms-1"></i>
                       </button>
                     </li>
+
                   </ul>
                 </nav>
+                {/* Centered page jump under pagination */}
+                <div className="d-flex justify-content-center align-items-center mt-3" style={{ gap: '8px' }}>
+                  <input
+                    className="page-jump-input"
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    min={1}
+                    max={totalPages}
+                    value={pageInput}
+                    onChange={(e) => {
+                      const digitsOnly = e.target.value.replace(/[^0-9]/g, '');
+                      setPageInput(digitsOnly);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        goToPage();
+                      }
+                    }}
+                    placeholder={`Page 1-${totalPages}`}
+                    style={{
+                      width: '113px',
+                      padding: '10px',
+                      borderRadius: '5px',
+                      border: '1px solid #f6be00',
+                      backgroundColor: '#0a0a0a',
+                      color: '#f6be00',
+                      outline: 'none',
+                      fontSize: '14px',
+                      textAlign: 'center'
+                    }}
+                    aria-label="Page number"
+                  />
+                  <button
+                    className="page-link"
+                    onClick={goToPage}
+                    style={{
+                      backgroundColor: '#f6be00',
+                      border: '1px solid #f6be00',
+                      color: '#0a0a0a',
+                      padding: '10px 16px',
+                      borderRadius: '5px',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease',
+                      fontSize: '14px',
+                      fontWeight: '500',
+                      minWidth: '45px'
+                    }}
+                    aria-label="Go to page"
+                  >
+                    <i className="fas fa-search"></i>
+                  </button>
+                </div>
                 <div className="text-center mt-3">
                   <p className="text-white-50" style={{ fontSize: '14px' }}>
                     Page {currentPage} of {totalPages} ({itemsPerPage} items per page)
