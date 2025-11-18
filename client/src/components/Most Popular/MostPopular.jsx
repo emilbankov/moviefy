@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import * as moviesService from '../../services/moviesService';
 import { useLoading } from '../../contexts/LoadingContext';
 import { Link } from 'react-router-dom';
@@ -16,6 +16,7 @@ export default function MostPopular() {
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 20;
     const { setLoading } = useLoading();
+    const sectionRef = useRef(null);
 
     useEffect(() => {
         const getMovieDetails = async () => {
@@ -52,8 +53,15 @@ export default function MostPopular() {
     const totalPages = popularCollections?.total_pages || 1;
     const paginate = (pageNumber) => {
         setCurrentPage(pageNumber);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
+
+    const didMountRef = useRef(false);
+    useEffect(() => {
+        if (didMountRef.current && sectionRef.current) {
+            sectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        didMountRef.current = true;
+    }, [currentPage]);
 
     const getPageNumbers = () => {
         const pageNumbers = [];
@@ -180,7 +188,7 @@ export default function MostPopular() {
                 </div>
             </section>
 
-            <section className="space-ptb">
+            <section ref={sectionRef} className="space-ptb">
                 <div className="container">
                     <div className="row">
                         <div className="col-md-12">
