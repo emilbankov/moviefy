@@ -701,7 +701,7 @@ export default function Results() {
                   </ul>
                 </nav>
                 {/* Centered page jump under pagination */}
-                <div className="d-flex justify-content-center align-items-center mt-3" style={{ gap: '8px' }}>
+                <div className="page-jump d-flex justify-content-center align-items-center mt-3" style={{ gap: '8px' }}>
                   <input
                     className="page-jump-input"
                     type="text"
