@@ -33,8 +33,8 @@ export default function Home() {
             moviesService.getPopularMovies(1, 10),
             moviesService.getPopularCollections(1, 10),
             seriesService.getBannerSeries(),
-            seriesService.getLatestSeries(),
-            seriesService.getPopularSeries(),
+            seriesService.getLatestSeries(1, 12),
+            seriesService.getPopularSeries(1, 10),
 
         ])
             .then(([banner, latest, trending, popular, collections, bannerSeries, latestSeriesData, popularSeriesData]) => {
