@@ -5,12 +5,16 @@ import { getPopularSeries, getTrendingSeries, getLatestSeries } from '../../serv
 import { useLoading } from '../../contexts/LoadingContext';
 
 export default function Results() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { setLoading } = useLoading();
 
   const [apiData, setApiData] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
+  
+  // Read page from URL params, default to 1
+  const urlPage = searchParams.get('page');
+  const [currentPage, setCurrentPage] = useState(urlPage ? parseInt(urlPage, 10) : 1);
+  
   const [pageInput, setPageInput] = useState('');
   const sectionRef = useRef(null);
   const didMountRef = useRef(false);
@@ -19,7 +23,7 @@ export default function Results() {
   const genre = searchParams.get('genre');
   const media = searchParams.get('media') || 'all';
   const category = searchParams.get('category'); // catalog category: popular | trending | latest
-
+  
   const mode = query ? 'search' : genre ? 'genre' : category ? 'catalog' : null;
 
   const [selectedGenres, setSelectedGenres] = useState([]);
@@ -132,10 +136,47 @@ export default function Results() {
     fetchResults();
   }, [mode, query, genre, media, category, currentPage, setLoading, forceRefetch]); // Changed genreChanged to forceRefetch
 
-  // Reset to first page when primary criteria changes OR when genres change
+  // Update URL when page changes (remove replace: true to add history entries)
+  useEffect(() => {
+    const newSearchParams = new URLSearchParams(searchParams);
+    
+    if (currentPage > 1) {
+      newSearchParams.set('page', currentPage.toString());
+    } else {
+      newSearchParams.delete('page');
+    }
+    
+    // Only update URL if it's different to avoid infinite loops
+    const currentSearch = searchParams.toString();
+    const newSearch = newSearchParams.toString();
+    
+    if (currentSearch !== newSearch) {
+      // Remove { replace: true } to add new history entries instead of replacing
+      setSearchParams(newSearchParams);
+    }
+  }, [currentPage, searchParams, setSearchParams]);
+
+  // Listen for browser back/forward navigation
+  useEffect(() => {
+    const handlePopState = () => {
+      const newUrlPage = new URLSearchParams(window.location.search).get('page');
+      const newPage = newUrlPage ? parseInt(newUrlPage, 10) : 1;
+      if (newPage !== currentPage) {
+        setCurrentPage(newPage);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [currentPage]);
+
+  // Reset to first page when primary criteria changes (but don't reset URL here)
   useEffect(() => {
     setCurrentPage(1);
-  }, [mode, query, genre, media, category]); // Removed selectedGenres from here
+  }, [mode, query, genre, media, category]);
 
   // Separate effect to reset page when genres change
   useEffect(() => {
@@ -301,7 +342,7 @@ export default function Results() {
               <div className="categories-tabs">
                 <div className="section-title d-flex align-items-center justify-content-between flex-wrap" style={{ gap: '12px' }}>
                   <h2 className="title mb-0">{title}</h2>
-                  {totalPages > 1 && (
+                  {totalPages > 1 && (mode === 'catalog' && media === 'movies' && category === 'latest') && (
                     <nav aria-label="Page navigation" className="ms-auto top-pagination">
                       <ul className="pagination justify-content-end flex-wrap mb-0" style={{ gap: '8px' }}>
                         <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
