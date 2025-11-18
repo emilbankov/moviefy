@@ -54,17 +54,16 @@ export default function Results() {
             data = await getPopularCollections(currentPage, size);
             console.log('Catalog collections:', category, data);
           } else if (media === 'series') {
-            // Series endpoints currently do not support page param; fallback to non-paginated.
-            switch ((category || 'popular').toLowerCase()) {
+            // Series endpoints now support pagination; request 30 per page
+            const size = 30;
+            switch (category.toLowerCase()) {
               case 'trending':
-                data = await getTrendingSeries();
-                break;
               case 'latest':
-                data = await getLatestSeries();
+                data = await getLatestSeries(currentPage, size);
                 break;
               case 'popular':
               default:
-                data = await getPopularSeries();
+                data = await getPopularSeries(currentPage, size);
                 break;
             }
             console.log('Catalog series:', category, data);
