@@ -8944,3 +8944,32 @@ button {
         font-size: 12px;
     }
 }
+
+/* Responsive pagination sizing */
+@media (max-width: 992px) {
+  .pagination .page-link {
+    padding: 8px 12px !important;
+    font-size: 13px !important;
+    border-radius: 4px !important;
+    min-width: 36px !important;
+  }
+  .pagination {
+    gap: 6px !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .pagination .page-link {
+    padding: 6px 9px !important;
+    font-size: 12px !important;
+    border-radius: 4px !important;
+    min-width: 32px !important;
+  }
+  .pagination {
+    gap: 2px !important;
+  }
+  /* Hide the top pagination on phones */
+  .top-pagination {
+    display: none !important;
+  }
+}

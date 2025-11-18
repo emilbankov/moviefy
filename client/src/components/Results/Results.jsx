@@ -195,7 +195,7 @@ export default function Results() {
                 <div className="section-title d-flex align-items-center justify-content-between flex-wrap" style={{ gap: '12px' }}>
                   <h2 className="title mb-0">{title}</h2>
                   {totalPages > 1 && (
-                    <nav aria-label="Page navigation" className="ms-auto">
+                    <nav aria-label="Page navigation" className="ms-auto top-pagination">
                       <ul className="pagination justify-content-end flex-wrap mb-0" style={{ gap: '8px' }}>
                         <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
                           <button
