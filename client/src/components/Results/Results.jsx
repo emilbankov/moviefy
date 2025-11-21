@@ -237,8 +237,7 @@ export default function Results() {
   };
 
   const isSeriesItem = (item) => {
-    if (item?.type === 'series') return true;
-    if (item?.media_type === 'tv') return true;
+    if (item?.media_type === 'series') return true;
     if (media === 'series') return true;
     return false;
   };

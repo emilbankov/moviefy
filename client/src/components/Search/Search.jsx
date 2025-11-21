@@ -95,7 +95,7 @@ export default function Search({ isOpen, onClose }) {
                                     key={item.id || item._id} 
                                     className="search-result-item"
                                     onClick={() => {
-                                        navigate(`/${item.type}/details/${item.api_id}`);
+                                        navigate(`/${item.media_type}/details/${item.api_id}`);
                                         handleClose();
                                     }}
                                 >
@@ -109,7 +109,7 @@ export default function Search({ isOpen, onClose }) {
                                                 <i className="fas fa-star"></i>
                                                 {item.vote_average}
                                             </span>
-                                            <span>{item.type === 'movie' ? 'Movie' : 'Series'}</span>
+                                            <span>{item.media_type === 'movie' ? 'Movie' : 'Series'}</span>
                                             {item.release_date && <span>{item.release_date.split('-')[0]}</span>}
                                         </p>
                                     </div>
