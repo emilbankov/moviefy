@@ -44,8 +44,37 @@ const Header = ({ onSearchOpen }) => {
                                 <li className="nav-item">
                                     <Link className="nav-link" to="/movies"><span>Movies</span></Link>
                                 </li>
-                                <li className=" nav-item dropdown">
-                                    <Link className="nav-link" to="/series"><span>Series</span></Link>
+                                <li className="dropdown nav-item">
+                                    <a className="nav-link" href="javascript:void(0)" data-bs-toggle="dropdown">
+                                        Series<i className="fas fa-chevron-down fa-xs"></i>
+                                    </a>
+                                    <ul className="dropdown-menu series-dropdown-menu">
+                                        <li>
+                                            <Link className="dropdown-item" to="/catalog?media=series&category=latest">
+                                                <span>All Series</span>
+                                            </Link>
+                                        </li>
+                                        <li>
+                                            <Link className="dropdown-item" to="/catalog?media=series&category=latest&types=scripted">
+                                                <span>Scripted</span>
+                                            </Link>
+                                        </li>
+                                        <li>
+                                            <Link className="dropdown-item" to="/catalog?media=series&category=latest&types=miniseries">
+                                                <span>Mini-Series</span>
+                                            </Link>
+                                        </li>
+                                        <li>
+                                            <Link className="dropdown-item" to="/catalog?media=series&category=latest&types=reality">
+                                                <span>Reality</span>
+                                            </Link>
+                                        </li>
+                                        <li>
+                                            <Link className="dropdown-item" to="/catalog?media=series&category=latest&types=documentary">
+                                                <span>Documentary</span>
+                                            </Link>
+                                        </li>
+                                    </ul>
                                 </li>
                                 <li className="dropdown nav-item mega-menu ">
                                     <a className="nav-link" href="javascript:void(0)" data-bs-toggle="dropdown">Pages<i className="fas fa-chevron-down fa-xs"></i></a>
