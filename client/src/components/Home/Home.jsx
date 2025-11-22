@@ -1014,7 +1014,7 @@ console.log(bannerMovies);
                         </div>
                     </div>
                     <div className="row">
-                        {popularCollections.popular && popularCollections.popular.map((collection, index) => (
+                        {popularCollections.results && popularCollections.results.map((collection, index) => (
                             <div className="col-xl-2-3 col-lg-4 col-md-6 col-sm-6 col-6 mb-4" key={index}>
                                 <Link to={`/collection/${collection.api_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                                     <div className="movies-categories-style-2">
