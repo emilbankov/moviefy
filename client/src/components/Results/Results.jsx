@@ -25,6 +25,9 @@ export default function Results() {
   const media = searchParams.get('media') || 'all';
   const category = searchParams.get('category'); // catalog category: popular | trending | latest
 
+  // Add types parameter for series filtering (plural to match genres)
+  const types = searchParams.get('types') || '';
+
   // Add this missing line:
   const mode = query ? 'search' : genre ? 'genre' : category ? 'catalog' : null;
 
@@ -32,7 +35,12 @@ export default function Results() {
   const genresParam = searchParams.get('genres');
   const initialGenres = genresParam ? genresParam.split(',').map(id => parseInt(id, 10)) : [];
   const [selectedGenres, setSelectedGenres] = useState(initialGenres);
-  
+
+  // Initialize selectedTypes from URL parameters
+  const typesParam = searchParams.get('types');
+  const initialTypes = typesParam ? typesParam.split(',').filter(type => type.trim()) : [];
+  const [selectedTypes, setSelectedTypes] = useState(initialTypes);
+
   const [genreChanged, setGenreChanged] = useState(false);
   const [forceRefetch, setForceRefetch] = useState(0); // New state for forcing refetch
   const [filtersExpanded, setFiltersExpanded] = useState(false);
@@ -59,6 +67,13 @@ export default function Results() {
     { id: 37, name: 'Western' }
   ];
 
+  const hardcodedSeriesTypes = [
+    { id: 'scripted', name: 'Scripted' },
+    { id: 'miniseries', name: 'Mini-Series' },
+    { id: 'reality', name: 'Reality' },
+    { id: 'documentary', name: 'Documentary' }
+  ];
+
   const handleGenreToggle = (genreId) => {
     setSelectedGenres(prev => {
       const newGenres = prev.includes(genreId)
@@ -72,13 +87,28 @@ export default function Results() {
     // Removed the forceRefetch trigger from here
   };
 
+  const handleTypeToggle = (typeId) => {
+    setSelectedTypes(prev => {
+      const newTypes = prev.includes(typeId)
+        ? prev.filter(id => id !== typeId)
+        : [...prev, typeId];
+      
+      // Update URL with new types
+      updateTypesInParams(newTypes);
+      return newTypes;
+    });
+    // Removed the forceRefetch trigger from here
+  };
+
   const handleSearch = () => {
     setForceRefetch(prev => prev + 1);
   };
 
   const handleResetFilters = () => {
     setSelectedGenres([]);
+    setSelectedTypes([]);
     updateGenresInParams([]); // Clear genres from URL
+    updateTypesInParams([]); // Clear types from URL
     setForceRefetch(prev => prev + 1);
   };
 
@@ -95,6 +125,16 @@ export default function Results() {
       paramsObj.genres = genres.join(',');
     } else {
       delete paramsObj.genres; // Remove the parameter if no genres selected
+    }
+    setSearchParams(paramsObj);
+  };
+
+  const updateTypesInParams = (types) => {
+    const paramsObj = Object.fromEntries([...searchParams]);
+    if (types.length > 0) {
+      paramsObj.types = types.join(',');
+    } else {
+      delete paramsObj.types; // Remove the parameter if no types selected
     }
     setSearchParams(paramsObj);
   };
@@ -141,17 +181,24 @@ export default function Results() {
           } else if (media === 'series') {
             // Series endpoints now support pagination; request 30 per page
             const size = 30;
+            // Prepare genre names for filtering (same as movies)
+            const genreNames = selectedGenres.length > 0
+              ? selectedGenres.map(id => hardcodedGenres.find(g => g.id === id)?.name).filter(Boolean).join(',')
+              : '';
+            const typesParam = selectedTypes.length > 0 ? selectedTypes.join(',') : '';
             switch (category?.toLowerCase()) {
               case 'trending':
+                data = await getTrendingSeries(typesParam, currentPage, size, genreNames);
+                break;
               case 'latest':
-                data = await getLatestSeries(currentPage, size);
+                data = await getLatestSeries(typesParam, currentPage, size, genreNames);
                 break;
               case 'popular':
               default:
-                data = await getPopularSeries(currentPage, size);
+                data = await getPopularSeries(typesParam, currentPage, size, genreNames);
                 break;
             }
-            console.log('Catalog series:', category, data);
+            console.log('Catalog series:', category, selectedTypes, selectedGenres, data);
           }
         }
         setApiData(data);
@@ -164,7 +211,7 @@ export default function Results() {
     };
 
     fetchResults();
-  }, [mode, query, genre, media, category, currentPage, setLoading, forceRefetch]); // Remove selectedGenres from here // keep selectedGenres so latest uses correct genres
+  }, [mode, query, genre, media, category, currentPage, setLoading, forceRefetch]);
 
   // Reset to first page when primary criteria changes — update URL page to 1
   useEffect(() => {
@@ -179,13 +226,20 @@ export default function Results() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode, query, genre, media, category]);
 
-  // Reset page to 1 when selecting genres (user expects new filter to start from page 1)
+  // Reset page to 1 when selecting genres or types (user expects new filter to start from page 1)
   useEffect(() => {
     if (selectedGenres.length > 0 && currentPage !== 1) {
       updatePageInParams(1);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedGenres]);
+
+  useEffect(() => {
+    if (selectedTypes.length > 0 && currentPage !== 1) {
+      updatePageInParams(1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedTypes]);
 
   const selectResults = () => {
     if (!apiData) return [];
@@ -294,55 +348,150 @@ export default function Results() {
             {mode !== 'search' && mode && media !== 'collections' && (
               <div className="row">
                 <div className="col-12">
-                  <div className="genre-filters-container">
-                    <div 
-                      className="genre-filters-header"
-                      onClick={() => setFiltersExpanded(!filtersExpanded)}
-                      style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
-                    >
-                      <h6 style={{ margin: 0 }}>Filter by Genres:</h6>
-                      <span className={`genre-toggle-icon ${filtersExpanded ? 'expanded' : ''}`}>
-                        {filtersExpanded ? '▼' : '▶'}
-                      </span>
-                    </div>
-                    {filtersExpanded && (
-                      <>
-                        <div className="genre-buttons">
-                          {hardcodedGenres.map(genreItem => (
-                            <button
-                              key={genreItem.id}
-                              className={`genre-filter-btn ${selectedGenres.includes(genreItem.id) ? 'selected' : ''}`}
-                              onClick={() => handleGenreToggle(genreItem.id)}
-                            >
-                              {genreItem.name}
-                            </button>
-                          ))}
-                        </div>
-                        <div className="genre-actions" style={{
-                          display: 'flex',
-                          justifyContent: 'center',
-                          gap: '15px',
-                          marginTop: '20px',
-                          flexWrap: 'wrap'
-                        }}>
-                          <button 
-                            className="genre-search-btn"
-                            onClick={handleSearch}
-                          >
-                            Filter
-                          </button>
-                          {selectedGenres.length > 0 && (
+                  {/* Show both genres and types for series catalog in one dropdown, otherwise show one */}
+                  {media === 'series' && mode === 'catalog' ? (
+                    <div className="genre-filters-container">
+                      <div 
+                        className="genre-filters-header"
+                        onClick={() => setFiltersExpanded(!filtersExpanded)}
+                        style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                      >
+                        <h6 style={{ margin: 0 }}>
+                          Filter by:
+                        </h6>
+                        <span className={`genre-toggle-icon ${filtersExpanded ? 'expanded' : ''}`}>
+                          {filtersExpanded ? '▼' : '▶'}
+                        </span>
+                      </div>
+                      {filtersExpanded && (
+                        <>
+                          <div style={{ marginBottom: '20px' }}>
+                            <h6 style={{ color: '#f6be00', marginBottom: '10px', fontSize: '14px' }}>Genres:</h6>
+                            <div className="genre-buttons">
+                              {hardcodedGenres.map(item => (
+                                <button
+                                  key={item.id}
+                                  className={`genre-filter-btn ${selectedGenres.includes(item.id) ? 'selected' : ''}`}
+                                  onClick={() => handleGenreToggle(item.id)}
+                                >
+                                  {item.name}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                          <div style={{ marginBottom: '20px' }}>
+                            <h6 style={{ color: '#f6be00', marginBottom: '10px', fontSize: '14px' }}>Types:</h6>
+                            <div className="genre-buttons">
+                              {hardcodedSeriesTypes.map(item => (
+                                <button
+                                  key={item.id}
+                                  className={`genre-filter-btn ${selectedTypes.includes(item.id) ? 'selected' : ''}`}
+                                  onClick={() => handleTypeToggle(item.id)}
+                                >
+                                  {item.name}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                          <div className="genre-actions" style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            gap: '15px',
+                            marginTop: '20px',
+                            flexWrap: 'wrap'
+                          }}>
                             <button 
-                              className="genre-reset-btn"
-                              onClick={handleResetFilters}
+                              className="genre-search-btn"
+                              onClick={handleSearch}
                             >
-                              Reset Filters
+                              Filter
                             </button>
+                            {(selectedGenres.length > 0 || selectedTypes.length > 0) && (
+                              <button 
+                                className="genre-reset-btn"
+                                onClick={handleResetFilters}
+                              >
+                                Reset Filters
+                              </button>
+                            )}
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  ) : (
+                    /* Single filter for movies or non-catalog series */
+                    <div className="genre-filters-container">
+                      <div 
+                        className="genre-filters-header"
+                        onClick={() => setFiltersExpanded(!filtersExpanded)}
+                        style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                      >
+                        <h6 style={{ margin: 0 }}>
+                          Filter by:
+                        </h6>
+                        <span className={`genre-toggle-icon ${filtersExpanded ? 'expanded' : ''}`}>
+                          {filtersExpanded ? '▼' : '▶'}
+                        </span>
+                      </div>
+                      {filtersExpanded && (
+                        <>
+                          {media === 'series' ? (
+                            <div style={{ marginBottom: '20px' }}>
+                              <h6 style={{ color: '#f6be00', marginBottom: '10px', fontSize: '14px' }}>Types:</h6>
+                              <div className="genre-buttons">
+                                {hardcodedSeriesTypes.map(item => (
+                                  <button
+                                    key={item.id}
+                                    className={`genre-filter-btn ${selectedTypes.includes(item.id) ? 'selected' : ''}`}
+                                    onClick={() => handleTypeToggle(item.id)}
+                                  >
+                                    {item.name}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          ) : (
+                            <div style={{ marginBottom: '20px' }}>
+                              <h6 style={{ color: '#f6be00', marginBottom: '10px', fontSize: '14px' }}>Genres:</h6>
+                              <div className="genre-buttons">
+                                {hardcodedGenres.map(item => (
+                                  <button
+                                    key={item.id}
+                                    className={`genre-filter-btn ${selectedGenres.includes(item.id) ? 'selected' : ''}`}
+                                    onClick={() => handleGenreToggle(item.id)}
+                                  >
+                                    {item.name}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
                           )}
-                        </div>
-                      </>
-                    )}
-                  </div>
+                          <div className="genre-actions" style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            gap: '15px',
+                            marginTop: '20px',
+                            flexWrap: 'wrap'
+                          }}>
+                            <button 
+                              className="genre-search-btn"
+                              onClick={handleSearch}
+                            >
+                              Filter
+                            </button>
+                            {((media === 'series' ? selectedTypes : selectedGenres).length > 0) && (
+                              <button 
+                                className="genre-reset-btn"
+                                onClick={handleResetFilters}
+                              >
+                                Reset Filters
+                              </button>
+                            )}
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             )}
