@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
-import { search, getGenres, getPopularMovies, getTrendingMovies, getLatestMovies, getPopularCollections } from '../../services/moviesService';
-import { getPopularSeries, getTrendingSeries, getLatestSeries } from '../../services/seriesService';
+import { search, getGenres, getPopularMovies, getTrendingMovies, getLatestMovies, getTopRatedMovies, getPopularCollections, searchPopularCollections } from '../../services/moviesService';
+import { getPopularSeries, getTrendingSeries, getLatestSeries, getTopRatedSeries } from '../../services/seriesService';
 import { useLoading } from '../../contexts/LoadingContext';
 
 export default function Results() {
@@ -28,22 +28,15 @@ export default function Results() {
   // Add types parameter for series filtering (plural to match genres)
   const types = searchParams.get('types') || '';
 
-  // Add this missing line:
-  const mode = query ? 'search' : genre ? 'genre' : category ? 'catalog' : null;
+  // Add collection search query parameter
+  const collectionQuery = searchParams.get('cq');
 
-  // Initialize selectedGenres from URL parameters
-  const genresParam = searchParams.get('genres');
-  const initialGenres = genresParam ? genresParam.split(',').map(id => parseInt(id, 10)) : [];
-  const [selectedGenres, setSelectedGenres] = useState(initialGenres);
-
-  // Initialize selectedTypes from URL parameters
-  const typesParam = searchParams.get('types');
-  const initialTypes = typesParam ? typesParam.split(',').filter(type => type.trim()) : [];
-  const [selectedTypes, setSelectedTypes] = useState(initialTypes);
-
-  const [genreChanged, setGenreChanged] = useState(false);
-  const [forceRefetch, setForceRefetch] = useState(0); // New state for forcing refetch
-  const [filtersExpanded, setFiltersExpanded] = useState(false);
+  // Update mode detection to include collection search
+  // Check for valid non-empty values
+  const mode = (query && query.trim()) ? 'search' :
+               (genre && genre.trim()) ? 'genre' :
+               (collectionQuery && collectionQuery.trim()) ? 'collection_search' :
+               (category && category.trim()) ? 'catalog' : null;
 
   const hardcodedGenres = [
     { id: 28, name: 'Action' },
@@ -74,6 +67,36 @@ export default function Results() {
     { id: 'documentary', name: 'Documentary' }
   ];
 
+  // Helper function to convert genre display name to backend format
+  const convertGenreForBackend = (genreName) => {
+    if (genreName === 'Sci-Fi') return 'Science Fiction';
+    return genreName;
+  };
+
+  // Initialize selectedGenres from URL parameters (convert genre names back to IDs)
+  const genresParam = searchParams.get('genres');
+  const initialGenres = genresParam ? genresParam.split(',').map(genreName => {
+    // Try to find genre by name (handle both display name and backend name)
+    const genre = hardcodedGenres.find(g => g.name === genreName || convertGenreForBackend(g.name) === genreName);
+    return genre ? genre.id : null;
+  }).filter(id => id !== null) : [];
+  const [selectedGenres, setSelectedGenres] = useState(initialGenres);
+
+  // Initialize selectedTypes from URL parameters
+  const typesParam = searchParams.get('types');
+  const initialTypes = typesParam ? typesParam.split(',').filter(type => type.trim()) : [];
+  const [selectedTypes, setSelectedTypes] = useState(initialTypes);
+
+  // Add state for collection search input
+  const [collectionSearchInput, setCollectionSearchInput] = useState(collectionQuery || '');
+  const [collectionSearchResults, setCollectionSearchResults] = useState(null);
+  const [lastSearchedTerm, setLastSearchedTerm] = useState('');
+  const [hasPerformedCollectionSearch, setHasPerformedCollectionSearch] = useState(false);
+
+  const [genreChanged, setGenreChanged] = useState(false);
+  const [forceRefetch, setForceRefetch] = useState(0); // New state for forcing refetch
+  const [filtersExpanded, setFiltersExpanded] = useState(false);
+
   const handleGenreToggle = (genreId) => {
     setSelectedGenres(prev => {
       const newGenres = prev.includes(genreId)
@@ -100,6 +123,70 @@ export default function Results() {
     // Removed the forceRefetch trigger from here
   };
 
+  const updatePageInParams = (newPage) => {
+    const paramsObj = Object.fromEntries([...searchParams]);
+    // always set page as string
+    paramsObj.page = String(newPage);
+    setSearchParams(paramsObj);
+  };
+
+  // Add function to handle collection search (immediate results on same page)
+  const handleCollectionSearch = useCallback(async (page = 1) => {
+    if (collectionSearchInput.trim()) {
+      const searchTerm = collectionSearchInput.trim();
+      setLastSearchedTerm(searchTerm);
+      setHasPerformedCollectionSearch(true);
+
+      // Reset to page 1 when starting a new search
+      if (page === 1 && currentPage !== 1) {
+        updatePageInParams(1);
+      }
+
+      setLoading(true);
+      try {
+        const data = await searchPopularCollections(searchTerm, page, 20);
+        const results = data.results || data.collections || [];
+
+        // Trust the API results - if it returns results, show them
+        const matchingResults = results;
+
+        if (matchingResults.length === 0) {
+          // If no actual matches found, set to null to show no results message
+          setCollectionSearchResults(null);
+        } else {
+          // Create a new data object with results
+          const filteredData = {
+            ...data,
+            results: matchingResults,
+            collections: matchingResults,
+            current_page: page,
+            total_pages: data.total_pages || Math.ceil(matchingResults.length / 20),
+            items_on_page: matchingResults.length
+          };
+          setCollectionSearchResults(filteredData);
+        }
+        console.log('Collection search results:', data);
+      } catch (error) {
+        console.error('Collection search error:', error);
+        setCollectionSearchResults(null);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      setCollectionSearchResults(null);
+      setLastSearchedTerm('');
+      setHasPerformedCollectionSearch(false);
+    }
+  }, [collectionSearchInput, currentPage, setLoading, updatePageInParams]);
+
+  // Add function to clear collection search
+  const handleClearCollectionSearch = () => {
+    setCollectionSearchInput('');
+    setCollectionSearchResults(null);
+    setLastSearchedTerm('');
+    setHasPerformedCollectionSearch(false);
+  };
+
   const handleSearch = () => {
     setForceRefetch(prev => prev + 1);
   };
@@ -112,17 +199,15 @@ export default function Results() {
     setForceRefetch(prev => prev + 1);
   };
 
-  const updatePageInParams = (newPage) => {
+  const updateGenresInParams = (genreIds) => {
     const paramsObj = Object.fromEntries([...searchParams]);
-    // always set page as string
-    paramsObj.page = String(newPage);
-    setSearchParams(paramsObj);
-  };
-
-  const updateGenresInParams = (genres) => {
-    const paramsObj = Object.fromEntries([...searchParams]);
-    if (genres.length > 0) {
-      paramsObj.genres = genres.join(',');
+    if (genreIds.length > 0) {
+      // Convert genre IDs to names for URL
+      const genreNames = genreIds.map(id => {
+        const genre = hardcodedGenres.find(g => g.id === id);
+        return genre ? convertGenreForBackend(genre.name) : null;
+      }).filter(Boolean);
+      paramsObj.genres = genreNames.join(',');
     } else {
       delete paramsObj.genres; // Remove the parameter if no genres selected
     }
@@ -139,9 +224,13 @@ export default function Results() {
     setSearchParams(paramsObj);
   };
 
+
   useEffect(() => {
     const fetchResults = async () => {
       if (!mode) return;
+      // Skip if we're in collection search mode (handled by separate useEffect)
+      if (hasPerformedCollectionSearch) return;
+
       setLoading(true);
       try {
         let data;
@@ -149,8 +238,22 @@ export default function Results() {
           // Note: current moviesService.search may ignore page/size; backend can be updated later.
           data = await search(media, query, currentPage, 30);
           console.log('Search results:', data);
+        } else if (mode === 'collection_search') {
+          // Search within collections using the new dedicated endpoint
+          data = await searchPopularCollections(collectionQuery, currentPage, 20);
+          console.log('Collection search results:', data);
         } else if (mode === 'genre') {
-          data = await getGenres(media, genre, 30, currentPage);
+          // Convert selected genre IDs to genre names
+          const selectedGenreNames = selectedGenres.length > 0
+            ? selectedGenres.map(id => {
+                const genreObj = hardcodedGenres.find(g => g.id === id);
+                return genreObj ? convertGenreForBackend(genreObj.name) : null;
+              }).filter(Boolean)
+            : [];
+          // Combine main genre (from URL) with additional selected genres
+          const allGenreNames = genre ? [genre, ...selectedGenreNames] : selectedGenreNames;
+          const genresParam = allGenreNames.join(',');
+          data = await getGenres(media, genresParam, 30, currentPage);
           console.log('Genre results:', data);
         } else if (mode === 'catalog') {
           // Catalog mode: fetch by media/category with pagination
@@ -158,7 +261,7 @@ export default function Results() {
             const size = 30;
             // Prepare genre names for filtering (applies to all catalog modes)
             const genreNames = selectedGenres.length > 0
-              ? selectedGenres.map(id => hardcodedGenres.find(g => g.id === id)?.name).filter(Boolean)
+              ? selectedGenres.map(id => convertGenreForBackend(hardcodedGenres.find(g => g.id === id)?.name)).filter(Boolean)
               : [];
             
             switch (category?.toLowerCase()) {
@@ -167,6 +270,9 @@ export default function Results() {
                 break;
               case 'latest':
                 data = await getLatestMovies(media, currentPage, size, genreNames);
+                break;
+              case 'top_rated':
+                data = await getTopRatedMovies(media, currentPage, size, genreNames);
                 break;
               case 'popular':
               default:
@@ -183,7 +289,7 @@ export default function Results() {
             const size = 30;
             // Prepare genre names for filtering (same as movies)
             const genreNames = selectedGenres.length > 0
-              ? selectedGenres.map(id => hardcodedGenres.find(g => g.id === id)?.name).filter(Boolean).join(',')
+              ? selectedGenres.map(id => convertGenreForBackend(hardcodedGenres.find(g => g.id === id)?.name)).filter(Boolean).join(',')
               : '';
             const typesParam = selectedTypes.length > 0 ? selectedTypes.join(',') : '';
             switch (category?.toLowerCase()) {
@@ -192,6 +298,9 @@ export default function Results() {
                 break;
               case 'latest':
                 data = await getLatestSeries(typesParam, currentPage, size, genreNames);
+                break;
+              case 'top_rated':
+                data = await getTopRatedSeries(typesParam, currentPage, size, genreNames);
                 break;
               case 'popular':
               default:
@@ -211,7 +320,7 @@ export default function Results() {
     };
 
     fetchResults();
-  }, [mode, query, genre, media, category, currentPage, setLoading, forceRefetch]);
+  }, [mode, query, collectionQuery, genre, media, category, currentPage, setLoading, forceRefetch]);
 
   // Reset to first page when primary criteria changes — update URL page to 1
   useEffect(() => {
@@ -224,7 +333,7 @@ export default function Results() {
     // only update URL if it isn't already page 1
     if (currentPage !== 1) updatePageInParams(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mode, query, genre, media, category]);
+  }, [mode, query, collectionQuery, genre, media, category]);
 
   // Reset page to 1 when selecting genres or types (user expects new filter to start from page 1)
   useEffect(() => {
@@ -242,24 +351,40 @@ export default function Results() {
   }, [selectedTypes]);
 
   const selectResults = () => {
+    // If we've performed a collection search, show search results (even if empty/null)
+    if (hasPerformedCollectionSearch) {
+      const searchResults = collectionSearchResults?.results || collectionSearchResults?.collections || [];
+      console.log('Returning search results:', searchResults.length, 'hasPerformedCollectionSearch:', hasPerformedCollectionSearch, 'collectionSearchResults exists:', !!collectionSearchResults);
+      return searchResults;
+    }
+
     if (!apiData) return [];
     if (mode === 'search') {
       return apiData.results || apiData.movies || apiData.series || [];
     }
+    if (mode === 'collection_search') {
+      return apiData.results || apiData.collections || [];
+    }
     if (mode === 'genre') {
       return apiData[media] || apiData.results || [];
+    }
+    // catalog - collections use .results, others use data[media]
+    if (mode === 'catalog' && media === 'collections') {
+      return apiData.results || apiData.popular;
     }
     // catalog - use data[media] for consistent access
     return apiData[media] || apiData.results || [];
   };
 
   const results = selectResults();
-  const totalPages = apiData?.total_pages || 1;
-  const itemsPerPage = apiData?.items_on_page || (Array.isArray(results) ? results.length : 30);
+  const totalPages = collectionSearchResults?.total_pages || apiData?.total_pages || 1;
+  const itemsPerPage = collectionSearchResults?.items_on_page || apiData?.items_on_page || (Array.isArray(results) ? results.length : 30);
 
   const handleTabChange = (newMedia) => {
     if (mode === 'search') {
       navigate(`/search?q=${query}&media=${newMedia}`);
+    } else if (mode === 'collection_search') {
+      navigate(`/search?cq=${collectionQuery}&media=${newMedia}`);
     } else if (mode === 'genre') {
       navigate(`/genre?genre=${genre}&media=${newMedia}`);
     } else if (mode === 'catalog') {
@@ -272,6 +397,11 @@ export default function Results() {
     // clamp page
     const target = Math.max(1, Math.min(totalPages || 1, pageNumber));
     updatePageInParams(target);
+
+    // If we're in collection search mode, trigger a new search for the new page
+    if (hasPerformedCollectionSearch) {
+      handleCollectionSearch(target);
+    }
   };
 
   const goToPage = () => {
@@ -280,6 +410,11 @@ export default function Results() {
       const target = Math.max(1, Math.min(totalPages || 1, parsed));
       updatePageInParams(target);
       setPageInput('');
+
+      // If we're in collection search mode, trigger a new search for the new page
+      if (hasPerformedCollectionSearch) {
+        handleCollectionSearch(target);
+      }
     }
   };
 
@@ -309,13 +444,20 @@ export default function Results() {
     return false;
   };
 
-  const isCollectionItem = () => mode === 'catalog' && media === 'collections';
+  const isCollectionItem = () => mode === 'catalog' && media === 'collections' || mode === 'collection_search';
 
+  // Update title function to include collection search
   const title = (() => {
+    // If we've performed a collection search, show that title (even if no results)
+    if (hasPerformedCollectionSearch) {
+      return `Collection Search Results for "${lastSearchedTerm}"`;
+    }
+
     if (mode === 'search') return `Search Results for "${query}"`;
+    if (mode === 'collection_search') return `Collection Search Results for "${collectionQuery}"`;
     if (mode === 'genre') return genre || 'Results';
     if (mode === 'catalog') {
-      const catLabel = (category || 'popular').replace(/\b\w/g, c => c.toUpperCase());
+      const catLabel = (category || 'popular').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
       // When media is 'all', only show the category label without "All"
       if (media === 'all') {
         return catLabel;
@@ -345,7 +487,7 @@ export default function Results() {
       <section ref={sectionRef}>
         <div className="container">
           <div className="row genres-container">
-            {mode !== 'search' && mode && media !== 'collections' && (
+            {mode !== 'search' && mode !== 'collection_search' && mode && media !== 'collections' && (
               <div className="row">
                 <div className="col-12">
                   {/* Show both genres and types for series catalog in one dropdown, otherwise show one */}
@@ -507,7 +649,7 @@ export default function Results() {
                   {/* Center the pagination */}
                   <div className="d-flex justify-content-between align-items-center flex-grow-1">
                   <h2 className="title mb-0">{title}</h2>
-                    {totalPages > 1 && (mode !== 'search' && mode) && (
+                    {totalPages > 1 && mode !== 'search' && (
                       <nav aria-label="Page navigation" className="top-pagination">
                         <ul className="pagination justify-content-center flex-wrap mb-0" style={{ gap: '8px' }}>
                           <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
@@ -679,57 +821,128 @@ export default function Results() {
                         </ul>
                       </nav>
                     )}
-                    {/* Pills on the right */}
-                    {(mode === 'search' || mode === 'genre' || mode === 'catalog') && (
-                      <div className="tabs tabs-catalog">
-                        <ul className="nav nav-tabs nav-pills" id="pills-tab" role="tablist">
-                          <li className="nav-item" role="presentation">
-                            <button
-                              className={`nav-link ${media === 'all' ? 'active' : ''}`}
-                              id="all-content"
-                              data-bs-toggle="pill"
-                              data-bs-target="#pills-all"
-                              type="button"
-                              role="tab"
-                              aria-controls="pills-all"
-                              aria-selected={media === 'all'}
-                              onClick={() => handleTabChange('all')}
-                            >
-                              All
-                            </button>
-                          </li>
-                          <li className="nav-item" role="presentation">
-                            <button
-                              className={`nav-link ${media === 'movies' ? 'active' : ''}`}
-                              id="movies-only"
-                              data-bs-toggle="pill"
-                              data-bs-target="#pills-movies"
-                              type="button"
-                              role="tab"
-                              aria-controls="pills-movies"
-                              aria-selected={media === 'movies'}
-                              onClick={() => handleTabChange('movies')}
-                            >
-                              Movies
-                            </button>
-                          </li>
-                          <li className="nav-item" role="presentation">
-                            <button
-                              className={`nav-link ${media === 'series' ? 'active' : ''}`}
-                              id="series-only"
-                              data-bs-toggle="pill"
-                              data-bs-target="#pills-series"
-                              type="button"
-                              role="tab"
-                              aria-controls="pills-series"
-                              aria-selected={media === 'series'}
-                              onClick={() => handleTabChange('series')}
-                            >
-                              Series
-                            </button>
-                          </li>
-                        </ul>
+                    {/* Show search bar for collections, tabs for others */}
+                    {mode === 'catalog' && media === 'collections' ? (
+                      <div className="collection-search-container" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                        <input
+                          type="text"
+                          value={collectionSearchInput}
+                          onChange={(e) => setCollectionSearchInput(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              handleCollectionSearch(1);
+                            }
+                          }}
+                          placeholder="Search collections..."
+                          style={{
+                            minWidth: '200px',
+                            padding: '8px 12px',
+                            borderRadius: '5px',
+                            border: '1px solid #f6be00',
+                            backgroundColor: '#0a0a0a',
+                            color: '#f6be00',
+                            outline: 'none',
+                            fontSize: '14px'
+                          }}
+                        />
+                        <button
+                          onClick={() => handleCollectionSearch(1)}
+                          disabled={!collectionSearchInput.trim()}
+                          style={{
+                            backgroundColor: '#f6be00',
+                            border: '1px solid #f6be00',
+                            color: '#0a0a0a',
+                            padding: '8px 12px',
+                            borderRadius: '5px',
+                            cursor: collectionSearchInput.trim() ? 'pointer' : 'not-allowed',
+                            transition: 'all 0.3s ease',
+                            fontSize: '14px',
+                            fontWeight: '500',
+                            opacity: collectionSearchInput.trim() ? 1 : 0.6
+                          }}
+                        >
+                          <i className="fas fa-search"></i>
+                        </button>
+                        {collectionQuery && (
+                          <button
+                            onClick={handleClearCollectionSearch}
+                            style={{
+                              backgroundColor: '#333',
+                              border: '1px solid #f6be00',
+                              color: '#f6be00',
+                              padding: '8px 12px',
+                              borderRadius: '5px',
+                              cursor: 'pointer',
+                              transition: 'all 0.3s ease',
+                              fontSize: '14px',
+                              fontWeight: '500'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.target.style.backgroundColor = '#f6be00';
+                              e.target.style.color = '#0a0a0a';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.target.style.backgroundColor = '#333';
+                              e.target.style.color = '#f6be00';
+                            }}
+                          >
+                            <i className="fas fa-times"></i>
+                          </button>
+                        )}
                       </div>
+                    ) : (
+                      /* Pills on the right - hide for collections catalog */
+                      (mode === 'search' || mode === 'genre' || mode === 'catalog') && (
+                        <div className="tabs tabs-catalog">
+                          <ul className="nav nav-tabs nav-pills" id="pills-tab" role="tablist">
+                            <li className="nav-item" role="presentation">
+                              <button
+                                className={`nav-link ${media === 'all' ? 'active' : ''}`}
+                                id="all-content"
+                                data-bs-toggle="pill"
+                                data-bs-target="#pills-all"
+                                type="button"
+                                role="tab"
+                                aria-controls="pills-all"
+                                aria-selected={media === 'all'}
+                                onClick={() => handleTabChange('all')}
+                              >
+                                All
+                              </button>
+                            </li>
+                            <li className="nav-item" role="presentation">
+                              <button
+                                className={`nav-link ${media === 'movies' ? 'active' : ''}`}
+                                id="movies-only"
+                                data-bs-toggle="pill"
+                                data-bs-target="#pills-movies"
+                                type="button"
+                                role="tab"
+                                aria-controls="pills-movies"
+                                aria-selected={media === 'movies'}
+                                onClick={() => handleTabChange('movies')}
+                              >
+                                Movies
+                              </button>
+                            </li>
+                            <li className="nav-item" role="presentation">
+                              <button
+                                className={`nav-link ${media === 'series' ? 'active' : ''}`}
+                                id="series-only"
+                                data-bs-toggle="pill"
+                                data-bs-target="#pills-series"
+                                type="button"
+                                role="tab"
+                                aria-controls="pills-series"
+                                aria-selected={media === 'series'}
+                                onClick={() => handleTabChange('series')}
+                              >
+                                Series
+                              </button>
+                            </li>
+                          </ul>
+                        </div>
+                      )
                     )}
                   </div>
                 </div>
@@ -840,13 +1053,16 @@ export default function Results() {
             ) : (
               <div className="col-12 text-center">
                 <p className="text-white">
-                  {mode === 'search' ? `No results found for "${query}"` : `No results found for ${genre}`}
+                  {collectionSearchResults ? `No collections found for "${lastSearchedTerm || collectionSearchInput}"` :
+                   mode === 'search' ? `No results found for "${query || 'your search'}"` :
+                   mode === 'collection_search' ? `No collections found for "${collectionQuery}"` :
+                   `No results found for ${genre}`}
                 </p>
               </div>
             )}
           </div>
 
-          {totalPages > 1 && (
+          {totalPages > 1 && mode !== 'search' && (
             <div className="row mt-5">
               <div className="col-12">
                 <nav aria-label="Page navigation">
