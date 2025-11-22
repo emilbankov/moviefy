@@ -5384,7 +5384,7 @@ button {
         flex: 0 0 50% !important;
         margin-bottom: 30px !important;
     }
-    
+
     /* Disable ALL margin-top classes (mt-4, mt-md-4, etc.) */
     section .genre-responsive .col-lg-3,
     section .genre-responsive .movies-categories-iteam {
@@ -5400,7 +5400,7 @@ button {
         flex: 0 0 33.333% !important;
         margin-bottom: 30px !important;
     }
-    
+
     /* Disable ALL margin-top classes (mt-4, mt-md-4, etc.) */
     section .genre-responsive .col-lg-3,
     section .genre-responsive .movies-categories-iteam {
@@ -5416,7 +5416,7 @@ button {
         flex: 0 0 25% !important;
         margin-bottom: 30px !important;
     }
-    
+
     /* Disable ALL margin-top classes (mt-4, mt-md-4, etc.) */
     section .genre-responsive .col-lg-3,
     section .genre-responsive .movies-categories-iteam {
@@ -5431,7 +5431,7 @@ button {
         max-width: 20%;
         flex: 0 0 20%;
     }
-    
+
     /* Pinterest effect stays on large screens only - mt-4, mt-md-4 classes work here */
 }
 
@@ -5442,7 +5442,7 @@ button {
         max-width: 33.333% !important;
         flex: 0 0 33.333% !important;
     }
-    
+
     /* Truncate movie/series titles on mobile */
     .col-xl-2.col-lg-4.col-md-6.col-sm-6.col-6 .title {
         display: block;
@@ -5451,13 +5451,13 @@ button {
         white-space: nowrap;
         max-width: 100%;
     }
-    
+
     /* Remove left and right margin from time element */
     .col-xl-2.col-lg-4.col-md-6.col-sm-6.col-6 .time {
         margin-left: 0 !important;
         margin-right: 0 !important;
     }
-    
+
     /* Make movie-info flex column on mobile */
     .col-xl-2.col-lg-4.col-md-6.col-sm-6.col-6 .movie-info.smaller-text {
         flex-direction: column !important;
@@ -5554,7 +5554,6 @@ button {
     -webkit-box-pack: center;
     -ms-flex-pack: center;
     justify-content: center;
-    margin-top: 16px;
 }
 
 .pagination .page-item {
@@ -6298,6 +6297,10 @@ button {
     position: absolute;
     right: 0;
     top: 0;
+}
+
+.categories-tabs .tabs-catalog {
+    position: static;
 }
 
 .categories-tabs .tabs .nav .nav-item .nav-link {
@@ -8948,65 +8951,74 @@ button {
 /* Responsive pagination sizing */
 /* Match page jump input and Go button to pagination sizes */
 .page-jump .page-link {
-  padding: 10px 16px !important;
-  font-size: 14px !important;
-  border-radius: 5px !important;
-  min-width: 45px !important;
+    padding: 10px 16px !important;
+    font-size: 14px !important;
+    border-radius: 5px !important;
+    min-width: 45px !important;
 }
+
 .page-jump-input {
-  padding: 10px !important;
-  font-size: 14px !important;
-  border-radius: 5px !important;
+    padding: 10px !important;
+    font-size: 14px !important;
+    border-radius: 5px !important;
 }
+
 @media (max-width: 992px) {
-  .pagination .page-link {
-    padding: 8px 12px !important;
-    font-size: 13px !important;
-    border-radius: 4px !important;
-    min-width: 36px !important;
-  }
-  .pagination {
-    gap: 6px !important;
-  }
-  .page-jump .page-link {
-    padding: 8px 12px !important;
-    font-size: 13px !important;
-    border-radius: 4px !important;
-    min-width: 36px !important;
-  }
-  .page-jump-input {
-    padding: 8px !important;
-    font-size: 13px !important;
-    border-radius: 4px !important;
-  }
+    .pagination .page-link {
+        padding: 8px 12px !important;
+        font-size: 13px !important;
+        border-radius: 4px !important;
+        min-width: 36px !important;
+    }
+
+    .pagination {
+        gap: 6px !important;
+    }
+
+    .page-jump .page-link {
+        padding: 8px 12px !important;
+        font-size: 13px !important;
+        border-radius: 4px !important;
+        min-width: 36px !important;
+    }
+
+    .page-jump-input {
+        padding: 8px !important;
+        font-size: 13px !important;
+        border-radius: 4px !important;
+    }
 }
 
 @media (max-width: 576px) {
-  .pagination .page-link {
-    padding: 6px 9px !important;
-    font-size: 12px !important;
-    border-radius: 4px !important;
-    min-width: 42px !important;
-  }
-  .pagination {
-    gap: 2px !important;
-  }
-  .page-jump .page-link {
-    padding: 6px 9px !important;
-    font-size: 12px !important;
-    border-radius: 4px !important;
-    min-width: 42px !important;
-  }
-  .page-jump-input {
-    padding: 6px !important;
-    font-size: 12px !important;
-    border-radius: 4px !important;
-    min-height: 34px;
-  }
-  /* Hide the top pagination on phones */
-  .top-pagination {
-    display: none !important;
-  }
+    .pagination .page-link {
+        padding: 6px 9px !important;
+        font-size: 12px !important;
+        border-radius: 4px !important;
+        min-width: 42px !important;
+    }
+
+    .pagination {
+        gap: 2px !important;
+    }
+
+    .page-jump .page-link {
+        padding: 6px 9px !important;
+        font-size: 12px !important;
+        border-radius: 4px !important;
+        min-width: 42px !important;
+    }
+
+    .page-jump-input {
+        padding: 6px !important;
+        font-size: 12px !important;
+        border-radius: 4px !important;
+        min-height: 34px;
+    }
+
+    /* Hide the top pagination on phones */
+    .top-pagination {
+        display: none !important;
+    }
 }
 
 .genres-container {
@@ -9015,11 +9027,11 @@ button {
 
 /* Genre Filter Styles */
 .genre-filters-container {
-  background-color: #000000;
-  border-radius: 10px;
-  padding: 20px;
-  margin-bottom: 30px;
-  border: 1px solid #f6be00;
+    background-color: #000000;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 30px;
+    border: 1px solid #f6be00;
 }
 
 .genre-filters-header {
@@ -9034,86 +9046,86 @@ button {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
-  }
+}
 
 .genre-filters-header:hover {
-  opacity: 0.8;
+    opacity: 0.8;
 }
 
 .genre-filters-header h6 {
-  font-size: 16px;
-  font-weight: 600;
-  color: #f6be00;
-  margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #f6be00;
+    margin: 0;
 }
 
 .genre-toggle-icon {
-  font-size: 14px;
-  color: #f6be00;
-  transition: transform 0.3s ease;
-  font-weight: bold;
+    font-size: 14px;
+    color: #f6be00;
+    transition: transform 0.3s ease;
+    font-weight: bold;
 }
 
 .genre-toggle-icon.expanded {
-  transform: rotate(0deg);
+    transform: rotate(0deg);
 }
 
 .genre-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  align-items: center;
-  justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
 }
 
 .genre-filter-btn {
-  background-color: #000000;
-  color: #f6be00;
-  border: 1px solid #f6be00;
-  padding: 8px 16px;
-  border-radius: 25px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 14px;
-  font-weight: 500;
-  white-space: nowrap;
-  min-width: fit-content;
+    background-color: #000000;
+    color: #f6be00;
+    border: 1px solid #f6be00;
+    padding: 8px 16px;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    min-width: fit-content;
 }
 
 .genre-filter-btn:hover {
-  background-color: #f6be00;
-  color: #0a0a0a;
+    background-color: #f6be00;
+    color: #0a0a0a;
 }
 
 .genre-filter-btn.selected {
-  background-color: #f6be00;
-  color: #0a0a0a;
+    background-color: #f6be00;
+    color: #0a0a0a;
 }
 
 .genre-actions {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin-top: 20px;
-  flex-wrap: wrap;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+    flex-wrap: wrap;
 }
 
 .genre-search-btn {
-  background-color: #f6be00;
-  color: #0a0a0a;
-  border: 1px solid #f6be00;
-  padding: 10px 20px;
-  border-radius: 25px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 14px;
-  font-weight: 600;
-  min-width: 100px;
+    background-color: #f6be00;
+    color: #0a0a0a;
+    border: 1px solid #f6be00;
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    font-weight: 600;
+    min-width: 100px;
 }
 
 .genre-search-btn:hover {
-  background-color: #e6a600;
-  border-color: #e6a600;
+    background-color: #e6a600;
+    border-color: #e6a600;
 }
 
 .genre-reset-btn {
@@ -9128,99 +9140,99 @@ button {
     font-weight: 500;
     min-width: 120px;
     box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
-  }
-  
-  .genre-reset-btn:hover {
+}
+
+.genre-reset-btn:hover {
     background-color: #c82333;
     border-color: #bd2130;
     color: #ffffff;
     transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
-  }
-  
-  .genre-reset-btn:active {
+}
+
+.genre-reset-btn:active {
     transform: translateY(0);
     box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
-  }
+}
 
 /* Responsive design for genre filters */
 @media (max-width: 768px) {
-  .genre-filters-container {
-    padding: 15px;
-    margin-bottom: 20px;
-  }
-  
-  .genre-filters-header {
-    padding-bottom: 8px;
-    margin-bottom: 12px;
-  }
-  
-  .genre-filters-header h6 {
-    font-size: 14px;
-  }
-  
-  .genre-toggle-icon {
-    font-size: 12px;
-  }
-  
-  .genre-buttons {
-    gap: 8px;
-  }
-  
-  .genre-filter-btn {
-    padding: 6px 12px;
-    font-size: 13px;
-  }
+    .genre-filters-container {
+        padding: 15px;
+        margin-bottom: 20px;
+    }
 
-  .genre-actions {
-    gap: 10px;
-    margin-top: 15px;
-  }
+    .genre-filters-header {
+        padding-bottom: 8px;
+        margin-bottom: 12px;
+    }
 
-  .genre-search-btn {
-    padding: 8px 16px;
-    font-size: 13px;
-    min-width: 80px;
-  }
+    .genre-filters-header h6 {
+        font-size: 14px;
+    }
 
-  .genre-reset-btn {
-    padding: 8px 16px;
-    font-size: 13px;
-    min-width: 100px;
-  }
+    .genre-toggle-icon {
+        font-size: 12px;
+    }
+
+    .genre-buttons {
+        gap: 8px;
+    }
+
+    .genre-filter-btn {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+
+    .genre-actions {
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .genre-search-btn {
+        padding: 8px 16px;
+        font-size: 13px;
+        min-width: 80px;
+    }
+
+    .genre-reset-btn {
+        padding: 8px 16px;
+        font-size: 13px;
+        min-width: 100px;
+    }
 }
 
 @media (max-width: 480px) {
-  .genre-filters-header h6 {
-    font-size: 13px;
-  }
-  
-  .genre-toggle-icon {
-    font-size: 11px;
-  }
-  
-  .genre-buttons {
-    gap: 6px;
-  }
-  
-  .genre-filter-btn {
-    padding: 5px 10px;
-    font-size: 12px;
-  }
+    .genre-filters-header h6 {
+        font-size: 13px;
+    }
 
-  .genre-actions {
-    align-items: center;
-  }
+    .genre-toggle-icon {
+        font-size: 11px;
+    }
 
-  .genre-search-btn {
-    padding: 6px 12px;
-    font-size: 12px;
-    min-width: 70px;
-  }
+    .genre-buttons {
+        gap: 6px;
+    }
 
-  .genre-reset-btn {
-    padding: 6px 12px;
-    font-size: 12px;
-    min-width: 90px;
-  }
+    .genre-filter-btn {
+        padding: 5px 10px;
+        font-size: 12px;
+    }
+
+    .genre-actions {
+        align-items: center;
+    }
+
+    .genre-search-btn {
+        padding: 6px 12px;
+        font-size: 12px;
+        min-width: 70px;
+    }
+
+    .genre-reset-btn {
+        padding: 6px 12px;
+        font-size: 12px;
+        min-width: 90px;
+    }
 }

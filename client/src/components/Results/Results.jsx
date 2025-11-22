@@ -25,9 +25,14 @@ export default function Results() {
   const media = searchParams.get('media') || 'all';
   const category = searchParams.get('category'); // catalog category: popular | trending | latest
 
+  // Add this missing line:
   const mode = query ? 'search' : genre ? 'genre' : category ? 'catalog' : null;
 
-  const [selectedGenres, setSelectedGenres] = useState([]);
+  // Initialize selectedGenres from URL parameters
+  const genresParam = searchParams.get('genres');
+  const initialGenres = genresParam ? genresParam.split(',').map(id => parseInt(id, 10)) : [];
+  const [selectedGenres, setSelectedGenres] = useState(initialGenres);
+  
   const [genreChanged, setGenreChanged] = useState(false);
   const [forceRefetch, setForceRefetch] = useState(0); // New state for forcing refetch
   const [filtersExpanded, setFiltersExpanded] = useState(false);
@@ -55,11 +60,15 @@ export default function Results() {
   ];
 
   const handleGenreToggle = (genreId) => {
-    setSelectedGenres(prev =>
-      prev.includes(genreId)
+    setSelectedGenres(prev => {
+      const newGenres = prev.includes(genreId)
         ? prev.filter(id => id !== genreId)
-        : [...prev, genreId]
-    );
+        : [...prev, genreId];
+      
+      // Update URL with new genres
+      updateGenresInParams(newGenres);
+      return newGenres;
+    });
     // Removed the forceRefetch trigger from here
   };
 
@@ -69,18 +78,24 @@ export default function Results() {
 
   const handleResetFilters = () => {
     setSelectedGenres([]);
+    updateGenresInParams([]); // Clear genres from URL
     setForceRefetch(prev => prev + 1);
   };
 
-  /* -------------------------
-     Helper: update page in URL
-     - preserves other query params
-     - creates a history entry so Back/Forward works
-     ------------------------- */
   const updatePageInParams = (newPage) => {
     const paramsObj = Object.fromEntries([...searchParams]);
     // always set page as string
     paramsObj.page = String(newPage);
+    setSearchParams(paramsObj);
+  };
+
+  const updateGenresInParams = (genres) => {
+    const paramsObj = Object.fromEntries([...searchParams]);
+    if (genres.length > 0) {
+      paramsObj.genres = genres.join(',');
+    } else {
+      delete paramsObj.genres; // Remove the parameter if no genres selected
+    }
     setSearchParams(paramsObj);
   };
 
@@ -101,20 +116,21 @@ export default function Results() {
           // Catalog mode: fetch by media/category with pagination
           if (media === 'movies' || media === 'all') {
             const size = 30;
+            // Prepare genre names for filtering (applies to all catalog modes)
+            const genreNames = selectedGenres.length > 0
+              ? selectedGenres.map(id => hardcodedGenres.find(g => g.id === id)?.name).filter(Boolean)
+              : [];
+            
             switch (category?.toLowerCase()) {
               case 'trending':
-                data = await getTrendingMovies(currentPage, size);
+                data = await getTrendingMovies(media, currentPage, size, genreNames);
                 break;
               case 'latest':
-                // Pass selected genres as array of names
-                const genreNames = selectedGenres.length > 0
-                  ? selectedGenres.map(id => hardcodedGenres.find(g => g.id === id)?.name).filter(Boolean)
-                  : [];
-                data = await getLatestMovies(currentPage, size, genreNames);
+                data = await getLatestMovies(media, currentPage, size, genreNames);
                 break;
               case 'popular':
               default:
-                data = await getPopularMovies(currentPage, size);
+                data = await getPopularMovies(media, currentPage, size, genreNames);
                 break;
             }
             console.log('Catalog movies:', media, category, data);
@@ -179,11 +195,8 @@ export default function Results() {
     if (mode === 'genre') {
       return apiData[media] || apiData.results || [];
     }
-    // catalog
-    if (media === 'movies' || media === 'all') return apiData.movies || [];
-    if (media === 'series') return apiData.series || [];
-    if (media === 'collections') return apiData.popular || apiData.collections || [];
-    return apiData.results || [];
+    // catalog - use data[media] for consistent access
+    return apiData[media] || apiData.results || [];
   };
 
   const results = selectResults();
@@ -249,6 +262,10 @@ export default function Results() {
     if (mode === 'genre') return genre || 'Results';
     if (mode === 'catalog') {
       const catLabel = (category || 'popular').replace(/\b\w/g, c => c.toUpperCase());
+      // When media is 'all', only show the category label without "All"
+      if (media === 'all') {
+        return catLabel;
+      }
       const mediaLabel = media.replace(/\b\w/g, c => c.toUpperCase());
       return `${catLabel} ${mediaLabel}`;
     }
@@ -274,7 +291,7 @@ export default function Results() {
       <section ref={sectionRef}>
         <div className="container">
           <div className="row genres-container">
-            {mode === 'catalog' && media === 'movies' && category === 'latest' && (
+            {mode !== 'search' && mode && media !== 'collections' && (
               <div className="row">
                 <div className="col-12">
                   <div className="genre-filters-container">
@@ -338,231 +355,235 @@ export default function Results() {
             <div className="col-md-12">
               <div className="categories-tabs">
                 <div className="section-title d-flex align-items-center justify-content-between flex-wrap" style={{ gap: '12px' }}>
+                  {/* Center the pagination */}
+                  <div className="d-flex justify-content-between align-items-center flex-grow-1">
                   <h2 className="title mb-0">{title}</h2>
-                  {totalPages > 1 && (mode === 'catalog' && media === 'movies' && category === 'latest') && (
-                    <nav aria-label="Page navigation" className="ms-auto top-pagination">
-                      <ul className="pagination justify-content-end flex-wrap mb-0" style={{ gap: '8px' }}>
-                        <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                          <button
-                            className="page-link"
-                            onClick={() => currentPage > 1 && paginate(1)}
-                            disabled={currentPage === 1}
-                            style={{
-                              backgroundColor: currentPage === 1 ? '#333' : '#0a0a0a',
-                              border: '1px solid #f6be00',
-                              color: currentPage === 1 ? '#666' : '#f6be00',
-                              padding: '10px 16px',
-                              borderRadius: '5px',
-                              cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
-                              transition: 'all 0.3s ease',
-                              fontSize: '14px',
-                              fontWeight: '500'
-                            }}
-                            onMouseEnter={(e) => {
-                              if (currentPage !== 1) {
-                                e.target.style.backgroundColor = '#f6be00';
-                                e.target.style.color = '#0a0a0a';
-                              }
-                            }}
-                            onMouseLeave={(e) => {
-                              if (currentPage !== 1) {
-                                e.target.style.backgroundColor = '#0a0a0a';
-                                e.target.style.color = '#f6be00';
-                              }
-                            }}
-                          >
-                            <i className="fas fa-angles-left me-1"></i>
-                          </button>
-                        </li>
-
-                        <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-                          <button
-                            className="page-link"
-                            onClick={() => currentPage > 1 && paginate(currentPage - 1)}
-                            disabled={currentPage === 1}
-                            style={{
-                              backgroundColor: currentPage === 1 ? '#333' : '#0a0a0a',
-                              border: '1px solid #f6be00',
-                              color: currentPage === 1 ? '#666' : '#f6be00',
-                              padding: '10px 16px',
-                              borderRadius: '5px',
-                              cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
-                              transition: 'all 0.3s ease',
-                              fontSize: '14px',
-                              fontWeight: '500'
-                            }}
-                            onMouseEnter={(e) => {
-                              if (currentPage !== 1) {
-                                e.target.style.backgroundColor = '#f6be00';
-                                e.target.style.color = '#0a0a0a';
-                              }
-                            }}
-                            onMouseLeave={(e) => {
-                              if (currentPage !== 1) {
-                                e.target.style.backgroundColor = '#0a0a0a';
-                                e.target.style.color = '#f6be00';
-                              }
-                            }}
-                          >
-                            <i className="fas fa-chevron-left me-1"></i>
-                          </button>
-                        </li>
-
-                        {getPageNumbers().map((number) => (
-                          <li key={number} className={`page-item ${currentPage === number ? 'active' : ''}`}>
+                    {totalPages > 1 && (mode !== 'search' && mode) && (
+                      <nav aria-label="Page navigation" className="top-pagination">
+                        <ul className="pagination justify-content-center flex-wrap mb-0" style={{ gap: '8px' }}>
+                          <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
                             <button
                               className="page-link"
-                              onClick={() => paginate(number)}
+                              onClick={() => currentPage > 1 && paginate(1)}
+                              disabled={currentPage === 1}
                               style={{
-                                backgroundColor: currentPage === number ? '#f6be00' : '#0a0a0a',
+                                backgroundColor: currentPage === 1 ? '#333' : '#0a0a0a',
                                 border: '1px solid #f6be00',
-                                color: currentPage === number ? '#0a0a0a' : '#f6be00',
+                                color: currentPage === 1 ? '#666' : '#f6be00',
                                 padding: '10px 16px',
                                 borderRadius: '5px',
-                                cursor: 'pointer',
+                                cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
                                 transition: 'all 0.3s ease',
-                                minWidth: '45px',
                                 fontSize: '14px',
-                                fontWeight: currentPage === number ? '600' : '500'
+                                fontWeight: '500'
                               }}
                               onMouseEnter={(e) => {
-                                if (currentPage !== number) {
+                                if (currentPage !== 1) {
                                   e.target.style.backgroundColor = '#f6be00';
                                   e.target.style.color = '#0a0a0a';
                                 }
                               }}
                               onMouseLeave={(e) => {
-                                if (currentPage !== number) {
+                                if (currentPage !== 1) {
                                   e.target.style.backgroundColor = '#0a0a0a';
                                   e.target.style.color = '#f6be00';
                                 }
                               }}
                             >
-                              {number}
+                              <i className="fas fa-angles-left me-1"></i>
                             </button>
                           </li>
-                        ))}
 
-                        <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-                          <button
-                            className="page-link"
-                            onClick={() => currentPage < totalPages && paginate(currentPage + 1)}
-                            disabled={currentPage === totalPages}
-                            style={{
-                              backgroundColor: currentPage === totalPages ? '#333' : '#0a0a0a',
-                              border: '1px solid #f6be00',
-                              color: currentPage === totalPages ? '#666' : '#f6be00',
-                              padding: '10px 16px',
-                              borderRadius: '5px',
-                              cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
-                              transition: 'all 0.3s ease',
-                              fontSize: '14px',
-                              fontWeight: '500'
-                            }}
-                            onMouseEnter={(e) => {
-                              if (currentPage !== totalPages) {
-                                e.target.style.backgroundColor = '#f6be00';
-                                e.target.style.color = '#0a0a0a';
-                              }
-                            }}
-                            onMouseLeave={(e) => {
-                              if (currentPage !== totalPages) {
-                                e.target.style.backgroundColor = '#0a0a0a';
-                                e.target.style.color = '#f6be00';
-                              }
-                            }}
-                          >
-                            <i className="fas fa-chevron-right ms-1"></i>
-                          </button>
-                        </li>
+                          <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                            <button
+                              className="page-link"
+                              onClick={() => currentPage > 1 && paginate(currentPage - 1)}
+                              disabled={currentPage === 1}
+                              style={{
+                                backgroundColor: currentPage === 1 ? '#333' : '#0a0a0a',
+                                border: '1px solid #f6be00',
+                                color: currentPage === 1 ? '#666' : '#f6be00',
+                                padding: '10px 16px',
+                                borderRadius: '5px',
+                                cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                                transition: 'all 0.3s ease',
+                                fontSize: '14px',
+                                fontWeight: '500'
+                              }}
+                              onMouseEnter={(e) => {
+                                if (currentPage !== 1) {
+                                  e.target.style.backgroundColor = '#f6be00';
+                                  e.target.style.color = '#0a0a0a';
+                                }
+                              }}
+                              onMouseLeave={(e) => {
+                                if (currentPage !== 1) {
+                                  e.target.style.backgroundColor = '#0a0a0a';
+                                  e.target.style.color = '#f6be00';
+                                }
+                              }}
+                            >
+                              <i className="fas fa-chevron-left me-1"></i>
+                            </button>
+                          </li>
 
-                        <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
-                          <button
-                            className="page-link"
-                            onClick={() => currentPage < totalPages && paginate(totalPages)}
-                            disabled={currentPage === totalPages}
-                            style={{
-                              backgroundColor: currentPage === totalPages ? '#333' : '#0a0a0a',
-                              border: '1px solid #f6be00',
-                              color: currentPage === totalPages ? '#666' : '#f6be00',
-                              padding: '10px 16px',
-                              borderRadius: '5px',
-                              cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
-                              transition: 'all 0.3s ease',
-                              fontSize: '14px',
-                              fontWeight: '500'
-                            }}
-                            onMouseEnter={(e) => {
-                              if (currentPage !== totalPages) {
-                                e.target.style.backgroundColor = '#f6be00';
-                                e.target.style.color = '#0a0a0a';
-                              }
-                            }}
-                            onMouseLeave={(e) => {
-                              if (currentPage !== totalPages) {
-                                e.target.style.backgroundColor = '#0a0a0a';
-                                e.target.style.color = '#f6be00';
-                              }
-                            }}
-                          >
-                            <i className="fas fa-angles-right ms-1"></i>
-                          </button>
-                        </li>
-                      </ul>
-                    </nav>
-                  )}
-                </div>
-                {(mode === 'search' || mode === 'genre' || (mode === 'catalog' && media === 'all')) && (
-                  <div className="tabs">
-                    <ul className="nav nav-tabs nav-pills" id="pills-tab" role="tablist">
-                      <li className="nav-item" role="presentation">
-                        <button
-                          className={`nav-link ${media === 'all' ? 'active' : ''}`}
-                          id="all-content"
-                          data-bs-toggle="pill"
-                          data-bs-target="#pills-all"
-                          type="button"
-                          role="tab"
-                          aria-controls="pills-all"
-                          aria-selected={media === 'all'}
-                          onClick={() => handleTabChange('all')}
-                        >
-                          All
-                        </button>
-                      </li>
-                      <li className="nav-item" role="presentation">
-                        <button
-                          className={`nav-link ${media === 'movies' ? 'active' : ''}`}
-                          id="movies-only"
-                          data-bs-toggle="pill"
-                          data-bs-target="#pills-movies"
-                          type="button"
-                          role="tab"
-                          aria-controls="pills-movies"
-                          aria-selected={media === 'movies'}
-                          onClick={() => handleTabChange('movies')}
-                        >
-                          Movies
-                        </button>
-                      </li>
-                      <li className="nav-item" role="presentation">
-                        <button
-                          className={`nav-link ${media === 'series' ? 'active' : ''}`}
-                          id="series-only"
-                          data-bs-toggle="pill"
-                          data-bs-target="#pills-series"
-                          type="button"
-                          role="tab"
-                          aria-controls="pills-series"
-                          aria-selected={media === 'series'}
-                          onClick={() => handleTabChange('series')}
-                        >
-                          Series
-                        </button>
-                      </li>
-                    </ul>
+                          {getPageNumbers().map((number) => (
+                            <li key={number} className={`page-item ${currentPage === number ? 'active' : ''}`}>
+                              <button
+                                className="page-link"
+                                onClick={() => paginate(number)}
+                                style={{
+                                  backgroundColor: currentPage === number ? '#f6be00' : '#0a0a0a',
+                                  border: '1px solid #f6be00',
+                                  color: currentPage === number ? '#0a0a0a' : '#f6be00',
+                                  padding: '10px 16px',
+                                  borderRadius: '5px',
+                                  cursor: 'pointer',
+                                  transition: 'all 0.3s ease',
+                                  minWidth: '45px',
+                                  fontSize: '14px',
+                                  fontWeight: currentPage === number ? '600' : '500'
+                                }}
+                                onMouseEnter={(e) => {
+                                  if (currentPage !== number) {
+                                    e.target.style.backgroundColor = '#f6be00';
+                                    e.target.style.color = '#0a0a0a';
+                                  }
+                                }}
+                                onMouseLeave={(e) => {
+                                  if (currentPage !== number) {
+                                    e.target.style.backgroundColor = '#0a0a0a';
+                                    e.target.style.color = '#f6be00';
+                                  }
+                                }}
+                              >
+                                {number}
+                              </button>
+                            </li>
+                          ))}
+
+                          <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                            <button
+                              className="page-link"
+                              onClick={() => currentPage < totalPages && paginate(currentPage + 1)}
+                              disabled={currentPage === totalPages}
+                              style={{
+                                backgroundColor: currentPage === totalPages ? '#333' : '#0a0a0a',
+                                border: '1px solid #f6be00',
+                                color: currentPage === totalPages ? '#666' : '#f6be00',
+                                padding: '10px 16px',
+                                borderRadius: '5px',
+                                cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                                transition: 'all 0.3s ease',
+                                fontSize: '14px',
+                                fontWeight: '500'
+                              }}
+                              onMouseEnter={(e) => {
+                                if (currentPage !== totalPages) {
+                                  e.target.style.backgroundColor = '#f6be00';
+                                  e.target.style.color = '#0a0a0a';
+                                }
+                              }}
+                              onMouseLeave={(e) => {
+                                if (currentPage !== totalPages) {
+                                  e.target.style.backgroundColor = '#0a0a0a';
+                                  e.target.style.color = '#f6be00';
+                                }
+                              }}
+                            >
+                              <i className="fas fa-chevron-right ms-1"></i>
+                            </button>
+                          </li>
+
+                          <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                            <button
+                              className="page-link"
+                              onClick={() => currentPage < totalPages && paginate(totalPages)}
+                              disabled={currentPage === totalPages}
+                              style={{
+                                backgroundColor: currentPage === totalPages ? '#333' : '#0a0a0a',
+                                border: '1px solid #f6be00',
+                                color: currentPage === totalPages ? '#666' : '#f6be00',
+                                padding: '10px 16px',
+                                borderRadius: '5px',
+                                cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                                transition: 'all 0.3s ease',
+                                fontSize: '14px',
+                                fontWeight: '500'
+                              }}
+                              onMouseEnter={(e) => {
+                                if (currentPage !== totalPages) {
+                                  e.target.style.backgroundColor = '#f6be00';
+                                  e.target.style.color = '#0a0a0a';
+                                }
+                              }}
+                              onMouseLeave={(e) => {
+                                if (currentPage !== totalPages) {
+                                  e.target.style.backgroundColor = '#0a0a0a';
+                                  e.target.style.color = '#f6be00';
+                                }
+                              }}
+                            >
+                              <i className="fas fa-angles-right ms-1"></i>
+                            </button>
+                          </li>
+                        </ul>
+                      </nav>
+                    )}
+                    {/* Pills on the right */}
+                    {(mode === 'search' || mode === 'genre' || mode === 'catalog') && (
+                      <div className="tabs tabs-catalog">
+                        <ul className="nav nav-tabs nav-pills" id="pills-tab" role="tablist">
+                          <li className="nav-item" role="presentation">
+                            <button
+                              className={`nav-link ${media === 'all' ? 'active' : ''}`}
+                              id="all-content"
+                              data-bs-toggle="pill"
+                              data-bs-target="#pills-all"
+                              type="button"
+                              role="tab"
+                              aria-controls="pills-all"
+                              aria-selected={media === 'all'}
+                              onClick={() => handleTabChange('all')}
+                            >
+                              All
+                            </button>
+                          </li>
+                          <li className="nav-item" role="presentation">
+                            <button
+                              className={`nav-link ${media === 'movies' ? 'active' : ''}`}
+                              id="movies-only"
+                              data-bs-toggle="pill"
+                              data-bs-target="#pills-movies"
+                              type="button"
+                              role="tab"
+                              aria-controls="pills-movies"
+                              aria-selected={media === 'movies'}
+                              onClick={() => handleTabChange('movies')}
+                            >
+                              Movies
+                            </button>
+                          </li>
+                          <li className="nav-item" role="presentation">
+                            <button
+                              className={`nav-link ${media === 'series' ? 'active' : ''}`}
+                              id="series-only"
+                              data-bs-toggle="pill"
+                              data-bs-target="#pills-series"
+                              type="button"
+                              role="tab"
+                              aria-controls="pills-series"
+                              aria-selected={media === 'series'}
+                              onClick={() => handleTabChange('series')}
+                            >
+                              Series
+                            </button>
+                          </li>
+                        </ul>
+                      </div>
+                    )}
                   </div>
-                )}
+                </div>
               </div>
             </div>
           </div>
