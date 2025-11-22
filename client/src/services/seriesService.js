@@ -4,8 +4,8 @@ const baseUrl = 'https://moviefy-vwnq.onrender.com';
 const collection = 'Peaky Blinders, Squid Game, Money Heist, Hawaii Five-0';
 
 export const getBannerSeries = async () => await get(`${baseUrl}/series/collection?names=${collection}`);
-export const getLatestSeries = async (page, size) => await get(`${baseUrl}/series/latest?page=${page}&size=${size}`);
-export const getTrendingSeries = async (page, size) => await get(`${baseUrl}/series/trending?page=${page}&size=${size}`);
-export const getPopularSeries = async (page, size) => await get(`${baseUrl}/series/popular?page=${page}&size=${size}`);
+export const getLatestSeries = async (types, page, size, genres) => await get(`${baseUrl}/series/latest?types=${types}&page=${page}&size=${size}&genres=${genres || ''}`);
+export const getTrendingSeries = async (types, page, size, genres) => await get(`${baseUrl}/series/trending?types=${types}&page=${page}&size=${size}&genres=${genres || ''}`);
+export const getPopularSeries = async (types, page, size, genres) => await get(`${baseUrl}/series/popular?types=${types}&page=${page}&size=${size}&genres=${genres || ''}`);
 export const getSeriesDetails = async (seriesId) => await get(`${baseUrl}/series/${seriesId}`);
 export const getEpisodes = async (seasonId) => await get(`${baseUrl}/series/season/${seasonId}`);

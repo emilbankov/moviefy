@@ -20,6 +20,7 @@ export default function Home() {
 
     const [bannerSeries, setBannerSeries] = useState([]);
     const [latestSeries, setLatestSeries] = useState([]);
+    const [trendingSeries, setTrendingSeries] = useState([]);
     const [popularSeries, setPopularSeries] = useState([]);
 
     const { setLoading } = useLoading();
@@ -33,11 +34,12 @@ export default function Home() {
             moviesService.getPopularMovies("movies", 1, 10, ""),
             moviesService.getPopularCollections(1, 10),
             seriesService.getBannerSeries(),
-            seriesService.getLatestSeries(1, 12),
-            seriesService.getPopularSeries(1, 10),
+            seriesService.getLatestSeries("", 1, 12),
+            seriesService.getTrendingSeries("", 1, 10, ""),
+            seriesService.getPopularSeries("", 1, 10),
 
         ])
-            .then(([banner, latest, trending, popular, collections, bannerSeries, latestSeriesData, popularSeriesData]) => {
+            .then(([banner, latest, trending, popular, collections, bannerSeries, latestSeriesData, trendingSeriesData, popularSeriesData]) => {
                 setBannerMovies(banner);
                 setLatestMovies(latest);
                 setTrendingMovies(trending);
@@ -45,6 +47,7 @@ export default function Home() {
                 setPopularCollections(collections);
                 setBannerSeries(bannerSeries);
                 setLatestSeries(latestSeriesData);
+                setTrendingSeries(trendingSeriesData);
                 setPopularSeries(popularSeriesData);
 console.log(bannerMovies);
             })
@@ -138,7 +141,7 @@ console.log(bannerMovies);
                 document.body.removeChild(script);
             }
         };
-    }, [bannerMovies.rest_movies, latestMovies.movies, trendingMovies.movies, popularMovies.movies, popularCollections.collections, latestSeries.series, bannerSeries.series, popularSeries.series]);
+    }, [bannerMovies.rest_movies, latestMovies.movies, trendingMovies.movies, popularMovies.movies, popularCollections.collections, latestSeries.series, bannerSeries.series, trendingSeries.series, popularSeries.series]);
 
     return (
         <>
@@ -1087,6 +1090,128 @@ console.log(bannerMovies);
                     </div>
                 </div>
             </section>
+            {trendingSeries.series && (
+                <section className="space-ptb bg-secondary">
+                    <div className="container">
+                        <div className="row">
+                            <div className="col-md-12">
+                                <div className="section-title">
+                                    <h2 className="title">Trending Series</h2>
+                                    <Link to="/catalog?media=series&category=trending" className="btn-link">
+                                        More series
+                                    </Link>
+                                </div>
+                            </div>
+                            <div className="col-md-12">
+                                <div
+                                    className="owl-carousel owl-nav-center peek-effect"
+                                    data-nav-dots="false"
+                                    data-nav-arrow="true"
+                                    data-items={5}
+                                    data-xl-items={5}
+                                    data-lg-items={5}
+                                    data-md-items={3}
+                                    data-sm-items={2}
+                                    data-xs-items={3}
+                                    data-xx-items={2}
+                                    data-space={30}
+                                    data-stage-padding={50}
+                                    data-autoheight="true"
+                                    data-autoplay="false"
+                                    data-loop="false"
+                                >
+                                    {trendingSeries.series.map((trending) => (
+                                        <div className="item" key={trending.id}>
+                                            <Link to={`/series/details/${trending.api_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                                <div className="movies-categories br-20">
+                                                    <div className="movies-img">
+                                                        <img
+                                                            className="img-fluid"
+                                                            src={`https://image.tmdb.org/t/p/w500${trending.poster_path}`}
+                                                            alt={trending.title}
+                                                        />
+                                                        <div className="info-top">
+                                                            <Link
+                                                                to={`/genre?genre=${getGenreParam(trending.genre)}&media=series`}
+                                                                className="tag"
+                                                                onClick={(e) => e.stopPropagation()}
+                                                            >
+                                                                {trending.genre}
+                                                            </Link>
+                                                            <div className="ms-auto">
+                                                                <a href="javascript:void(0)" className="like" onClick={(e) => e.preventDefault()} />
+                                                                <a className="views" href="#" onClick={(e) => e.preventDefault()}>
+                                                                    <i className="fa-solid fa-star" /> {trending.vote_average}
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                        <div className="movies-info">
+                                                            <div className="content">
+                                                                <span className="time">
+                                                                    <span className="year" style={{ fontSize: '14px' }}>{trending.year}</span>{" "}
+                                                                    <i className="far fa-clock me-2" style={{ marginLeft: "8px" }} />
+                                                                    SS {trending.seasons} <span className="dot"></span> EPS {trending.episodes}
+                                                                </span>
+                                                                <div className="info-content">
+                                                                    <div className="movies-title">
+                                                                        <a
+                                                                            className="play-btn popup-youtube"
+                                                                            href={`https://www.youtube.com/watch?v=${trending.trailer}`}
+                                                                            onClick={(e) => e.stopPropagation()}
+                                                                        >
+                                                                            <i className="fa-solid fa-play" />
+                                                                        </a>
+                                                                        <h6>
+                                                                            <span className="title mt-0">
+                                                                                {trending.name}
+                                                                            </span>
+                                                                        </h6>
+                                                                    </div>
+                                                                    <div className="share-info">
+                                                                        <a href="javascript:void(0)" className="add-icon" onClick={(e) => e.preventDefault()} />
+                                                                        <div className="share-box">
+                                                                            <a href="#" onClick={(e) => e.preventDefault()}>
+                                                                                <i className="fas fa-share-alt" />
+                                                                            </a>
+                                                                            <ul className="list-unstyled share-box-social">
+                                                                                <li>
+                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
+                                                                                        <i className="fab fa-facebook-f" />
+                                                                                    </a>
+                                                                                </li>
+                                                                                <li>
+                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
+                                                                                        <i className="fab fa-twitter" />
+                                                                                    </a>
+                                                                                </li>
+                                                                                <li>
+                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
+                                                                                        <i className="fab fa-linkedin" />
+                                                                                    </a>
+                                                                                </li>
+                                                                                <li>
+                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
+                                                                                        <i className="fab fa-instagram" />
+                                                                                    </a>
+                                                                                </li>
+                                                                            </ul>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </Link>
+                                        </div>
+                                    ))}
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            )}
             <section className="space-ptb bg-holder bg-overlay-dark-99" style={{ backgroundImage: "url(images/bg/01.jpg)" }}>
                 <div className="container position-relative">
                     <div className="row">
@@ -1141,6 +1266,128 @@ console.log(bannerMovies);
                     </div>
                 </div>
             </section>
+            {popularSeries.series && (
+                <section className="space-ptb bg-secondary">
+                    <div className="container">
+                        <div className="row">
+                            <div className="col-md-12">
+                                <div className="section-title">
+                                    <h2 className="title">All Time Most Popular Series</h2>
+                                    <Link to="/catalog?media=series&category=popular" className="btn-link">
+                                        More series
+                                    </Link>
+                                </div>
+                            </div>
+                            <div className="col-md-12">
+                                <div
+                                    className="owl-carousel owl-nav-center peek-effect"
+                                    data-nav-dots="false"
+                                    data-nav-arrow="true"
+                                    data-items={5}
+                                    data-xl-items={5}
+                                    data-lg-items={5}
+                                    data-md-items={3}
+                                    data-sm-items={2}
+                                    data-xs-items={3}
+                                    data-xx-items={2}
+                                    data-space={30}
+                                    data-stage-padding={50}
+                                    data-autoheight="true"
+                                    data-autoplay="false"
+                                    data-loop="false"
+                                >
+                                    {popularSeries.series.map((popular) => (
+                                        <div className="item" key={popular.id}>
+                                            <Link to={`/series/details/${popular.api_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                                <div className="movies-categories br-20">
+                                                    <div className="movies-img">
+                                                        <img
+                                                            className="img-fluid"
+                                                            src={`https://image.tmdb.org/t/p/w500${popular.poster_path}`}
+                                                            alt={popular.title}
+                                                        />
+                                                        <div className="info-top">
+                                                            <Link
+                                                                to={`/genre?genre=${getGenreParam(popular.genre)}&media=series`}
+                                                                className="tag"
+                                                                onClick={(e) => e.stopPropagation()}
+                                                            >
+                                                                {popular.genre}
+                                                            </Link>
+                                                            <div className="ms-auto">
+                                                                <a href="javascript:void(0)" className="like" onClick={(e) => e.preventDefault()} />
+                                                                <a className="views" href="#" onClick={(e) => e.preventDefault()}>
+                                                                    <i className="fa-solid fa-star" /> {popular.vote_average}
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                        <div className="movies-info">
+                                                            <div className="content">
+                                                                <span className="time">
+                                                                    <span className="year" style={{ fontSize: '14px' }}>{popular.year}</span>{" "}
+                                                                    <i className="far fa-clock me-2" style={{ marginLeft: "8px" }} />
+                                                                    SS {popular.seasons} <span className="dot"></span> EPS {popular.episodes}
+                                                                </span>
+                                                                <div className="info-content">
+                                                                    <div className="movies-title">
+                                                                        <a
+                                                                            className="play-btn popup-youtube"
+                                                                            href={`https://www.youtube.com/watch?v=${popular.trailer}`}
+                                                                            onClick={(e) => e.stopPropagation()}
+                                                                        >
+                                                                            <i className="fa-solid fa-play" />
+                                                                        </a>
+                                                                        <h6>
+                                                                            <span className="title mt-0">
+                                                                                {popular.name}
+                                                                            </span>
+                                                                        </h6>
+                                                                    </div>
+                                                                    <div className="share-info">
+                                                                        <a href="javascript:void(0)" className="add-icon" onClick={(e) => e.preventDefault()} />
+                                                                        <div className="share-box">
+                                                                            <a href="#" onClick={(e) => e.preventDefault()}>
+                                                                                <i className="fas fa-share-alt" />
+                                                                            </a>
+                                                                            <ul className="list-unstyled share-box-social">
+                                                                                <li>
+                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
+                                                                                        <i className="fab fa-facebook-f" />
+                                                                                    </a>
+                                                                                </li>
+                                                                                <li>
+                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
+                                                                                        <i className="fab fa-twitter" />
+                                                                                    </a>
+                                                                                </li>
+                                                                                <li>
+                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
+                                                                                        <i className="fab fa-linkedin" />
+                                                                                    </a>
+                                                                                </li>
+                                                                                <li>
+                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
+                                                                                        <i className="fab fa-instagram" />
+                                                                                    </a>
+                                                                                </li>
+                                                                            </ul>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </Link>
+                                        </div>
+                                    ))}
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            )}
             {popularSeries.series && (
                 <section className="space-ptb bg-secondary">
                     <div className="container">
