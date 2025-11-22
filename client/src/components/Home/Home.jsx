@@ -16,12 +16,14 @@ export default function Home() {
     const [latestMovies, setLatestMovies] = useState([]);
     const [trendingMovies, setTrendingMovies] = useState([]);
     const [popularMovies, setPopularMovies] = useState([]);
+    const [topRatedMovies, setTopRatedMovies] = useState([]);
     const [popularCollections, setPopularCollections] = useState([]);
 
     const [bannerSeries, setBannerSeries] = useState([]);
     const [latestSeries, setLatestSeries] = useState([]);
     const [trendingSeries, setTrendingSeries] = useState([]);
     const [popularSeries, setPopularSeries] = useState([]);
+    const [topRatedSeries, setTopRatedSeries] = useState([]);
 
     const { setLoading } = useLoading();
 
@@ -32,23 +34,27 @@ export default function Home() {
             moviesService.getLatestMovies("movies", 1, 12, ""),
             moviesService.getTrendingMovies("movies", 1, 10, ""),
             moviesService.getPopularMovies("movies", 1, 10, ""),
+            moviesService.getTopRatedMovies("movies", 1, 10, ""),
             moviesService.getPopularCollections(1, 10),
             seriesService.getBannerSeries(),
             seriesService.getLatestSeries("", 1, 12),
             seriesService.getTrendingSeries("", 1, 10, ""),
             seriesService.getPopularSeries("", 1, 10),
+            seriesService.getTopRatedSeries("", 1, 10, ""),
 
         ])
-            .then(([banner, latest, trending, popular, collections, bannerSeries, latestSeriesData, trendingSeriesData, popularSeriesData]) => {
+            .then(([banner, latest, trending, popular, topRated, collections, bannerSeries, latestSeriesData, trendingSeriesData, popularSeriesData, topRatedSeriesData]) => {
                 setBannerMovies(banner);
                 setLatestMovies(latest);
                 setTrendingMovies(trending);
                 setPopularMovies(popular);
+                setTopRatedMovies(topRated);
                 setPopularCollections(collections);
                 setBannerSeries(bannerSeries);
                 setLatestSeries(latestSeriesData);
                 setTrendingSeries(trendingSeriesData);
                 setPopularSeries(popularSeriesData);
+                setTopRatedSeries(topRatedSeriesData);
 console.log(bannerMovies);
             })
             .catch(err => {
@@ -141,7 +147,7 @@ console.log(bannerMovies);
                 document.body.removeChild(script);
             }
         };
-    }, [bannerMovies.rest_movies, latestMovies.movies, trendingMovies.movies, popularMovies.movies, popularCollections.collections, latestSeries.series, bannerSeries.series, trendingSeries.series, popularSeries.series]);
+    }, [bannerMovies.rest_movies, latestMovies.movies, trendingMovies.movies, popularMovies.movies, topRatedMovies.movies, popularCollections.collections, latestSeries.series, bannerSeries.series, trendingSeries.series, popularSeries.series, topRatedSeries.series]);
 
     return (
         <>
@@ -873,6 +879,128 @@ console.log(bannerMovies);
                     </div>
                 </section>
             )}
+            {topRatedMovies.movies && (
+                <section className="space-ptb bg-secondary">
+                    <div className="container">
+                        <div className="row">
+                            <div className="col-md-12">
+                                <div className="section-title">
+                                    <h2 className="title">Top Rated Movies</h2>
+                                    <Link to="/catalog?media=movies&category=top_rated" className="btn-link">
+                                        More movies
+                                    </Link>
+                                </div>
+                            </div>
+                            <div className="col-md-12">
+                                <div
+                                    className="owl-carousel owl-nav-center peek-effect"
+                                    data-nav-dots="false"
+                                    data-nav-arrow="true"
+                                    data-items={5}
+                                    data-xl-items={5}
+                                    data-lg-items={5}
+                                    data-md-items={3}
+                                    data-sm-items={2}
+                                    data-xs-items={3}
+                                    data-xx-items={2}
+                                    data-space={30}
+                                    data-stage-padding={50}
+                                    data-autoheight="true"
+                                    data-autoplay="false"
+                                    data-loop="false"
+                                >
+                                    {topRatedMovies.movies.map((topRated) => (
+                                        <div className="item" key={topRated.id}>
+                                            <Link to={`/movie/details/${topRated.api_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                                <div className="movies-categories br-20">
+                                                    <div className="movies-img">
+                                                        <img
+                                                            className="img-fluid"
+                                                            src={`https://image.tmdb.org/t/p/w500${topRated.poster_path}`}
+                                                            alt={topRated.title}
+                                                        />
+                                                        <div className="info-top">
+                                                            <Link
+                                                                to={`/genre?genre=${getGenreParam(topRated.genre)}&media=movies`}
+                                                                className="tag"
+                                                                onClick={(e) => e.stopPropagation()}
+                                                            >
+                                                                {topRated.genre}
+                                                            </Link>
+                                                            <div className="ms-auto">
+                                                                <a href="javascript:void(0)" className="like" onClick={(e) => e.preventDefault()} />
+                                                                <a className="views" href="#" onClick={(e) => e.preventDefault()}>
+                                                                    <i className="fa-solid fa-star" /> {topRated.score.toFixed(1)}
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                        <div className="movies-info">
+                                                            <div className="content">
+                                                                <span className="time">
+                                                                    <span className="year" style={{ fontSize: '14px' }}>{topRated.year}</span>{" "}
+                                                                    <i className="far fa-clock me-2" style={{ marginLeft: "8px" }} />
+                                                                    {Math.floor(topRated.runtime / 60)}hr : {topRated.runtime % 60}min
+                                                                </span>
+                                                                <div className="info-content">
+                                                                    <div className="movies-title">
+                                                                        <a
+                                                                            className="play-btn popup-youtube"
+                                                                            href={`https://www.youtube.com/watch?v=${topRated.trailer}`}
+                                                                            onClick={(e) => e.stopPropagation()}
+                                                                        >
+                                                                            <i className="fa-solid fa-play" />
+                                                                        </a>
+                                                                        <h5>
+                                                                            <span className="title mt-0">
+                                                                                {topRated.title}
+                                                                            </span>
+                                                                        </h5>
+                                                                    </div>
+                                                                    <div className="share-info">
+                                                                        <a href="javascript:void(0)" className="add-icon" onClick={(e) => e.preventDefault()} />
+                                                                        <div className="share-box">
+                                                                            <a href="#" onClick={(e) => e.preventDefault()}>
+                                                                                <i className="fas fa-share-alt" />
+                                                                            </a>
+                                                                            <ul className="list-unstyled share-box-social">
+                                                                                <li>
+                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
+                                                                                        <i className="fab fa-facebook-f" />
+                                                                                    </a>
+                                                                                </li>
+                                                                                <li>
+                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
+                                                                                        <i className="fab fa-twitter" />
+                                                                                    </a>
+                                                                                </li>
+                                                                                <li>
+                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
+                                                                                        <i className="fab fa-linkedin" />
+                                                                                    </a>
+                                                                                </li>
+                                                                                <li>
+                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
+                                                                                        <i className="fab fa-instagram" />
+                                                                                    </a>
+                                                                                </li>
+                                                                            </ul>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </Link>
+                                        </div>
+                                    ))}
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            )}
             <section className="space-ptb">
                 <div className="container">
                     <div className="row">
@@ -1388,14 +1516,14 @@ console.log(bannerMovies);
                     </div>
                 </section>
             )}
-            {popularSeries.series && (
+            {topRatedSeries.series && (
                 <section className="space-ptb bg-secondary">
                     <div className="container">
                         <div className="row">
                             <div className="col-md-12">
                                 <div className="section-title">
-                                    <h2 className="title">All Time Most Popular Series</h2>
-                                    <Link to="/catalog?media=series&category=popular" className="btn-link">
+                                    <h2 className="title">Top Rated Series</h2>
+                                    <Link to="/catalog?media=series&category=top_rated" className="btn-link">
                                         More series
                                     </Link>
                                 </div>
@@ -1418,50 +1546,50 @@ console.log(bannerMovies);
                                     data-autoplay="false"
                                     data-loop="false"
                                 >
-                                    {popularSeries.series.map((popular) => (
-                                        <div className="item" key={popular.id}>
-                                            <Link to={`/series/details/${popular.api_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                    {topRatedSeries.series.map((topRated) => (
+                                        <div className="item" key={topRated.id}>
+                                            <Link to={`/series/details/${topRated.api_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                                                 <div className="movies-categories br-20">
                                                     <div className="movies-img">
                                                         <img
                                                             className="img-fluid"
-                                                            src={`https://image.tmdb.org/t/p/w500${popular.poster_path}`}
-                                                            alt={popular.title}
+                                                            src={`https://image.tmdb.org/t/p/w500${topRated.poster_path}`}
+                                                            alt={topRated.title}
                                                         />
                                                         <div className="info-top">
                                                             <Link
-                                                                to={`/genre?genre=${getGenreParam(popular.genre)}&media=series`}
+                                                                to={`/genre?genre=${getGenreParam(topRated.genre)}&media=series`}
                                                                 className="tag"
                                                                 onClick={(e) => e.stopPropagation()}
                                                             >
-                                                                {popular.genre}
+                                                                {topRated.genre}
                                                             </Link>
                                                             <div className="ms-auto">
                                                                 <a href="javascript:void(0)" className="like" onClick={(e) => e.preventDefault()} />
                                                                 <a className="views" href="#" onClick={(e) => e.preventDefault()}>
-                                                                    <i className="fa-solid fa-star" /> {popular.vote_average}
+                                                                    <i className="fa-solid fa-star" /> {topRated.score.toFixed(1)}
                                                                 </a>
                                                             </div>
                                                         </div>
                                                         <div className="movies-info">
                                                             <div className="content">
                                                                 <span className="time">
-                                                                    <span className="year" style={{ fontSize: '14px' }}>{popular.year}</span>{" "}
+                                                                    <span className="year" style={{ fontSize: '14px' }}>{topRated.year}</span>{" "}
                                                                     <i className="far fa-clock me-2" style={{ marginLeft: "8px" }} />
-                                                                    SS {popular.seasons} <span className="dot"></span> EPS {popular.episodes}
+                                                                    SS {topRated.seasons} <span className="dot"></span> EPS {topRated.episodes}
                                                                 </span>
                                                                 <div className="info-content">
                                                                     <div className="movies-title">
                                                                         <a
                                                                             className="play-btn popup-youtube"
-                                                                            href={`https://www.youtube.com/watch?v=${popular.trailer}`}
+                                                                            href={`https://www.youtube.com/watch?v=${topRated.trailer}`}
                                                                             onClick={(e) => e.stopPropagation()}
                                                                         >
                                                                             <i className="fa-solid fa-play" />
                                                                         </a>
                                                                         <h6>
                                                                             <span className="title mt-0">
-                                                                                {popular.name}
+                                                                                {topRated.name}
                                                                             </span>
                                                                         </h6>
                                                                     </div>
