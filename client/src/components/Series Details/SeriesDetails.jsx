@@ -462,12 +462,12 @@ export default function SeriesDetails() {
                                     {series.series.cast &&
                                         series.series.cast.slice(0, 9).map((actor) => (
                                             <div className="col-md-4" key={actor.id}>
-                                                <a href="#" className="movie-author">
+                                                <Link to={`/actor-media?actorId=${actor.id}&actorName=${encodeURIComponent(actor.name)}&actorImage=${encodeURIComponent(actor.profilePath || '')}`} className="movie-author">
                                                     <div className="author-img">
                                                         <img
                                                             className="actor img-fluid"
-                                                            src={actor.profilePath 
-                                                                ? `https://media.themoviedb.org/t/p/w138_and_h175_face${actor.profilePath}` 
+                                                            src={actor.profilePath
+                                                                ? `https://media.themoviedb.org/t/p/w138_and_h175_face${actor.profilePath}`
                                                                 : '/images/no-image.jpg'}
                                                             alt={actor.name}
                                                             onError={(e) => { e.target.src = '/images/no-image.jpg'; }}
@@ -477,7 +477,7 @@ export default function SeriesDetails() {
                                                         <h6 className="author-name">{actor.name}</h6>
                                                         <span className="author-designation">{actor.character}</span>
                                                     </div>
-                                                </a>
+                                                </Link>
                                             </div>
                                         ))}
                                 </div>
