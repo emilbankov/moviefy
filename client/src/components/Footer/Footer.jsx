@@ -144,7 +144,7 @@ export default function Footer() {
                             <div className="col-md-12">
                                 <p className="mb-0"> &copy; Copyright <span id="copyright">
                                     {new Date().getFullYear()}
-                                </span> <Link to="/"> 4K Star </Link> All Rights Reserved</p>
+                                </span> <Link to="/"> Moviefy </Link> All Rights Reserved</p>
                             </div>
                         </div>
                     </div>

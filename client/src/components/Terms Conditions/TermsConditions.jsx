@@ -90,7 +90,7 @@ export default function TermsConditions() {
                                     horizon, never to be heard from again. Rumors say that years later
                                     he died destitute, never having found the diamonds he spent his
                                     life seeking. Meanwhile, the man who bought that farm found a
-                                    large and “interesting looking” stone in a 4K Star that ran
+                                    large and “interesting looking” stone in a Moviefy that ran
                                     through the property. He put the stone on his mantle where a
                                     visitor recognized the large stone as a rough diamond. It turned
                                     out to be the Hope Diamond.

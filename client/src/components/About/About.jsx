@@ -74,7 +74,7 @@ export default function About() {
                     <div className="row">
                         <div className="col-md-12">
                             <div className="section-title">
-                                <h2 className="title">What they’re talking about 4K Star</h2>
+                                <h2 className="title">What they’re talking about Moviefy</h2>
                                 <a href="#" className="btn-link">
                                     View All
                                 </a>

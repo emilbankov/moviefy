@@ -17,7 +17,7 @@ export default function LoginRegister() {
                     <div className="row justify-content-center">
                         <div className="col-lg-12 col-lg-9 col-xxl-7">
                             <div className="section-title text-center">
-                                <h2 className="title">What they’re talking about 4K Star</h2>
+                                <h2 className="title">What they’re talking about Moviefy</h2>
                             </div>
                             <div className="bg-dark login-tabs tabs">
                                 <ul
