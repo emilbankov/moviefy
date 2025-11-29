@@ -224,12 +224,12 @@ export default function MovieDetails() {
                                         )
                                         .slice(0, 3)  // Limit to the first three entries
                                         .map((crew) => (
-                                            <a href="#" className="movie-author" key={crew.id}>
+                                            <Link to={`/crew-media?crewId=${crew.id}&crewName=${encodeURIComponent(crew.name)}&crewImage=${encodeURIComponent(crew.profilePath || '')}`} className="movie-author" key={crew.id}>
                                                 <div className="author-img">
                                                     <img
                                                         className="crew img-fluid"
-                                                        src={crew.profilePath 
-                                                            ? `https://image.tmdb.org/t/p/w138_and_h175_face${crew.profilePath}` 
+                                                        src={crew.profilePath
+                                                            ? `https://image.tmdb.org/t/p/w138_and_h175_face${crew.profilePath}`
                                                             : '/images/no-image.jpg'}
                                                         alt={crew.name}
                                                         onError={(e) => { e.target.src = '/images/no-image.jpg'; }}
@@ -239,7 +239,7 @@ export default function MovieDetails() {
                                                     <h6 className="author-name">{crew.name}</h6>
                                                     <span className="author-designation">{crew.job}</span>
                                                 </div>
-                                            </a>
+                                            </Link>
                                         ))}
                             </div>
                             <div className="col-lg-9 col-md-12 order-lg-2 mb-4 mb-lg-0">

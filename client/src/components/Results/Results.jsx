@@ -3,7 +3,7 @@ import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { search, getGenres, getPopularMovies, getTrendingMovies, getLatestMovies, getTopRatedMovies, getPopularCollections, searchPopularCollections } from '../../services/moviesService';
 import { getPopularSeries, getTrendingSeries, getLatestSeries, getTopRatedSeries } from '../../services/seriesService';
 import { useLoading } from '../../contexts/LoadingContext';
-import { getActorsMedia } from '../../services/castService';
+import { getActorsMedia, getCrewMedia } from '../../services/castService';
 
 export default function Results() {
   // NOTE: we now get setSearchParams so we can read/write the page in the URL
@@ -42,9 +42,15 @@ export default function Results() {
   const actorName = searchParams.get('actorName');
   const actorImage = searchParams.get('actorImage');
 
-  // Update mode detection to include collection search and actor media
+  // Add crew info parameters for display
+  const crewId = searchParams.get('crewId');
+  const crewName = searchParams.get('crewName');
+  const crewImage = searchParams.get('crewImage');
+
+  // Update mode detection to include collection search, actor media, and crew media
   // Check for valid non-empty values
-  const mode = (actorId && actorId.trim()) ? 'actor_media' :
+  const mode = (crewId && crewId.trim()) ? 'crew_media' :
+               (actorId && actorId.trim()) ? 'actor_media' :
                (query && query.trim()) ? 'search' :
                (genre && genre.trim()) ? 'genre' :
                (collectionQuery && collectionQuery.trim()) ? 'collection_search' :
@@ -246,7 +252,11 @@ export default function Results() {
       setLoading(true);
       try {
         let data;
-        if (mode === 'actor_media') {
+        if (mode === 'crew_media') {
+          // Fetch crew's movies and series
+          data = await getCrewMedia(crewId, currentPage, 30, actorMediaType);
+          console.log('Crew media results:', data);
+        } else if (mode === 'actor_media') {
           // Fetch actor's movies and series
           data = await getActorsMedia(actorId, currentPage, 30, actorMediaType);
           console.log('Actor media results:', data);
@@ -336,7 +346,7 @@ export default function Results() {
     };
 
     fetchResults();
-  }, [mode, query, collectionQuery, genre, media, category, currentPage, setLoading, forceRefetch, actorMediaType]);
+  }, [mode, query, collectionQuery, genre, media, category, currentPage, setLoading, forceRefetch, actorMediaType, crewId, crewName]);
 
   // Reset to first page when primary criteria changes — update URL page to 1
   useEffect(() => {
@@ -349,7 +359,7 @@ export default function Results() {
     // only update URL if it isn't already page 1
     if (currentPage !== 1) updatePageInParams(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mode, query, collectionQuery, genre, media, category, actorMediaType]);
+  }, [mode, query, collectionQuery, genre, media, category, actorMediaType, crewId, crewName]);
 
   // Reset page to 1 when selecting genres or types (user expects new filter to start from page 1)
   useEffect(() => {
@@ -367,6 +377,10 @@ export default function Results() {
   }, [selectedTypes]);
 
   const selectResults = () => {
+    // If we have crew media data, return the data for the selected mediaType
+    if (mode === 'crew_media') {
+      return apiData?.[actorMediaType] || apiData?.results || [];
+    }
     // If we have actor media data, return the data for the selected mediaType
     if (mode === 'actor_media') {
       return apiData?.[actorMediaType] || apiData?.results || [];
@@ -411,6 +425,8 @@ export default function Results() {
       navigate(`/genre?genre=${genre}&media=${newMedia}`);
     } else if (mode === 'catalog') {
       navigate(`/catalog?media=${newMedia}&category=${category}`);
+    } else if (mode === 'crew_media') {
+      navigate(`/crew-media?crewId=${crewId}&crewName=${encodeURIComponent(crewName || '')}&crewImage=${encodeURIComponent(crewImage || '')}&mediaType=${newMedia}`);
     } else if (mode === 'actor_media') {
       navigate(`/actor-media?actorId=${actorId}&actorName=${encodeURIComponent(actorName || '')}&actorImage=${encodeURIComponent(actorImage || '')}&mediaType=${newMedia}`);
     }
@@ -477,6 +493,7 @@ export default function Results() {
       return `Collection Search Results for "${lastSearchedTerm}"`;
     }
 
+    if (mode === 'crew_media') return crewName ? `${crewName}'s Media` : `Crew's Media`;
     if (mode === 'actor_media') return actorName ? `${actorName}'s Media` : `Actor's Media`;
     if (mode === 'search') return `Search Results for "${query}"`;
     if (mode === 'collection_search') return `Collection Search Results for "${collectionQuery}"`;
@@ -512,7 +529,7 @@ export default function Results() {
       <section ref={sectionRef}>
         <div className="container">
           <div className="row genres-container">
-            {mode !== 'search' && mode !== 'collection_search' && mode !== 'actor_media' && mode && media !== 'collections' && (
+            {mode !== 'search' && mode !== 'collection_search' && mode !== 'actor_media' && mode !== 'crew_media' && mode && media !== 'collections' && (
               <div className="row">
                 <div className="col-12">
                   {/* Show both genres and types for series catalog in one dropdown, otherwise show one */}
@@ -669,6 +686,30 @@ export default function Results() {
         <div className="container">
           <div className="row">
             <div className="col-md-12">
+              {/* Crew info header for crew media mode */}
+              {mode === 'crew_media' && crewName && (
+                <div className="crew-info-header text-center mb-4">
+                  <div className="crew-profile d-flex align-items-center justify-content-center" style={{ gap: '20px' }}>
+                    {crewImage && (
+                      <div className="crew-image">
+                        <img
+                          src={`https://media.themoviedb.org/t/p/w138_and_h175_face${crewImage}`}
+                          alt={crewName}
+                          className="img-fluid rounded"
+                          style={{ width: '100px', height: 'auto' }}
+                          onError={(e) => { e.target.src = '/images/no-image.jpg'; }}
+                        />
+                      </div>
+                    )}
+                    <div className="crew-details">
+                      <h3 className="crew-name mb-1" style={{ color: '#f6be00', fontSize: '28px', fontWeight: '600' }}>{crewName}</h3>
+                      <p className="crew-media-count text-white-50" style={{ fontSize: '16px', margin: 0 }}>
+                        {itemsPerPage > 0 ? `${totalItems} ${totalItems === 1 ? 'title' : 'titles'}` : 'No titles found'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
               {/* Actor info header for actor media mode */}
               {mode === 'actor_media' && actorName && (
                 <div className="actor-info-header text-center mb-4">
@@ -941,19 +982,19 @@ export default function Results() {
                       </div>
                     ) : (
                       /* Pills on the right - hide for collections catalog */
-                      (mode === 'search' || mode === 'genre' || mode === 'catalog' || mode === 'actor_media') && (
+                      (mode === 'search' || mode === 'genre' || mode === 'catalog' || mode === 'actor_media' || mode === 'crew_media') && (
                         <div className="tabs tabs-catalog">
                           <ul className="nav nav-tabs nav-pills" id="pills-tab" role="tablist">
                             <li className="nav-item" role="presentation">
                               <button
-                                className={`nav-link ${(mode === 'actor_media' ? actorMediaType : media) === 'all' ? 'active' : ''}`}
+                                className={`nav-link ${((mode === 'actor_media' || mode === 'crew_media') ? actorMediaType : media) === 'all' ? 'active' : ''}`}
                                 id="all-content"
                                 data-bs-toggle="pill"
                                 data-bs-target="#pills-all"
                                 type="button"
                                 role="tab"
                                 aria-controls="pills-all"
-                                aria-selected={(mode === 'actor_media' ? actorMediaType : media) === 'all'}
+                                aria-selected={((mode === 'actor_media' || mode === 'crew_media') ? actorMediaType : media) === 'all'}
                                 onClick={() => handleTabChange('all')}
                               >
                                 All
@@ -961,14 +1002,14 @@ export default function Results() {
                             </li>
                             <li className="nav-item" role="presentation">
                               <button
-                                className={`nav-link ${(mode === 'actor_media' ? actorMediaType : media) === 'movies' ? 'active' : ''}`}
+                                className={`nav-link ${((mode === 'actor_media' || mode === 'crew_media') ? actorMediaType : media) === 'movies' ? 'active' : ''}`}
                                 id="movies-only"
                                 data-bs-toggle="pill"
                                 data-bs-target="#pills-movies"
                                 type="button"
                                 role="tab"
                                 aria-controls="pills-movies"
-                                aria-selected={(mode === 'actor_media' ? actorMediaType : media) === 'movies'}
+                                aria-selected={((mode === 'actor_media' || mode === 'crew_media') ? actorMediaType : media) === 'movies'}
                                 onClick={() => handleTabChange('movies')}
                               >
                                 Movies
@@ -976,14 +1017,14 @@ export default function Results() {
                             </li>
                             <li className="nav-item" role="presentation">
                               <button
-                                className={`nav-link ${(mode === 'actor_media' ? actorMediaType : media) === 'series' ? 'active' : ''}`}
+                                className={`nav-link ${((mode === 'actor_media' || mode === 'crew_media') ? actorMediaType : media) === 'series' ? 'active' : ''}`}
                                 id="series-only"
                                 data-bs-toggle="pill"
                                 data-bs-target="#pills-series"
                                 type="button"
                                 role="tab"
                                 aria-controls="pills-series"
-                                aria-selected={(mode === 'actor_media' ? actorMediaType : media) === 'series'}
+                                aria-selected={((mode === 'actor_media' || mode === 'crew_media') ? actorMediaType : media) === 'series'}
                                 onClick={() => handleTabChange('series')}
                               >
                                 Series
