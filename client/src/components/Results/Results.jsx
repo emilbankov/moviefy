@@ -679,7 +679,7 @@ export default function Results() {
                           src={`https://media.themoviedb.org/t/p/w138_and_h175_face${actorImage}`}
                           alt={actorName}
                           className="img-fluid rounded"
-                          style={{ width: '80px', height: 'auto' }}
+                          style={{ width: '100px', height: 'auto' }}
                           onError={(e) => { e.target.src = '/images/no-image.jpg'; }}
                         />
                       </div>
