@@ -4093,6 +4093,11 @@ button {
     border-radius: inherit;
 }
 
+.movie-details-info.movies-info .features .imdb .logo-align {
+    display: flex;
+    align-items: center;
+}
+
 .movie-details-info.movies-info .features .imdb img {
     height: 15px;
     margin-right: 8px;

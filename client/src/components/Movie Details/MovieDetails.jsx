@@ -159,12 +159,12 @@ export default function MovieDetails() {
                                                 <div className="movie-details-info movies-info">
                                                     <div className="features">
                                                         <span className="imdb">
-                                                            <a href={`https://www.imdb.com/title/${movie.movies.imdb_id}`} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
+                                                            <a className="logo-align" href={`https://www.imdb.com/title/${movie.movies.imdb_id}`} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
                                                                 <img className="img-fluid" src="/images/imdb-logo.png" alt="#" />{movie.movies.vote_average}
                                                             </a>
                                                         </span>
                                                         <span className="imdb">
-                                                            <a href={`https://www.themoviedb.org/movie/${movie.movies.api_id}`} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
+                                                            <a className="logo-align" href={`https://www.themoviedb.org/movie/${movie.movies.api_id}`} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
                                                                 <img className="img-fluid" src="/images/tmdb-logo.svg" alt="#" />{movie.movies.vote_average}
                                                             </a>
                                                         </span>

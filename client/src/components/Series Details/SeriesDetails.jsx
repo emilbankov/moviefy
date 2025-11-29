@@ -205,12 +205,12 @@ export default function SeriesDetails() {
                                                         <div className="movie-details-info movies-info">
                                                             <div className="features">
                                                                 <span className="imdb">
-                                                                    <a href={`https://www.imdb.com/title/${series.series.imdb_id}`} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
+                                                                    <a className="logo-align" href={`https://www.imdb.com/title/${series.series.imdb_id}`} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
                                                                         <img className="img-fluid" src="/images/imdb-logo.png" alt="#" />{series.series.vote_average}
                                                                     </a>
                                                                 </span>
                                                                 <span className="imdb">
-                                                                    <a href={`https://www.themoviedb.org/tv/${series.series.api_id}`} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
+                                                                    <a className="logo-align" href={`https://www.themoviedb.org/tv/${series.series.api_id}`} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
                                                                         <img className="img-fluid" src="/images/tmdb-logo.svg" alt="#" />{series.series.vote_average}
                                                                     </a>
                                                                 </span>
@@ -226,8 +226,13 @@ export default function SeriesDetails() {
                                                                 </Link>
                                                             ))}
                                                         </div>
-                                                        <div className="movies-genre">
-                                                            Status: {series.series.status}
+                                                        <div className="d-sm-flex">
+                                                            <div className="movies-genre">
+                                                                Status: {series.series.status}
+                                                            </div>
+                                                            <div className="movies-genre ms-3">
+                                                                Type: {series.series.type}
+                                                            </div>
                                                         </div>
                                                         <div className="movies-genre">
                                                             Studio:{" "}

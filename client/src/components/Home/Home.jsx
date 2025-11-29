@@ -169,12 +169,12 @@ export default function Home() {
                                     <div className="features">
                                         <span className="review">R</span>
                                         <span className="imdb">
-                                            <a href={`https://www.imdb.com/title/${bannerMovies.first_movie.imdb_id}`} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
+                                            <a className="logo-align" href={`https://www.imdb.com/title/${bannerMovies.first_movie.imdb_id}`} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
                                                 <img className="img-fluid" src="/images/imdb-logo.png" alt="#" />{bannerMovies.first_movie.vote_average}
                                             </a>
                                         </span>
                                         <span className="imdb">
-                                            <a href={`https://www.themoviedb.org/movie/${bannerMovies.first_movie.api_id}`} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
+                                            <a className="logo-align" href={`https://www.themoviedb.org/movie/${bannerMovies.first_movie.api_id}`} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
                                                 <img className="img-fluid" src="/images/tmdb-logo.svg" alt="#" />{bannerMovies.first_movie.vote_average}
                                             </a>
                                         </span>
