@@ -24,6 +24,8 @@ export default function SeriesDetails() {
         setLoading(true);
         seriesService.getSeriesDetails(seriesId)
             .then(result => setSeries(result))
+            .then(console.log(series)
+            )
             .catch(err => {
                 console.log(err);
             })
@@ -43,6 +45,7 @@ export default function SeriesDetails() {
             setEpisodes(fetchedEpisodes);
         });
     };
+    console.log(series);
 
     useEffect(() => {
         // Wait for all images to load before initializing carousel
@@ -195,97 +198,110 @@ export default function SeriesDetails() {
                                         </div>
                                     ) : (
                                         <div className="row position-relative">
-                                        <div className="col-xxl-6 col-xl-7 col-lg-6 col-md-8 col-sm-12 order-md-1 order-2">
-                                            <div className="movie-details">
-                                                <div className="movie-info">
-                                                    <h2 className="title">{series.series.name}</h2>
-                                                    <div className="movies-language">Language:{" "} English{" "}
-                                                        <a className="rating" href="#"><i className="fa-solid fa-star" />
-                                                            {" "}{series.series.vote_average}/10
-                                                        </a>
-                                                    </div>
-                                                    <div className="movies-genre">
-                                                        Genre:{" "}
-                                                        {series.series.genres.map((genre, index) => (
-                                                            <Link key={index} to={`/genre?genre=${getGenreParam(genre.name)}&media=series`}>
-                                                                {genre.name}
-                                                                {index < series.series.genres.length - 1 && ", "}
-                                                            </Link>
-                                                        ))}
-                                                    </div>
-                                                    <div className="movies-genre">
-                                                        Studio:{" "}
-                                                        {series.series.production_companies.map((company, index) => (
-                                                            <span key={index}>
-                                                                {company.name}
-                                                                {index < series.series.production_companies.length - 1 && ", "}
-                                                            </span>
-                                                        ))}
-                                                    </div>
-                                                    <div className="d-sm-flex">
-                                                        <span className="year">{new Date(series.series.first_air_date).getFullYear()}</span>
-                                                        <a className="time" href="#">
-                                                            SS {series.series.seasons[series.series.seasons.length - 1].season_number}
-                                                            <span className="dot"></span>
-                                                            EPS {series.series.seasons[series.series.seasons.length - 1].episode_count}
-                                                        </a>
-                                                        <span className="quality">
-                                                            Quality: <a href="#">720P, 1080P</a>
-                                                        </span>
-                                                    </div>
-                                                    <div className="d-sm-flex my-2">
-                                                        <a href="javascript:void(0)" className="add-icon me-3">
-                                                            {" "}
-                                                            Add to List
-                                                        </a>
-                                                        <div className="share-box">
-                                                            <a href="#">
-                                                                {" "}
-                                                                <i className="fas fa-share-alt" /> Share
-                                                            </a>
-                                                            <ul className="list-unstyled share-box-social">
-                                                                <li>
-                                                                    {" "}
-                                                                    <a href="#">
-                                                                        <i className="fab fa-facebook-f" />
-                                                                    </a>{" "}
-                                                                </li>
-                                                                <li>
-                                                                    {" "}
-                                                                    <a href="#">
-                                                                        <i className="fab fa-twitter" />
-                                                                    </a>{" "}
-                                                                </li>
-                                                                <li>
-                                                                    {" "}
-                                                                    <a href="#">
-                                                                        <i className="fab fa-linkedin" />
-                                                                    </a>{" "}
-                                                                </li>
-                                                                <li>
-                                                                    {" "}
-                                                                    <a href="#">
-                                                                        <i className="fab fa-instagram" />
-                                                                    </a>{" "}
-                                                                </li>
-                                                            </ul>
+                                            <div className="col-xxl-6 col-xl-7 col-lg-6 col-md-8 col-sm-12 order-md-1 order-2">
+                                                <div className="movie-details">
+                                                    <div className="movie-info">
+                                                        <h2 className="title">{series.series.name}</h2>
+                                                        <div className="movie-details-info movies-info">
+                                                            <div className="features">
+                                                                <span className="imdb">
+                                                                    <a href={`https://www.imdb.com/title/${series.series.imdb_id}`} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
+                                                                        <img className="img-fluid" src="/images/imdb-logo.png" alt="#" />{series.series.vote_average}
+                                                                    </a>
+                                                                </span>
+                                                                <span className="imdb">
+                                                                    <a href={`https://www.themoviedb.org/tv/${series.series.api_id}`} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
+                                                                        <img className="img-fluid" src="/images/tmdb-logo.svg" alt="#" />{series.series.vote_average}
+                                                                    </a>
+                                                                </span>
+                                                            </div>
                                                         </div>
+                                                        <div className="movies-language">Language:{" "} English{" "}</div>
+                                                        <div className="movies-genre">
+                                                            Genre:{" "}
+                                                            {series.series.genres.map((genre, index) => (
+                                                                <Link key={index} to={`/genre?genre=${getGenreParam(genre.name)}&media=series`}>
+                                                                    {genre.name}
+                                                                    {index < series.series.genres.length - 1 && ", "}
+                                                                </Link>
+                                                            ))}
+                                                        </div>
+                                                        <div className="movies-genre">
+                                                            Status: {series.series.status}
+                                                        </div>
+                                                        <div className="movies-genre">
+                                                            Studio:{" "}
+                                                            {series.series.production_companies.map((company, index) => (
+                                                                <span key={index}>
+                                                                    {company.name}
+                                                                    {index < series.series.production_companies.length - 1 && ", "}
+                                                                </span>
+                                                            ))}
+                                                        </div>
+                                                        <div className="d-sm-flex">
+                                                            <span className="year">{new Date(series.series.first_air_date).getFullYear()}</span>
+                                                            <a className="time" href="#">
+                                                                SS {series.series.seasons[series.series.seasons.length - 1].season_number}
+                                                                <span className="dot"></span>
+                                                                EPS {series.series.seasons[series.series.seasons.length - 1].episode_count}
+                                                            </a>
+                                                            <span className="quality">
+                                                                Quality: <a href="#">720P, 1080P</a>
+                                                            </span>
+                                                        </div>
+                                                        <div className="d-sm-flex my-2">
+                                                            <a href="javascript:void(0)" className="add-icon me-3">
+                                                                {" "}
+                                                                Add to List
+                                                            </a>
+                                                            <div className="share-box">
+                                                                <a href="#">
+                                                                    {" "}
+                                                                    <i className="fas fa-share-alt" /> Share
+                                                                </a>
+                                                                <ul className="list-unstyled share-box-social">
+                                                                    <li>
+                                                                        {" "}
+                                                                        <a href="#">
+                                                                            <i className="fab fa-facebook-f" />
+                                                                        </a>{" "}
+                                                                    </li>
+                                                                    <li>
+                                                                        {" "}
+                                                                        <a href="#">
+                                                                            <i className="fab fa-twitter" />
+                                                                        </a>{" "}
+                                                                    </li>
+                                                                    <li>
+                                                                        {" "}
+                                                                        <a href="#">
+                                                                            <i className="fab fa-linkedin" />
+                                                                        </a>{" "}
+                                                                    </li>
+                                                                    <li>
+                                                                        {" "}
+                                                                        <a href="#">
+                                                                            <i className="fab fa-instagram" />
+                                                                        </a>{" "}
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                        <p className="mb-4">
+                                                            {series.series.overview}
+                                                        </p>
+                                                        <a className="btn btn-primary popup-youtube" href={`https://www.youtube.com/watch?v=${series.series.trailer}`}><i className="fa-solid fa-play" />
+                                                            Watch Trailer
+                                                        </a>
                                                     </div>
-                                                    <p className="mb-4">
-                                                        {series.series.overview}
-                                                    </p>
-                                                    <a className="btn btn-primary popup-youtube" href={`https://www.youtube.com/watch?v=${series.series.trailer}`}><i className="fa-solid fa-play" />
-                                                        Watch Trailer
-                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div className="col-xxl-6 col-xl-5 col-lg-6  col-md-4 col-sm-12 align-self-center order-md-2 order-1">
+                                                <div className="video movie-video-btn mb-4 mb-md-0">
+                                                    <button className="video-btn btn-animation" onClick={handleScroll}><i className="fa-solid fa-play" /></button>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="col-xxl-6 col-xl-5 col-lg-6  col-md-4 col-sm-12 align-self-center order-md-2 order-1">
-                                            <div className="video movie-video-btn mb-4 mb-md-0">
-                                                <button className="video-btn btn-animation" onClick={handleScroll}><i className="fa-solid fa-play" /></button>
-                                            </div>
-                                        </div>
-                                    </div>
                                     )}
                                 </div>
                             </div>
@@ -329,12 +345,12 @@ export default function SeriesDetails() {
                                                                 }
                                                             }}
                                                         >
-                                                            <img 
-                                                                className="img-fluid" 
-                                                                src={season.poster_path 
-                                                                    ? `https://image.tmdb.org/t/p/w500${season.poster_path}` 
-                                                                    : '/images/no-image-seasons.png'} 
-                                                                alt="#" 
+                                                            <img
+                                                                className="img-fluid"
+                                                                src={season.poster_path
+                                                                    ? `https://image.tmdb.org/t/p/w500${season.poster_path}`
+                                                                    : '/images/no-image-seasons.png'}
+                                                                alt="#"
                                                                 onError={(e) => { e.target.src = '/images/no-image-seasons.png'; }}
                                                             />
                                                             <div className="episode-info">
@@ -383,34 +399,34 @@ export default function SeriesDetails() {
                                     >
                                         {episodes[selectedSeason].map((episode) => {
                                             return (
-                                            <div className="item" key={episode.episode_number}>
-                                                <div className="episode-item">
-                                                    <a 
-                                                        href="#" 
-                                                        className="play-btn-episodes" 
-                                                        onClick={(e) => {
-                                                            e.preventDefault();
-                                                            setPlayingEpisode({ season: selectedSeason, episode: episode.episode_number });
-                                                            setShowMoviePlayer(true);
-                                                        }}
-                                                    >
-                                                        <i className="fa-solid fa-play" />
-                                                    </a>
-                                                    <img 
-                                                        className="img-fluid" 
-                                                        src={episode.still_path 
-                                                            ? `https://image.tmdb.org/t/p/w500${episode.still_path}` 
-                                                            : '/images/no-image-episodes.png'} 
-                                                        alt="#" 
-                                                        onError={(e) => { e.target.src = '/images/no-image-episodes.png'; }}
-                                                    />
-                                                    <div className="episode-info">
-                                                        <h6 className="title">
-                                                            {episode.episode_number}. {episode.name}
-                                                        </h6>
+                                                <div className="item" key={episode.episode_number}>
+                                                    <div className="episode-item">
+                                                        <a
+                                                            href="#"
+                                                            className="play-btn-episodes"
+                                                            onClick={(e) => {
+                                                                e.preventDefault();
+                                                                setPlayingEpisode({ season: selectedSeason, episode: episode.episode_number });
+                                                                setShowMoviePlayer(true);
+                                                            }}
+                                                        >
+                                                            <i className="fa-solid fa-play" />
+                                                        </a>
+                                                        <img
+                                                            className="img-fluid"
+                                                            src={episode.still_path
+                                                                ? `https://image.tmdb.org/t/p/w500${episode.still_path}`
+                                                                : '/images/no-image-episodes.png'}
+                                                            alt="#"
+                                                            onError={(e) => { e.target.src = '/images/no-image-episodes.png'; }}
+                                                        />
+                                                        <div className="episode-info">
+                                                            <h6 className="title">
+                                                                {episode.episode_number}. {episode.name}
+                                                            </h6>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
                                             );
                                         })}
                                     </div>

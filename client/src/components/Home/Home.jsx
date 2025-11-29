@@ -55,7 +55,7 @@ export default function Home() {
                 setTrendingSeries(trendingSeriesData);
                 setPopularSeries(popularSeriesData);
                 setTopRatedSeries(topRatedSeriesData);
-console.log(bannerMovies);
+                console.log(bannerMovies);
             })
             .catch(err => {
                 console.error("Error fetching data:", err);
@@ -168,7 +168,16 @@ console.log(bannerMovies);
                                     </div>
                                     <div className="features">
                                         <span className="review">R</span>
-                                        <span className="imdb"><img className="img-fluid" src="images/imdb-logo.png" alt="#" />{bannerMovies.first_movie.vote_average}</span>
+                                        <span className="imdb">
+                                            <a href={`https://www.imdb.com/title/${bannerMovies.first_movie.imdb_id}`} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
+                                                <img className="img-fluid" src="/images/imdb-logo.png" alt="#" />{bannerMovies.first_movie.vote_average}
+                                            </a>
+                                        </span>
+                                        <span className="imdb">
+                                            <a href={`https://www.themoviedb.org/movie/${bannerMovies.first_movie.api_id}`} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
+                                                <img className="img-fluid" src="/images/tmdb-logo.svg" alt="#" />{bannerMovies.first_movie.vote_average}
+                                            </a>
+                                        </span>
                                         <span className="bookmark save" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Bookmark" />
                                         <span className="like" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Like" />
                                         <span className="reting" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rating">
