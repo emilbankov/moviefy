@@ -3,6 +3,7 @@ import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { search, getGenres, getPopularMovies, getTrendingMovies, getLatestMovies, getTopRatedMovies, getPopularCollections, searchPopularCollections } from '../../services/moviesService';
 import { getPopularSeries, getTrendingSeries, getLatestSeries, getTopRatedSeries } from '../../services/seriesService';
 import { useLoading } from '../../contexts/LoadingContext';
+import { getActorsMedia } from '../../services/castService';
 
 export default function Results() {
   // NOTE: we now get setSearchParams so we can read/write the page in the URL
@@ -31,9 +32,20 @@ export default function Results() {
   // Add collection search query parameter
   const collectionQuery = searchParams.get('cq');
 
-  // Update mode detection to include collection search
+  // Add actor ID parameter for actor media
+  const actorId = searchParams.get('actorId');
+
+  // Add actor media type parameter (all, movies, series)
+  const actorMediaType = searchParams.get('mediaType') || 'all';
+
+  // Add actor info parameters for display
+  const actorName = searchParams.get('actorName');
+  const actorImage = searchParams.get('actorImage');
+
+  // Update mode detection to include collection search and actor media
   // Check for valid non-empty values
-  const mode = (query && query.trim()) ? 'search' :
+  const mode = (actorId && actorId.trim()) ? 'actor_media' :
+               (query && query.trim()) ? 'search' :
                (genre && genre.trim()) ? 'genre' :
                (collectionQuery && collectionQuery.trim()) ? 'collection_search' :
                (category && category.trim()) ? 'catalog' : null;
@@ -234,7 +246,11 @@ export default function Results() {
       setLoading(true);
       try {
         let data;
-        if (mode === 'search') {
+        if (mode === 'actor_media') {
+          // Fetch actor's movies and series
+          data = await getActorsMedia(actorId, currentPage, 30, actorMediaType);
+          console.log('Actor media results:', data);
+        } else if (mode === 'search') {
           // Note: current moviesService.search may ignore page/size; backend can be updated later.
           data = await search(media, query, currentPage, 30);
           console.log('Search results:', data);
@@ -320,7 +336,7 @@ export default function Results() {
     };
 
     fetchResults();
-  }, [mode, query, collectionQuery, genre, media, category, currentPage, setLoading, forceRefetch]);
+  }, [mode, query, collectionQuery, genre, media, category, currentPage, setLoading, forceRefetch, actorMediaType]);
 
   // Reset to first page when primary criteria changes — update URL page to 1
   useEffect(() => {
@@ -333,7 +349,7 @@ export default function Results() {
     // only update URL if it isn't already page 1
     if (currentPage !== 1) updatePageInParams(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mode, query, collectionQuery, genre, media, category]);
+  }, [mode, query, collectionQuery, genre, media, category, actorMediaType]);
 
   // Reset page to 1 when selecting genres or types (user expects new filter to start from page 1)
   useEffect(() => {
@@ -351,6 +367,11 @@ export default function Results() {
   }, [selectedTypes]);
 
   const selectResults = () => {
+    // If we have actor media data, return the data for the selected mediaType
+    if (mode === 'actor_media') {
+      return apiData?.[actorMediaType] || apiData?.results || [];
+    }
+
     // If we've performed a collection search, show search results (even if empty/null)
     if (hasPerformedCollectionSearch) {
       const searchResults = collectionSearchResults?.results || collectionSearchResults?.collections || [];
@@ -378,6 +399,7 @@ export default function Results() {
 
   const results = selectResults();
   const totalPages = collectionSearchResults?.total_pages || apiData?.total_pages || 1;
+  const totalItems = collectionSearchResults?.total_items || apiData?.total_items || results.length;
   const itemsPerPage = collectionSearchResults?.items_on_page || apiData?.items_on_page || (Array.isArray(results) ? results.length : 30);
 
   const handleTabChange = (newMedia) => {
@@ -389,6 +411,8 @@ export default function Results() {
       navigate(`/genre?genre=${genre}&media=${newMedia}`);
     } else if (mode === 'catalog') {
       navigate(`/catalog?media=${newMedia}&category=${category}`);
+    } else if (mode === 'actor_media') {
+      navigate(`/actor-media?actorId=${actorId}&actorName=${encodeURIComponent(actorName || '')}&actorImage=${encodeURIComponent(actorImage || '')}&mediaType=${newMedia}`);
     }
   };
 
@@ -446,13 +470,14 @@ export default function Results() {
 
   const isCollectionItem = () => mode === 'catalog' && media === 'collections' || mode === 'collection_search';
 
-  // Update title function to include collection search
+  // Update title function to include collection search and actor media
   const title = (() => {
     // If we've performed a collection search, show that title (even if no results)
     if (hasPerformedCollectionSearch) {
       return `Collection Search Results for "${lastSearchedTerm}"`;
     }
 
+    if (mode === 'actor_media') return actorName ? `${actorName}'s Media` : `Actor's Media`;
     if (mode === 'search') return `Search Results for "${query}"`;
     if (mode === 'collection_search') return `Collection Search Results for "${collectionQuery}"`;
     if (mode === 'genre') return genre || 'Results';
@@ -487,7 +512,7 @@ export default function Results() {
       <section ref={sectionRef}>
         <div className="container">
           <div className="row genres-container">
-            {mode !== 'search' && mode !== 'collection_search' && mode && media !== 'collections' && (
+            {mode !== 'search' && mode !== 'collection_search' && mode !== 'actor_media' && mode && media !== 'collections' && (
               <div className="row">
                 <div className="col-12">
                   {/* Show both genres and types for series catalog in one dropdown, otherwise show one */}
@@ -644,6 +669,30 @@ export default function Results() {
         <div className="container">
           <div className="row">
             <div className="col-md-12">
+              {/* Actor info header for actor media mode */}
+              {mode === 'actor_media' && actorName && (
+                <div className="actor-info-header text-center mb-4">
+                  <div className="actor-profile d-flex align-items-center justify-content-center" style={{ gap: '20px' }}>
+                    {actorImage && (
+                      <div className="actor-image">
+                        <img
+                          src={`https://media.themoviedb.org/t/p/w138_and_h175_face${actorImage}`}
+                          alt={actorName}
+                          className="img-fluid rounded"
+                          style={{ width: '80px', height: 'auto' }}
+                          onError={(e) => { e.target.src = '/images/no-image.jpg'; }}
+                        />
+                      </div>
+                    )}
+                    <div className="actor-details">
+                      <h3 className="actor-name mb-1" style={{ color: '#f6be00', fontSize: '28px', fontWeight: '600' }}>{actorName}</h3>
+                      <p className="actor-media-count text-white-50" style={{ fontSize: '16px', margin: 0 }}>
+                        {itemsPerPage > 0 ? `${totalItems} ${totalItems === 1 ? 'title' : 'titles'}` : 'No titles found'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
               <div className="categories-tabs">
                 <div className="section-title d-flex align-items-center justify-content-between flex-wrap" style={{ gap: '12px' }}>
                   {/* Center the pagination */}
@@ -892,19 +941,19 @@ export default function Results() {
                       </div>
                     ) : (
                       /* Pills on the right - hide for collections catalog */
-                      (mode === 'search' || mode === 'genre' || mode === 'catalog') && (
+                      (mode === 'search' || mode === 'genre' || mode === 'catalog' || mode === 'actor_media') && (
                         <div className="tabs tabs-catalog">
                           <ul className="nav nav-tabs nav-pills" id="pills-tab" role="tablist">
                             <li className="nav-item" role="presentation">
                               <button
-                                className={`nav-link ${media === 'all' ? 'active' : ''}`}
+                                className={`nav-link ${(mode === 'actor_media' ? actorMediaType : media) === 'all' ? 'active' : ''}`}
                                 id="all-content"
                                 data-bs-toggle="pill"
                                 data-bs-target="#pills-all"
                                 type="button"
                                 role="tab"
                                 aria-controls="pills-all"
-                                aria-selected={media === 'all'}
+                                aria-selected={(mode === 'actor_media' ? actorMediaType : media) === 'all'}
                                 onClick={() => handleTabChange('all')}
                               >
                                 All
@@ -912,14 +961,14 @@ export default function Results() {
                             </li>
                             <li className="nav-item" role="presentation">
                               <button
-                                className={`nav-link ${media === 'movies' ? 'active' : ''}`}
+                                className={`nav-link ${(mode === 'actor_media' ? actorMediaType : media) === 'movies' ? 'active' : ''}`}
                                 id="movies-only"
                                 data-bs-toggle="pill"
                                 data-bs-target="#pills-movies"
                                 type="button"
                                 role="tab"
                                 aria-controls="pills-movies"
-                                aria-selected={media === 'movies'}
+                                aria-selected={(mode === 'actor_media' ? actorMediaType : media) === 'movies'}
                                 onClick={() => handleTabChange('movies')}
                               >
                                 Movies
@@ -927,14 +976,14 @@ export default function Results() {
                             </li>
                             <li className="nav-item" role="presentation">
                               <button
-                                className={`nav-link ${media === 'series' ? 'active' : ''}`}
+                                className={`nav-link ${(mode === 'actor_media' ? actorMediaType : media) === 'series' ? 'active' : ''}`}
                                 id="series-only"
                                 data-bs-toggle="pill"
                                 data-bs-target="#pills-series"
                                 type="button"
                                 role="tab"
                                 aria-controls="pills-series"
-                                aria-selected={media === 'series'}
+                                aria-selected={(mode === 'actor_media' ? actorMediaType : media) === 'series'}
                                 onClick={() => handleTabChange('series')}
                               >
                                 Series
@@ -1054,6 +1103,7 @@ export default function Results() {
               <div className="col-12 text-center">
                 <p className="text-white">
                   {collectionSearchResults ? `No collections found for "${lastSearchedTerm || collectionSearchInput}"` :
+                   mode === 'actor_media' ? `No media found for this actor` :
                    mode === 'search' ? `No results found for "${query || 'your search'}"` :
                    mode === 'collection_search' ? `No collections found for "${collectionQuery}"` :
                    `No results found for ${genre}`}
