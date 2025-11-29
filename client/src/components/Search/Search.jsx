@@ -16,7 +16,7 @@ export default function Search({ isOpen, onClose }) {
                     const data = await search('all', searchQuery);
                     const searchResults = data.results || data;
                     setResults(searchResults);
-                    setItemsOnPage(data.total_items);
+                    setItemsOnPage(data.items_on_page);
                     console.log(data);
                     
                 } catch (error) {
