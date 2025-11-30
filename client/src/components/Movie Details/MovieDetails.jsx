@@ -1,6 +1,7 @@
 import { Link, useLocation, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import * as moviesService from '../../services/moviesService'
+import * as reviewsService from '../../services/reviewsService'
 import { useLoading } from '../../contexts/LoadingContext';
 
 // Helper function to convert genre display name to database name
@@ -10,9 +11,38 @@ const getGenreParam = (genreName) => {
     return genreName;
 };
 
+// Helper function to render star rating (rating is 0-10, convert to 0-5 stars)
+const renderStars = (rating) => {
+    const starRating = rating ? Math.round(rating / 2) : 0;
+    const stars = [];
+
+    for (let i = 1; i <= 5; i++) {
+        if (i <= starRating) {
+            stars.push(<i key={i} className="fas fa-star" />);
+        } else if (i === starRating + 0.5) {
+            stars.push(<i key={i} className="fas fa-star-half-alt" />);
+        } else {
+            stars.push(<i key={i} className="far fa-star" />);
+        }
+    }
+
+    return stars;
+};
+
+// Helper function to truncate review content
+const truncateReview = (text, maxLength = 350) => {
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength).trim() + '...';
+};
+
 export default function MovieDetails() {
     const [movie, setMovie] = useState([]);
+    const [reviews, setReviews] = useState([]);
     const [showMoviePlayer, setShowMoviePlayer] = useState(false);
+    const [showAllReviews, setShowAllReviews] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [expandedReviews, setExpandedReviews] = useState(new Set());
+    const reviewsPerPage = 20;
     const { movieId } = useParams();
     const location = useLocation();
     const { setLoading } = useLoading();
@@ -20,7 +50,16 @@ export default function MovieDetails() {
     useEffect(() => {
         setLoading(true);
         moviesService.getMovieDetails(movieId)
-            .then(result => setMovie(result))
+            .then(result => {
+                setMovie(result);
+                // Always fetch page 1 initially - contains up to 20 reviews
+                return reviewsService.getReviews(movieId, 'movies', 1);
+            })
+            .then(reviewsResult => {
+                if (reviewsResult) {
+                    setReviews(reviewsResult);
+                }
+            })
             .catch(err => {
                 console.log(err);
             })
@@ -29,8 +68,42 @@ export default function MovieDetails() {
             });
         return () => {
             setMovie('movie');
+            setReviews([]);
+            setShowAllReviews(false);
+            setCurrentPage(1);
+            setExpandedReviews(new Set());
         };
-    }, [location.pathname, setLoading]);
+    }, [location.pathname, setLoading, movieId]);
+
+    // Fetch all reviews when showAllReviews becomes true
+    useEffect(() => {
+        if (showAllReviews) {
+            const fetchAllReviews = async () => {
+                const firstPage = await reviewsService.getReviews(movieId, 'movies', 1);
+                if (firstPage.total_pages <= 1) {
+                    setReviews(firstPage);
+                    return;
+                }
+
+                const allPromises = [];
+                for (let page = 2; page <= firstPage.total_pages; page++) {
+                    allPromises.push(reviewsService.getReviews(movieId, 'movies', page));
+                }
+
+                const otherPages = await Promise.all(allPromises);
+                const allReviews = [firstPage, ...otherPages].flatMap(page => page.reviews);
+
+                setReviews({
+                    ...firstPage,
+                    reviews: allReviews
+                });
+            };
+
+            fetchAllReviews();
+        }
+    }, [showAllReviews, movieId]);
+
+console.log(reviews);
 
     useEffect(() => {
         // Wait for all images to load before initializing carousel
@@ -113,7 +186,7 @@ export default function MovieDetails() {
             {movie.movies && (
                 <section className="single-movie-details space-pb bg-holder bg-overlay-dark-99" style={{ backgroundImage: "url(/images/bg/03.jpg)" }}>
                     <div className="container position-relative">
-                        <div className="movie-details-bg col-12 bg-overlay-dark-4" style={{ backgroundImage: showMoviePlayer ? 'none' : `url(https://image.tmdb.org/t/p/original${movie.movies.backdrop_path || ''})`, padding: showMoviePlayer ? 0 : undefined }}>
+                        <div className="movie-details-bg col-12 bg-overlay-dark-5" style={{ backgroundImage: showMoviePlayer ? 'none' : `url(https://image.tmdb.org/t/p/original${movie.movies.backdrop_path || ''})`, padding: showMoviePlayer ? 0 : undefined }}>
                             {showMoviePlayer ? (
                                 <div style={{
                                     width: '100%',
@@ -236,8 +309,8 @@ export default function MovieDetails() {
                                             crew.job === "Producer"
                                         )
                                         .slice(0, 3)  // Limit to the first three entries
-                                        .map((crew) => (
-                                            <Link to={`/crew-media?crewId=${crew.id}&crewName=${encodeURIComponent(crew.name)}&crewImage=${encodeURIComponent(crew.profilePath || '')}`} className="movie-author" key={crew.id}>
+                                        .map((crew, index) => (
+                                            <Link to={`/crew-media?crewId=${crew.id}&crewName=${encodeURIComponent(crew.name)}&crewImage=${encodeURIComponent(crew.profilePath || '')}`} className="movie-author" key={`crew-${crew.id}-${index}`}>
                                                 <div className="author-img">
                                                     <img
                                                         className="crew img-fluid"
@@ -260,7 +333,7 @@ export default function MovieDetails() {
                                 <div className="row">
                                     {movie.movies.cast &&
                                         movie.movies.cast.slice(0, 9).map((actor) => (
-                                            <div className="col-md-4" key={actor.id}>
+                                            <div className="col-md-4" key={`cast-${actor.id}`}>
                                                 <Link to={`/actor-media?actorId=${actor.id}&actorName=${encodeURIComponent(actor.name)}&actorImage=${encodeURIComponent(actor.profilePath || '')}`} className="movie-author">
                                                     <div className="author-img">
                                                         <img
@@ -334,7 +407,7 @@ export default function MovieDetails() {
                                                 aria-controls="pills-reviews"
                                                 aria-selected="false"
                                             >
-                                                Reviews (4)
+                                                Reviews ({reviews?.total_items || 0})
                                             </button>
                                         </li>
                                     </ul>
@@ -429,200 +502,118 @@ export default function MovieDetails() {
                                         >
                                             <div className="row">
                                                 <div className="col-12">
-                                                    <h4 className="mb-4">
-                                                        4 Reviews for women’s fabric mix midi wrap jumpsuit
-                                                    </h4>
-                                                    <div className="commentlist">
-                                                        <div className="comment-author">
-                                                            <img
-                                                                className="img-fluid"
-                                                                src="/images/avatar/01.jpg"
-                                                                alt=""
-                                                            />
-                                                        </div>
-                                                        <div className="comment-content">
-                                                            <div className="reviews">
-                                                                <p className="meta">
-                                                                    <strong>Sara Lisbon </strong> – Apr 8, 2022
-                                                                </p>
-                                                                <div className="rating">
-                                                                    <i className="fas fa-star" />
-                                                                    <i className="fas fa-star" />
-                                                                    <i className="fas fa-star" />
-                                                                    <i className="fas fa-star-half-alt" />
-                                                                    <i className="far fa-star" />
+                                                    {reviews?.reviews && reviews.reviews.length > 0 ? (
+                                                        <>
+                                                            {/* Display reviews - show 6 initially, or paginated reviews if showAllReviews */}
+                                                            {(showAllReviews ? reviews.reviews.slice((currentPage - 1) * reviewsPerPage, currentPage * reviewsPerPage) : reviews.reviews.slice(0, 6)).map((review, index) => {
+                                                                // Create a stable key for tracking expanded reviews
+                                                                const reviewKey = review.id || `${review.author}- ${review.created_at}-${index}`;
+                                                                const globalIndex = showAllReviews ? ((currentPage - 1) * reviewsPerPage) + index : index;
+                                                                return (
+                                                                    <div key={`review-${globalIndex}-${review.author}-${Date.parse(review.created_at)}`} className="commentlist">
+                                                                        <div className="comment-author">
+                                                                            <img
+                                                                                className="img-fluid"
+                                                                                src={review.author_path ? `https://image.tmdb.org/t/p/w45${review.author_path}` : '/images/no-image.jpg'}
+                                                                                alt={review.author}
+                                                                                onError={(e) => { e.target.src = '/images/no-image.jpg'; }}
+                                                                                style={{ minWidth: '70px', minHeight: '70px', width: '70px', height: '70px', objectFit: 'cover' }}
+                                                                            />
+                                                                        </div>
+                                                                        <div className="comment-content">
+                                                                            <div className="reviews">
+                                                                                <p className="meta">
+                                                                                    <strong>{review.author}</strong> {new Date(review.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                                                                                </p>
+                                                                                <div className="rating" style={{ color: '#FFD700' }}>
+                                                                                    {renderStars(review.rating)}
+                                                                                </div>
+                                                                            </div>
+                                                                            <p>
+                                                                                {expandedReviews.has(reviewKey) ? review.content : truncateReview(review.content)}
+                                                                                {review.content.length > 350 && (
+                                                                                    <button
+                                                                                        type="button"
+                                                                                        className="btn btn-link p-0 ms-2 text-primary"
+                                                                                        style={{ textDecoration: 'none', fontSize: '0.9em' }}
+                                                                                        onClick={() => {
+                                                                                            const newExpanded = new Set(expandedReviews);
+                                                                                            if (newExpanded.has(reviewKey)) {
+                                                                                                newExpanded.delete(reviewKey);
+                                                                                            } else {
+                                                                                                newExpanded.add(reviewKey);
+                                                                                            }
+                                                                                            setExpandedReviews(newExpanded);
+                                                                                        }}
+                                                                                    >
+                                                                                        {expandedReviews.has(reviewKey) ? 'Read Less' : 'Read More'}
+                                                                                    </button>
+                                                                                )}
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                );
+                                                            })}
+
+                                                            {/* View More Button */}
+                                                            {!showAllReviews && reviews.reviews.length > 6 && (
+                                                                <div className="text-center mt-4">
+                                                                    <button
+                                                                        type="button"
+                                                                        className="btn btn-primary"
+                                                                        onClick={() => setShowAllReviews(true)}
+                                                                    >
+                                                                        View More Reviews
+                                                                    </button>
                                                                 </div>
-                                                            </div>
-                                                            <p>
-                                                                For those of you who are serious about having more,
-                                                                doing more, giving more and being more, success is
-                                                                achievable with some understanding of what to do, some
-                                                                discipline around planning and execution of those
-                                                                plans and belief that you can achieve your desires.
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                    <div className="commentlist ms-sm-5 ms-4">
-                                                        <div className="comment-author">
-                                                            <img
-                                                                className="img-fluid"
-                                                                src="/images/avatar/02.jpg"
-                                                                alt=""
-                                                            />
-                                                        </div>
-                                                        <div className="comment-content">
-                                                            <div className="reviews">
-                                                                <p className="meta">
-                                                                    <strong>Frank Smith </strong> – May 8, 2022
-                                                                </p>
-                                                                <div className="rating">
-                                                                    <i className="fas fa-star" />
-                                                                    <i className="fas fa-star" />
-                                                                    <i className="fas fa-star" />
-                                                                    <i className="fas fa-star-half-alt" />
-                                                                    <i className="far fa-star" />
+                                                            )}
+
+                                                            {/* Pagination - only show when showAllReviews is true and there are more than 20 reviews total */}
+                                                            {showAllReviews && reviews.total_items > 20 && (
+                                                                <div className="row mt-4">
+                                                                    <div className="col-12">
+                                                                        <nav aria-label="Reviews pagination">
+                                                                            <ul className="pagination justify-content-center">
+                                                                                <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                                                                                    <button
+                                                                                        type="button"
+                                                                                        className="page-link"
+                                                                                        onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                                                                                        disabled={currentPage === 1}
+                                                                                    >
+                                                                                        Previous
+                                                                                    </button>
+                                                                                </li>
+                                                                                {Array.from({ length: Math.ceil(reviews.total_items / reviewsPerPage) }, (_, i) => i + 1).map(page => (
+                                                                                    <li key={page} className={`page-item ${currentPage === page ? 'active' : ''}`}>
+                                                                                        <button
+                                                                                            type="button"
+                                                                                            className="page-link"
+                                                                                            onClick={() => setCurrentPage(page)}
+                                                                                        >
+                                                                                            {page}
+                                                                                        </button>
+                                                                                    </li>
+                                                                                ))}
+                                                                                <li className={`page-item ${currentPage === Math.ceil(reviews.total_items / reviewsPerPage) ? 'disabled' : ''}`}>
+                                                                                    <button
+                                                                                        type="button"
+                                                                                        className="page-link"
+                                                                                        onClick={() => setCurrentPage(prev => Math.min(Math.ceil(reviews.total_items / reviewsPerPage), prev + 1))}
+                                                                                        disabled={currentPage === Math.ceil(reviews.total_items / reviewsPerPage)}
+                                                                                    >
+                                                                                        Next
+                                                                                    </button>
+                                                                                </li>
+                                                                            </ul>
+                                                                        </nav>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                            <p>
-                                                                There are basically six key areas to higher
-                                                                achievement. Some people will tell you there are four
-                                                                while others may tell you there are eight. One thing
-                                                                for certain though, is that irrespective of the number
-                                                                of steps the experts talk about, they all originate
-                                                                from the same roots.
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                    <div className="commentlist ms-sm-5 ms-4">
-                                                        <div className="comment-author">
-                                                            <img
-                                                                className="img-fluid"
-                                                                src="/images/avatar/03.jpg"
-                                                                alt=""
-                                                            />
-                                                        </div>
-                                                        <div className="comment-content">
-                                                            <div className="reviews">
-                                                                <p className="meta">
-                                                                    <strong>Joanna williams </strong> – Jun 8, 2022
-                                                                </p>
-                                                                <div className="rating">
-                                                                    <i className="fas fa-star" />
-                                                                    <i className="fas fa-star" />
-                                                                    <i className="fas fa-star" />
-                                                                    <i className="fas fa-star-half-alt" />
-                                                                    <i className="far fa-star" />
-                                                                </div>
-                                                            </div>
-                                                            <p>
-                                                                Success isn’t really that difficult. There is a
-                                                                significant portion of the population here in North
-                                                                America, that actually want and need success to be
-                                                                hard! Why? So they then have a built-in excuse when
-                                                                things don’t go their way! Pretty sad situation, to
-                                                                say the least.
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                    <div className="commentlist">
-                                                        <div className="comment-author">
-                                                            <img
-                                                                className="img-fluid"
-                                                                src="/images/avatar/04.jpg"
-                                                                alt=""
-                                                            />
-                                                        </div>
-                                                        <div className="comment-content">
-                                                            <div className="reviews">
-                                                                <p className="meta">
-                                                                    <strong>Felica Queen </strong> – July 8, 2022
-                                                                </p>
-                                                                <div className="rating">
-                                                                    <i className="fas fa-star" />
-                                                                    <i className="fas fa-star" />
-                                                                    <i className="fas fa-star" />
-                                                                    <i className="fas fa-star-half-alt" />
-                                                                    <i className="far fa-star" />
-                                                                </div>
-                                                            </div>
-                                                            <p>
-                                                                Making a decision to do something – this is the first
-                                                                step. We all know that nothing moves until someone
-                                                                makes a decision. The first action is always in making
-                                                                the decision to proceed. This is a fundamental step,
-                                                                which most people overlook.
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                    <div className="mt-4 ">
-                                                        <h5>Add a review</h5>
-                                                        <p>
-                                                            Your email address will not be published. Required
-                                                            fields are marked *
-                                                        </p>
-                                                    </div>
-                                                    <form className="row mt-4 align-items-center">
-                                                        <div className="mb-3 col-sm-6">
-                                                            <label className="form-label">Name*</label>
-                                                            <input
-                                                                type="text"
-                                                                className="form-control"
-                                                                placeholder=""
-                                                            />
-                                                        </div>
-                                                        <div className="mb-3 col-sm-6">
-                                                            <label className="form-label">Email</label>
-                                                            <input
-                                                                type="email"
-                                                                className="form-control"
-                                                                placeholder=""
-                                                            />
-                                                        </div>
-                                                        <div className="col-sm-12">
-                                                            <label className="form-label">Your review *</label>
-                                                            <div className="mb-3">
-                                                                <textarea
-                                                                    className="form-control"
-                                                                    rows={5}
-                                                                    id="comment"
-                                                                    defaultValue={""}
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                        <div className="col-sm-12">
-                                                            <div className="form-check mb-3">
-                                                                <input
-                                                                    className="form-check-input"
-                                                                    type="checkbox"
-                                                                    defaultValue=""
-                                                                    id="flexCheckChecked02"
-                                                                />
-                                                                <label
-                                                                    className="form-check-label ps-2"
-                                                                    htmlFor="flexCheckChecked02"
-                                                                >
-                                                                    Save my name, email, and website in this browser for
-                                                                    the next time I comment.
-                                                                </label>
-                                                            </div>
-                                                        </div>
-                                                        <div className="col-sm-12">
-                                                            <label className="form-label">Your review *</label>
-                                                            <div className="product-rating">
-                                                                <i className="fas fa-star text-warning" />
-                                                                <i className="fas fa-star text-warning" />
-                                                                <i className="fas fa-star text-warning" />
-                                                                <i className="far fa-star" />
-                                                                <i className="far fa-star" />
-                                                            </div>
-                                                        </div>
-                                                        <div className="col-sm-12">
-                                                            <a className="btn btn-primary mt-4" href="#">
-                                                                {" "}
-                                                                Submit{" "}
-                                                            </a>
-                                                        </div>
-                                                    </form>
+                                                            )}
+                                                        </>
+                                                    ) : (
+                                                        <p>No reviews available yet.</p>
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>
