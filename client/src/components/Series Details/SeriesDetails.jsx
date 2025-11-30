@@ -319,7 +319,12 @@ export default function SeriesDetails() {
                                                             Studio:{" "}
                                                             {series.series.production_companies.map((company, index) => (
                                                                 <span key={index}>
-                                                                    {company.name}
+                                                                    <Link
+                                                                        to={`/production-company-media?prodId=${company.id}&prodName=${encodeURIComponent(company.name)}&prodImage=${encodeURIComponent(company.logo_path || '')}&mediaType=all`}
+                                                                        style={{ textDecoration: 'none' }}
+                                                                    >
+                                                                        {company.name}
+                                                                    </Link>
                                                                     {index < series.series.production_companies.length - 1 && ", "}
                                                                 </span>
                                                             ))}
@@ -609,7 +614,7 @@ export default function SeriesDetails() {
                                                 aria-controls="pills-description"
                                                 aria-selected="true"
                                             >
-                                                Description
+                                                Overview
                                             </button>
                                         </li>
                                         <li className="nav-item" role="presentation">
@@ -623,7 +628,7 @@ export default function SeriesDetails() {
                                                 aria-controls="pills-information"
                                                 aria-selected="false"
                                             >
-                                                Additional information
+                                                Production Companies
                                             </button>
                                         </li>
                                         <li className="nav-item" role="presentation">
@@ -649,38 +654,7 @@ export default function SeriesDetails() {
                                             aria-labelledby="pills-description-tab"
                                             tabIndex={0}
                                         >
-                                            <h5 className="mb-2">So why do we do it?</h5>
-                                            <p>
-                                                The best way is to develop and follow a plan. Start with your
-                                                goals in mind and then work. backward to develop the plan.
-                                                What steps are required to get you to the goals? Make the plan
-                                                as detailed as possible. Try to visualize and then plan for,
-                                                every possible setback. Commit the plan to paper and then keep
-                                                it with you at all times. Review it regularly and ensure that
-                                                every step takes you closer to your Vision and Goals. If the
-                                                plan doesn't support the vision then change it!
-                                            </p>
-                                            <h5 className="mb-2">Does it need to be done at all?</h5>
-                                            <p>
-                                                But haven't you seen people who seem to coast into good
-                                                things, like the farmer who found the Hope Diamond? I've known
-                                                people like that. In fact, after I'd been in Japan for a while
-                                                and had set up a "channel" for business to flow through, I
-                                                could just think about receiving more money, and I'd get an
-                                                immediate surge of business within hours. This pattern went on
-                                                for 16 or 17 years, till I shut down my writing and editing
-                                                business.
-                                            </p>
-                                            <h5 className="mb-2">Can it be done by someone else?</h5>
-                                            <p className="mb-0">
-                                                Imagine reaching deep inside you for all the strength and
-                                                wisdom that you need to make this decision today. As you do
-                                                so, imagine that when you choose to make that decision that
-                                                deep inside your mind you are switching off the alternative
-                                                path, you are switching off the opportunity to drift back to
-                                                that place. Then step out and take your future path. Absorb
-                                                yourself in the sensations, the feelings.
-                                            </p>
+                                            <p>{series.series.overview}</p>
                                         </div>
                                         <div
                                             className="tab-pane fade"
@@ -689,40 +663,45 @@ export default function SeriesDetails() {
                                             aria-labelledby="pills-information-tab"
                                             tabIndex={0}
                                         >
-                                            <div className="mb-3">
-                                                <h5 className="mb-2">Description of Service</h5>
-                                                <p>
-                                                    The best way is to develop and follow a plan. Start with
-                                                    your goals in mind and then work backwards to develop the
-                                                    plan. What steps are required to get you to the goals? Make
-                                                    the plan as detailed as possible. Try to visualize and then
-                                                    plan for, every possible setback.{" "}
-                                                </p>
-                                            </div>
-                                            <div className="mb-3">
-                                                <h5 className="mb-2">Your Registration Obligations</h5>
-                                                <p>
-                                                    Really experience that. See what you see, hear what you
-                                                    hear, feel the feelings. Disappointment? Anger? Frustration?
-                                                    Failure? How does that feel? How do you affect those around
-                                                    you? How do they feel? Absorb every aspect of this path that
-                                                    you can take today if you so choose. Notice everything that
-                                                    you need to know about what it will be like if you carry on
-                                                    with the same behaviour, putting off change.
-                                                </p>
-                                            </div>
-                                            <div className="mb-3">
-                                                <h5 className="mb-2">User Conduct</h5>
-                                                <p>
-                                                    Benjamin Franklin, inventor, statesman, writer, publisher
-                                                    and economist relates in his autobiography that early in his
-                                                    life he decided to focus on arriving at moral perfection. He
-                                                    made a list of 13 virtues, assigning a page to each. Under
-                                                    each virtue he wrote a summary that gave it fuller meaning.
-                                                    Then he practiced each one for a certain length of time. To
-                                                    make these virtues a habit,{" "}
-                                                </p>
-                                            </div>
+                                            {series.series.production_companies && series.series.production_companies.length > 0 ? (
+                                                <div className="row">
+                                                    {series.series.production_companies.map((company, index) => (
+                                                        <div className="col-lg-3 col-md-4 col-sm-6 mb-4" key={`prod-${company.id}`}>
+                                                            <Link
+                                                                to={`/production-company-media?prodId=${company.id}&prodName=${encodeURIComponent(company.name)}&prodImage=${encodeURIComponent(company.logo_path || '')}&mediaType=all`}
+                                                                className="movie-author"
+                                                                style={{ textDecoration: 'none', color: 'inherit' }}
+                                                            >
+                                                                <div className="author-img">
+                                                                    <img
+                                                                        className="img-fluid"
+                                                                        src={company.logo_path
+                                                                            ? `https://image.tmdb.org/t/p/w300${company.logo_path}`
+                                                                            : '/images/no-image.jpg'}
+                                                                        alt={company.name}
+                                                                        onError={(e) => { e.target.src = '/images/no-image.jpg'; }}
+                                                                        style={{
+                                                                            width: '100%',
+                                                                            height: '120px',
+                                                                            objectFit: 'contain',
+                                                                            backgroundColor: '#f8f9fa',
+                                                                            borderRadius: '8px',
+                                                                            padding: '10px'
+                                                                        }}
+                                                                    />
+                                                                </div>
+                                                                <div className="author-details">
+                                                                    <h6 className="author-name" style={{ fontSize: '14px', textAlign: 'center', marginTop: '8px' }}>
+                                                                        {company.name}
+                                                                    </h6>
+                                                                </div>
+                                                            </Link>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <p>No production companies available.</p>
+                                            )}
                                         </div>
                                         <div
                                             className="tab-pane fade"
