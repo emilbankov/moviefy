@@ -116,7 +116,7 @@ export default function MovieDetails() {
         }
     }, [currentPage, showAllReviews]);
 
-console.log(reviews);
+console.log(movie);
 
     useEffect(() => {
         // Wait for all images to load before initializing carousel
@@ -269,7 +269,13 @@ console.log(reviews);
                                                 <div className="movies-genre">
                                                     Studio: {movie.movies.production_companies.map((company, index) => (
                                                         <span key={index}>
-                                                            {company.name}{index < movie.movies.production_companies.length - 1 && ", "}
+                                                            <Link
+                                                                to={`/production-company-media?prodId=${company.id}&prodName=${encodeURIComponent(company.name)}&prodImage=${encodeURIComponent(company.logo_path || '')}&mediaType=all`}
+                                                                style={{ textDecoration: 'none' }}
+                                                            >
+                                                                {company.name}
+                                                            </Link>
+                                                            {index < movie.movies.production_companies.length - 1 && ", "}
                                                         </span>
                                                     ))}
                                                 </div>
@@ -406,7 +412,7 @@ console.log(reviews);
                                                 aria-controls="pills-information"
                                                 aria-selected="false"
                                             >
-                                                Additional information
+                                                Production Companies
                                             </button>
                                         </li>
                                         <li className="nav-item" role="presentation">
@@ -443,41 +449,45 @@ console.log(reviews);
                                             aria-labelledby="pills-information-tab"
                                             tabIndex={0}
                                         >
-                                            <div className="mb-3">
-                                                <h5 className="mb-2">Description of Service</h5>
-                                                <p>
-                                                    The best way is to develop and follow a plan. Start with
-                                                    your goals in mind and then work backwards to develop the
-                                                    plan. What steps are required to get you to the goals? Make
-                                                    the plan as detailed as possible. Try to visualize and then
-                                                    plan for, every possible setback.{" "}
-                                                </p>
-                                            </div>
-                                            <div className="mb-3">
-                                                <h5 className="mb-2">Your Registration Obligations</h5>
-                                                <p>
-                                                    Was this just another little prank, courtesy of a
-                                                    mischievous Universe? Or is it possible to get good things
-                                                    coming your way with only mild desire — maybe even a calm
-                                                    indifference? Many inspirational writers, including Napoleon
-                                                    Hill, have assured us that a burning desire is one of the
-                                                    prerequisites of acquiring a fortune. I’ve even said it
-                                                    myself, although I added the qualifier that the powerful
-                                                    desire is not so much for the Universe.
-                                                </p>
-                                            </div>
-                                            <div className="mb-3">
-                                                <h5 className="mb-2">User Conduct</h5>
-                                                <p>
-                                                    Benjamin Franklin, inventor, statesman, writer, publisher
-                                                    and economist relates in his autobiography that early in his
-                                                    life he decided to focus on arriving at moral perfection. He
-                                                    made a list of 13 virtues, assigning a page to each. Under
-                                                    each virtue he wrote a summary that gave it fuller meaning.
-                                                    Then he practiced each one for a certain length of time. To
-                                                    make these virtues a habit,{" "}
-                                                </p>
-                                            </div>
+                                            {movie.movies.production_companies && movie.movies.production_companies.length > 0 ? (
+                                                <div className="row">
+                                                    {movie.movies.production_companies.map((company, index) => (
+                                                        <div className="col-lg-3 col-md-4 col-sm-6 mb-4" key={`prod-${company.id}`}>
+                                                            <Link
+                                                                to={`/production-company-media?prodId=${company.id}&prodName=${encodeURIComponent(company.name)}&prodImage=${encodeURIComponent(company.logo_path || '')}&mediaType=all`}
+                                                                className="movie-author"
+                                                                style={{ textDecoration: 'none', color: 'inherit' }}
+                                                            >
+                                                                <div className="author-img">
+                                                                    <img
+                                                                        className="img-fluid"
+                                                                        src={company.logo_path
+                                                                            ? `https://image.tmdb.org/t/p/w300${company.logo_path}`
+                                                                            : '/images/no-image.jpg'}
+                                                                        alt={company.name}
+                                                                        onError={(e) => { e.target.src = '/images/no-image.jpg'; }}
+                                                                        style={{
+                                                                            width: '100%',
+                                                                            height: '120px',
+                                                                            objectFit: 'contain',
+                                                                            backgroundColor: '#f8f9fa',
+                                                                            borderRadius: '8px',
+                                                                            padding: '10px'
+                                                                        }}
+                                                                    />
+                                                                </div>
+                                                                <div className="author-details">
+                                                                    <h6 className="author-name" style={{ fontSize: '14px', textAlign: 'center', marginTop: '8px' }}>
+                                                                        {company.name}
+                                                                    </h6>
+                                                                </div>
+                                                            </Link>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <p>No production companies available.</p>
+                                            )}
                                         </div>
                                         <div
                                             className="tab-pane fade"
