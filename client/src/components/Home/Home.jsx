@@ -64,6 +64,7 @@ export default function Home() {
                 setLoading(false);
             });
     }, [setLoading]);
+console.log(bannerMovies);
 
     // useEffect(() => {
     //     const existingScript = document.querySelector('script[src="/js/custom.js"]');
@@ -188,15 +189,30 @@ export default function Home() {
                                     <div className="author-info">
                                         <div className="author-details">
                                             <span className="author-designation">Directed By</span>
-                                            <span>{bannerMovies.first_movie.crew[0].name}</span>
+                                            <Link
+                                                to={`/crew-media?crewId=${bannerMovies.first_movie.crew[0].id}&crewName=${encodeURIComponent(bannerMovies.first_movie.crew[0].name)}&crewImage=${encodeURIComponent(bannerMovies.first_movie.crew[0].profilePath || '')}&mediaType=all`}
+                                                style={{ color: 'inherit', textDecoration: 'none' }}
+                                            >
+                                                {bannerMovies.first_movie.crew[0].name}
+                                            </Link>
                                         </div>
                                         <div className="author-details">
                                             <span className="author-designation">Written By</span>
-                                            <span>{bannerMovies.first_movie.crew[1].name}</span>
+                                            <Link
+                                                to={`/crew-media?crewId=${bannerMovies.first_movie.crew[1].id}&crewName=${encodeURIComponent(bannerMovies.first_movie.crew[1].name)}&crewImage=${encodeURIComponent(bannerMovies.first_movie.crew[1].profilePath || '')}&mediaType=all`}
+                                                style={{ color: 'inherit', textDecoration: 'none' }}
+                                            >
+                                                {bannerMovies.first_movie.crew[1].name}
+                                            </Link>
                                         </div>
                                         <div className="author-details">
                                             <span className="author-designation">Studio</span>
-                                            <span>{bannerMovies.first_movie.production_companies[0].name}</span>
+                                            <Link
+                                                to={`/production-company-media?prodId=${bannerMovies.first_movie.production_companies[0].id}&prodName=${encodeURIComponent(bannerMovies.first_movie.production_companies[0].name)}&prodImage=${encodeURIComponent(bannerMovies.first_movie.production_companies[0].logo_path || '')}&mediaType=all`}
+                                                style={{ color: 'inherit', textDecoration: 'none' }}
+                                            >
+                                                {bannerMovies.first_movie.production_companies[0].name}
+                                            </Link>
                                         </div>
                                     </div>
                                     <Link to={`/movie/details/${bannerMovies.first_movie.api_id}`} className="btn btn-primary me-2"><i className="fa-solid fa-play" />Play Now</Link>

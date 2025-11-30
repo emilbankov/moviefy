@@ -68,6 +68,7 @@ function AppContent() {
                     <Route path='/catalog' element={<Results />} />
                     <Route path='/actor-media' element={<Results />} />
                     <Route path='/crew-media' element={<Results />} />
+                    <Route path='/production-company-media' element={<Results />} />
                     <Route path='/collection/:movieId' element={<CollectionDetails />} />
 
                     <Route path="/404" element={<Navigate to="*" replace />} />
