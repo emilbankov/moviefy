@@ -103,6 +103,19 @@ export default function MovieDetails() {
         }
     }, [showAllReviews, movieId]);
 
+    // Scroll to movie content when page changes
+    useEffect(() => {
+        if (showAllReviews && currentPage > 1) {
+            const movieContent = document.querySelector('#movie-content');
+            if (movieContent) {
+                movieContent.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }
+    }, [currentPage, showAllReviews]);
+
 console.log(reviews);
 
     useEffect(() => {
@@ -355,7 +368,7 @@ console.log(reviews);
                                 </div>
                             </div>
                         </div>
-                        <div className="row">
+                        <div id="movie-content" className="row">
                             <div className="col-md-12">
                                 <hr />
                             </div>
@@ -379,7 +392,7 @@ console.log(reviews);
                                                 aria-controls="pills-description"
                                                 aria-selected="true"
                                             >
-                                                Description
+                                                Overview
                                             </button>
                                         </li>
                                         <li className="nav-item" role="presentation">
@@ -419,35 +432,8 @@ console.log(reviews);
                                             aria-labelledby="pills-description-tab"
                                             tabIndex={0}
                                         >
-                                            <h5 className="mb-2">So why do we do it?</h5>
-                                            <p>
-                                                The best way is to develop and follow a plan. Start with your
-                                                goals in mind and then work. backward to develop the plan.
-                                                What steps are required to get you to the goals? Make the plan
-                                                as detailed as possible. Try to visualize and then plan for,
-                                                every possible setback. Commit the plan to paper and then keep
-                                                it with you at all times. Review it regularly and ensure that
-                                                every step takes you closer to your Vision and Goals. If the
-                                                plan doesn’t support the vision then change it!
-                                            </p>
-                                            <h5 className="mb-2">Does it need to be done at all?</h5>
-                                            <p>
-                                                Acres of Diamonds… you’ve read the famous story, or at least
-                                                had it related to you. A farmer hears tales of diamonds and
-                                                begins dreaming of vast riches. He sells his farm and hikes
-                                                off over the horizon, never to be heard from again. Rumors say
-                                                that years later he died destitute, never having found the
-                                                diamonds he spent his life seeking.{" "}
-                                            </p>
-                                            <h5 className="mb-2">Can it be done by someone else?</h5>
                                             <p className="mb-0">
-                                                It turned out to be the Hope Diamond, the largest such stone
-                                                ever found. That stream bed was littered with diamonds, and
-                                                the new owner became fabulously wealthy. No doubt he also
-                                                lived happily ever after. But doesn’t something in that story
-                                                set strangely with you? What about the guy with the burning
-                                                desire and the grand vision? He ended up disappointed and
-                                                broke.
+                                                {movie.movies.overview}
                                             </p>
                                         </div>
                                         <div
