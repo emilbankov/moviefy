@@ -1,6 +1,7 @@
 import { get, post, put, del } from '../lib/request.js';
 
-const baseUrl = 'https://moviefy-vwnq.onrender.com';
+// const baseUrl = 'https://moviefy-vwnq.onrender.com';
+const baseUrl = 'https://p01--moviefy--kc4tkpjph9bk.code.run/';
 const collection = 'The Avengers Collection';
 
 export const getBannerMovies = async () => await get(`${baseUrl}/movies/collection?name=${collection}`);
