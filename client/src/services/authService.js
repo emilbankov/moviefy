@@ -6,7 +6,7 @@ export const register = async (userData) => await post(`${baseUrl}/auth/register
 export const login = async (userData) => await post(`${baseUrl}/auth/login`, userData);
 export const logout = async () => await post(`${baseUrl}/auth/logout`);
 export const verifyEmail = async (token) => await post(`${baseUrl}/auth/verify-email`, { token });
-export const resendVerification = async (email) => await post(`${baseUrl}/auth/resend-email`, { email });
+export const resendVerification = async (token) => await post(`${baseUrl}/auth/resend-email`, { token });
 // export const getUser = async () => await get(`${baseUrl}/auth/user`);
 // export const updateUser = async (userData) => await put(`${baseUrl}/auth/user`, userData);
 // export const deleteUser = async () => await del(`${baseUrl}/auth/user`);

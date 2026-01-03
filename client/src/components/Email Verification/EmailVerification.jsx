@@ -11,7 +11,6 @@ export default function EmailVerification() {
     const [canResend, setCanResend] = useState(false);
     const [resendTimer, setResendTimer] = useState(15 * 60); // 15 minutes in seconds
     const [isResending, setIsResending] = useState(false);
-    const [userEmail, setUserEmail] = useState('');
 
     const token = searchParams.get('token');
 
@@ -46,10 +45,6 @@ export default function EmailVerification() {
             setError('');
             const response = await verifyEmail(token);
             setIsVerified(true);
-            // Store user email if available in response for resend functionality
-            if (response.email) {
-                setUserEmail(response.email);
-            }
         } catch (err) {
             setError(err.message || 'Verification failed. The link may be expired or invalid.');
             // If verification fails due to expired token, enable resend
@@ -62,20 +57,20 @@ export default function EmailVerification() {
     };
 
     const handleResendVerification = async () => {
-        if (!userEmail) {
-            setError('Unable to resend verification. Please contact support.');
+        if (!token) {
+            setError('No verification token available for resend.');
             return;
         }
 
         try {
             setIsResending(true);
             setError('');
-            await resendVerification(userEmail);
+            await resendVerification(token);
             // Reset timer after successful resend
             setCanResend(false);
             setResendTimer(15 * 60);
             // Show success message
-            setError(''); // Clear any existing errors
+            setError('Verification email sent successfully! Please check your inbox.');
         } catch (err) {
             setError(err.message || 'Failed to resend verification email.');
         } finally {
