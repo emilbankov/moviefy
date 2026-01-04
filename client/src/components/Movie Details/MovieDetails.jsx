@@ -57,7 +57,7 @@ export default function MovieDetails() {
         },
         vidlink: {
             name: 'VidLink',
-            url: movie.movies?.api_id ? `https://vidlink.pro/movie/${movie.movies.api_id}?primaryColor=f6be00&secondaryColor=f6be00&iconColor=f6be00&icons=default&player=default&title=true&poster=true&autoplay=true&nextbutton=true` : ''
+            url: movie.movies?.api_id ? `https://vidlink.pro/movie/${movie.movies.api_id}?primaryColor=f6be00&secondaryColor=f6be00&iconColor=f6be00&icons=default&player=default&title=true&poster=true` : ''
         }
     };
 

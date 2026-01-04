@@ -45,10 +45,33 @@ export default function SeriesDetails() {
     const [selectedSeason, setSelectedSeason] = useState(null); // Track selected season
     const [showMoviePlayer, setShowMoviePlayer] = useState(false);
     const [playingEpisode, setPlayingEpisode] = useState({ season: null, episode: null });
+    const [selectedPlayer, setSelectedPlayer] = useState(() => {
+        return localStorage.getItem('preferredPlayer') || 'vidsrc';
+    });
     const reviewsPerPage = 20;
     const { seriesId } = useParams();
     const location = useLocation();
     const { setLoading } = useLoading();
+
+    const players = {
+        vidsrc: {
+            name: 'VidSrc',
+            url: series.series?.api_id && playingEpisode.season && playingEpisode.episode
+                ? `https://vidsrc.net/embed/tv?tmdb=${series.series.api_id}&season=${playingEpisode.season}&episode=${playingEpisode.episode}`
+                : `https://vidsrc.net/embed/tv?tmdb=${series.series?.api_id || ''}`
+        },
+        vidlink: {
+            name: 'VidLink',
+            url: series.series?.api_id && playingEpisode.season && playingEpisode.episode
+                ? `https://vidlink.pro/tv/${series.series.api_id}/${playingEpisode.season}/${playingEpisode.episode}?primaryColor=f6be00&secondaryColor=f6be00&iconColor=f6be00&icons=default&player=default&title=true&poster=true&autoplay=true&nextbutton=true`
+                : `https://vidlink.pro/tv/${series.series?.api_id || ''}/1/1?primaryColor=f6be00&secondaryColor=f6be00&iconColor=f6be00&icons=default&player=default&title=true&poster=true&autoplay=true&nextbutton=true`
+        }
+    };
+
+    const handlePlayerChange = (playerId) => {
+        setSelectedPlayer(playerId);
+        localStorage.setItem('preferredPlayer', playerId);
+    };
 
     useEffect(() => {
         setLoading(true);
@@ -239,45 +262,80 @@ export default function SeriesDetails() {
                             <div className="col-12 ">
                                 <div className="movie-details-bg bg-overlay-dark-5" style={{ backgroundImage: showMoviePlayer ? 'none' : `url(https://image.tmdb.org/t/p/original${series.series.backdrop_path || ''})`, padding: showMoviePlayer ? 0 : undefined }}>
                                     {showMoviePlayer ? (
-                                        <div style={{
+                                <div style={{
+                                    width: '100%',
+                                    position: 'relative',
+                                    background: 'transparent',
+                                    margin: 0,
+                                    padding: 0
+                                }}>
+                                    <button
+                                        className="btn btn-sm btn-light"
+                                        style={{ position: 'absolute', top: 20, right: 20, zIndex: 10 }}
+                                        onClick={() => {
+                                            setShowMoviePlayer(false);
+                                            setPlayingEpisode({ season: null, episode: null });
+                                        }}
+                                    >
+                                        Back to Details
+                                    </button>
+                                    <iframe
+                                        src={players[selectedPlayer]?.url}
+                                        frameBorder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowFullScreen
+                                        title="Series Player"
+                                        style={{
                                             width: '100%',
-                                            height: '100%',
-                                            minHeight: '70vh',
-                                            position: 'relative',
-                                            display: 'flex',
-                                            alignItems: 'stretch',
-                                            justifyContent: 'center',
-                                            background: '#000',
+                                            height: '70vh',
+                                            background: 'transparent',
                                             margin: 0,
-                                            padding: 0
+                                            padding: 0,
+                                            display: 'block'
+                                        }}
+                                    />
+                                    <div className="d-flex justify-content-center mt-3 mb-3">
+                                        <div className="player-selector" style={{
+                                            display: 'flex',
+                                            border: '1px solid #444',
+                                            borderRadius: '6px',
+                                            overflow: 'hidden',
+                                            backgroundColor: '#1a1a1a'
                                         }}>
-                                            <button
-                                                className="btn btn-sm btn-light"
-                                                style={{ position: 'absolute', top: 20, right: 20, zIndex: 10 }}
-                                                onClick={() => {
-                                                    setShowMoviePlayer(false);
-                                                    setPlayingEpisode({ season: null, episode: null });
-                                                }}
-                                            >
-                                                Back to Details
-                                            </button>
-                                            <iframe
-                                                src={`https://vidsrc.net/embed/tv?tmdb=${series.series.api_id}${playingEpisode.season ? `&season=${playingEpisode.season}` : ''}${playingEpisode.episode ? `&episode=${playingEpisode.episode}` : ''}`}
-                                                frameBorder="0"
-                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                allowFullScreen
-                                                title="Series Player"
-                                                style={{
-                                                    width: '100%',
-                                                    height: '100%',
-                                                    minHeight: '70vh',
-                                                    background: '#000',
-                                                    margin: 0,
-                                                    padding: 0
-                                                }}
-                                            />
+                                            {Object.entries(players).map(([playerId, player]) => (
+                                                <button
+                                                    key={playerId}
+                                                    type="button"
+                                                    style={{
+                                                        backgroundColor: selectedPlayer === playerId ? '#f6be00' : 'transparent',
+                                                        color: selectedPlayer === playerId ? '#000' : '#fff',
+                                                        border: 'none',
+                                                        padding: '10px 20px',
+                                                        cursor: 'pointer',
+                                                        fontSize: '16px',
+                                                        fontWeight: '500',
+                                                        transition: 'none',
+                                                        borderRadius: '0'
+                                                    }}
+                                                    onClick={() => handlePlayerChange(playerId)}
+                                                    onMouseEnter={(e) => {
+                                                        if (selectedPlayer !== playerId) {
+                                                            e.target.style.backgroundColor = '#333';
+                                                        }
+                                                    }}
+                                                    onMouseLeave={(e) => {
+                                                        if (selectedPlayer !== playerId) {
+                                                            e.target.style.backgroundColor = 'transparent';
+                                                        }
+                                                    }}
+                                                >
+                                                    {player.name}
+                                                </button>
+                                            ))}
                                         </div>
-                                    ) : (
+                                    </div>
+                                </div>
+                            ) : (
                                         <div className="row position-relative">
                                             <div className="col-xxl-6 col-xl-7 col-lg-6 col-md-8 col-sm-12 order-md-1 order-2">
                                                 <div className="movie-details">
