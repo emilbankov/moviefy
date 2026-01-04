@@ -3,9 +3,35 @@ import { get, post, put, del } from '../lib/request.js';
 const baseUrl = 'https://p01--moviefy--kc4tkpjph9bk.code.run';
 
 export const register = async (userData) => await post(`${baseUrl}/auth/register`, userData);
-export const login = async (userData) => await post(`${baseUrl}/auth/login`, userData);
+export const login = async (userData) => {
+    const formData = new URLSearchParams();
+    formData.append('email', userData.email);
+    formData.append('password', userData.password);
+
+    const response = await fetch(`${baseUrl}/auth/login`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: formData,
+    });
+
+    if (response.status === 204) {
+        return {};
+    }
+
+    const result = await response.json();
+
+    if (!response.ok) {
+        throw result;
+    }
+
+    return result;
+};
 export const logout = async () => await post(`${baseUrl}/auth/logout`);
+export const forgetPassword = async (email) => await post(`${baseUrl}/auth/forget-password/request`, { email });
 export const verifyEmail = async (token) => await post(`${baseUrl}/auth/verify-email`, { token });
+
 export const resendVerification = async (token) => await post(`${baseUrl}/auth/resend-email`, { token });
 // export const getUser = async () => await get(`${baseUrl}/auth/user`);
 // export const updateUser = async (userData) => await put(`${baseUrl}/auth/user`, userData);
