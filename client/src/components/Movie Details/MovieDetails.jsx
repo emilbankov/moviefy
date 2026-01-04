@@ -42,10 +42,29 @@ export default function MovieDetails() {
     const [showAllReviews, setShowAllReviews] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [expandedReviews, setExpandedReviews] = useState(new Set());
+    const [selectedPlayer, setSelectedPlayer] = useState(() => {
+        return localStorage.getItem('preferredPlayer') || 'vidsrc';
+    });
     const reviewsPerPage = 20;
     const { movieId } = useParams();
     const location = useLocation();
     const { setLoading } = useLoading();
+
+    const players = {
+        vidsrc: {
+            name: 'VidSrc',
+            url: movie.movies?.api_id ? `https://vidsrc.net/embed/movie?tmdb=${movie.movies.api_id}` : ''
+        },
+        vidlink: {
+            name: 'VidLink',
+            url: movie.movies?.api_id ? `https://vidlink.pro/movie/${movie.movies.api_id}?primaryColor=f6be00&secondaryColor=f6be00&iconColor=f6be00&icons=default&player=default&title=true&poster=true&autoplay=true&nextbutton=true` : ''
+        }
+    };
+
+    const handlePlayerChange = (playerId) => {
+        setSelectedPlayer(playerId);
+        localStorage.setItem('preferredPlayer', playerId);
+    };
 
     useEffect(() => {
         setLoading(true);
@@ -203,38 +222,78 @@ console.log(movie);
                             {showMoviePlayer ? (
                                 <div style={{
                                     width: '100%',
-                                    height: '100%',
-                                    minHeight: '70vh',
                                     position: 'relative',
-                                    display: 'flex',
-                                    alignItems: 'stretch',
-                                    justifyContent: 'center',
-                                    background: '#000',
+                                    background: 'transparent',
                                     margin: 0,
                                     padding: 0
                                 }}>
                                     <button
                                         className="btn btn-sm btn-light"
-                                        style={{ position: 'absolute', top: 20, right: 20, zIndex: 10 }}
+                                        style={{
+                                            position: 'absolute',
+                                            top: 20,
+                                            right: 20,
+                                            zIndex: 10
+                                        }}
                                         onClick={() => setShowMoviePlayer(false)}
                                     >
                                         Back to Details
                                     </button>
                                     <iframe
-                                        src={`https://vidsrc.net/embed/movie?tmdb=${movie.movies.api_id}`}
+                                        src={players[selectedPlayer]?.url}
                                         frameBorder="0"
                                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                         allowFullScreen
                                         title="Movie Player"
                                         style={{
                                             width: '100%',
-                                            height: '100%',
-                                            minHeight: '70vh',
-                                            background: '#000',
+                                            height: '70vh',
+                                            background: 'transparent',
                                             margin: 0,
-                                            padding: 0
+                                            padding: 0,
+                                            display: 'block'
                                         }}
                                     />
+                                    <div className="d-flex justify-content-center mt-3 mb-3">
+                                        <div className="player-selector" style={{
+                                            display: 'flex',
+                                            border: '1px solid #444',
+                                            borderRadius: '6px',
+                                            overflow: 'hidden',
+                                            backgroundColor: '#1a1a1a'
+                                        }}>
+                                            {Object.entries(players).map(([playerId, player]) => (
+                                                <button
+                                                    key={playerId}
+                                                    type="button"
+                                                    style={{
+                                                        backgroundColor: selectedPlayer === playerId ? '#f6be00' : 'transparent',
+                                                        color: selectedPlayer === playerId ? '#000' : '#fff',
+                                                        border: 'none',
+                                                        padding: '10px 20px',
+                                                        cursor: 'pointer',
+                                                        fontSize: '16px',
+                                                        fontWeight: '500',
+                                                        transition: 'none',
+                                                        borderRadius: '0'
+                                                    }}
+                                                    onClick={() => handlePlayerChange(playerId)}
+                                                    onMouseEnter={(e) => {
+                                                        if (selectedPlayer !== playerId) {
+                                                            e.target.style.backgroundColor = '#333';
+                                                        }
+                                                    }}
+                                                    onMouseLeave={(e) => {
+                                                        if (selectedPlayer !== playerId) {
+                                                            e.target.style.backgroundColor = 'transparent';
+                                                        }
+                                                    }}
+                                                >
+                                                    {player.name}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
                                 </div>
                             ) : (
                                 <div className="row position-relative">
