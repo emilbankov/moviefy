@@ -1,9 +1,8 @@
-import { useState } from 'react';
-import { register } from '../../services/authService';
+import { useState, useEffect } from 'react';
+import { register, login, forgetPassword } from '../../services/authService';
 
 export default function LoginRegister() {
     const [registerForm, setRegisterForm] = useState({
-        username: '',
         email: '',
         first_name: '',
         last_name: '',
@@ -11,12 +10,51 @@ export default function LoginRegister() {
         confirm_password: ''
     });
     const [loginForm, setLoginForm] = useState({
-        username: '',
+        email: '',
         password: ''
     });
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const [activeTab, setActiveTab] = useState('login');
+    const [showForgotPassword, setShowForgotPassword] = useState(false);
+    const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
+
+    // Auto-clear notifications after 3 seconds
+    useEffect(() => {
+        if (error || success) {
+            const timer = setTimeout(() => {
+                setError('');
+                setSuccess('');
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [error, success]);
+
+    // Clear forms when switching tabs
+    const handleTabChange = (tab) => {
+        setActiveTab(tab);
+        setError('');
+        setSuccess('');
+        setShowForgotPassword(false);
+        setForgotPasswordEmail('');
+
+        // Clear the inactive form
+        if (tab === 'login') {
+            setRegisterForm({
+                email: '',
+                first_name: '',
+                last_name: '',
+                password: '',
+                confirm_password: ''
+            });
+        } else {
+            setLoginForm({
+                email: '',
+                password: ''
+            });
+        }
+    };
 
     const handleRegisterChange = (e) => {
         const { name, value } = e.target;
@@ -48,7 +86,7 @@ export default function LoginRegister() {
         }
 
         // Validate required fields
-        if (!registerForm.username || !registerForm.email || !registerForm.first_name ||
+        if (!registerForm.email || !registerForm.first_name ||
             !registerForm.last_name || !registerForm.password) {
             setError('Please fill in all required fields');
             return;
@@ -59,7 +97,6 @@ export default function LoginRegister() {
         try {
             // Create userData object with only the fields needed for the API
             const userData = {
-                username: registerForm.username,
                 email: registerForm.email,
                 first_name: registerForm.first_name,
                 last_name: registerForm.last_name,
@@ -67,10 +104,9 @@ export default function LoginRegister() {
             };
 
             const response = await register(userData);
-            setSuccess('Registration successful! You can now login.');
+            setSuccess(response.message || 'Registration successful! Please check your email to verify your account.');
             // Reset form
             setRegisterForm({
-                username: '',
                 email: '',
                 first_name: '',
                 last_name: '',
@@ -84,10 +120,73 @@ export default function LoginRegister() {
         }
     };
 
-    const handleLoginSubmit = (e) => {
+    const handleLoginSubmit = async (e) => {
         e.preventDefault();
-        // TODO: Implement login functionality
-        console.log('Login attempt:', loginForm);
+        setError('');
+        setSuccess('');
+
+        // Validate required fields
+        if (!loginForm.email || !loginForm.password) {
+            setError('Please enter both email and password');
+            return;
+        }
+
+        setIsLoading(true);
+
+        try {
+            const response = await login({
+                email: loginForm.email,
+                password: loginForm.password
+            });
+
+            // Show the backend response message (likely email verification required)
+            setSuccess(response.message || 'Login successful!');
+
+            // Reset form
+            setLoginForm({
+                email: '',
+                password: ''
+            });
+
+            // Here you could store the auth token and redirect
+            // For now, we show the backend message
+
+        } catch (err) {
+            setError(err.message || 'Login failed. Please check your credentials.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleForgotPassword = () => {
+        setError('');
+        setSuccess('');
+        setShowForgotPassword(true);
+    };
+
+    const handleForgotPasswordSubmit = async (e) => {
+        e.preventDefault();
+        setError('');
+        setSuccess('');
+
+        // Validate email is entered
+        if (!forgotPasswordEmail.trim()) {
+            setError('Please enter your email address');
+            return;
+        }
+
+        setIsLoading(true);
+
+        try {
+            const response = await forgetPassword(forgotPasswordEmail);
+            setSuccess(response.message || 'Password reset email sent! Please check your inbox.');
+            setShowForgotPassword(false);
+            setForgotPasswordEmail('');
+        } catch (err) {
+            setError(err.message || 'Failed to send password reset email.');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -107,10 +206,7 @@ export default function LoginRegister() {
                 <div className="container position-relative">
                     <div className="row justify-content-center">
                         <div className="col-lg-12 col-lg-9 col-xxl-7">
-                            <div className="section-title text-center">
-                                <h2 className="title">What they're talking about Moviefy</h2>
-                            </div>
-                            <div className="bg-dark login-tabs tabs">
+                            <div className={`bg-dark login-tabs tabs ${showForgotPassword ? 'd-none' : ''}`}>
                                 <ul
                                     className="nav nav-tabs justify-content-center"
                                     id="myTab"
@@ -118,76 +214,145 @@ export default function LoginRegister() {
                                 >
                                     <li className="nav-item">
                                         <a
-                                            className="nav-link active"
+                                            className={`nav-link ${activeTab === 'login' ? 'active' : ''}`}
                                             id="login-tab"
                                             data-bs-toggle="tab"
                                             href="#login"
                                             role="tab"
                                             aria-controls="login"
-                                            aria-selected="false"
+                                            aria-selected={activeTab === 'login'}
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                handleTabChange('login');
+                                            }}
                                         >
                                             Login
                                         </a>
                                     </li>
                                     <li className="nav-item">
                                         <a
-                                            className="nav-link"
+                                            className={`nav-link ${activeTab === 'register' ? 'active' : ''}`}
                                             id="register-tab"
                                             data-bs-toggle="tab"
                                             href="#register"
                                             role="tab"
                                             aria-controls="register"
-                                            aria-selected="true"
+                                            aria-selected={activeTab === 'register'}
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                handleTabChange('register');
+                                            }}
                                         >
                                             Register
                                         </a>
                                     </li>
                                 </ul>
+                            </div>
+                            <div className="bg-dark">
                                 <div className="tab-content" id="myTabContent">
                                     <div
-                                        className="tab-pane fade show active"
+                                        className={`tab-pane fade ${activeTab === 'login' ? 'show active' : ''}`}
                                         id="login"
                                         role="tabpanel"
                                         aria-labelledby="login-tab"
                                     >
-                                        <form onSubmit={handleLoginSubmit} className="row mt-4 mb-4 mb-sm-5 align-items-center form-flat-style">
-                                            <div className="mb-3 col-sm-12">
-                                                <label className="form-label">Username:</label>
-                                                <input
-                                                    type="text"
-                                                    name="username"
-                                                    value={loginForm.username}
-                                                    onChange={handleLoginChange}
-                                                    className="form-control"
-                                                    placeholder=""
-                                                    required
-                                                />
+                                        {error && (
+                                            <div className="alert alert-danger mt-3" role="alert">
+                                                {error}
                                             </div>
-                                            <div className="mb-3 col-sm-12">
-                                                <label className="form-label">Password:</label>
-                                                <input
-                                                    type="password"
-                                                    name="password"
-                                                    value={loginForm.password}
-                                                    onChange={handleLoginChange}
-                                                    className="form-control"
-                                                    placeholder=""
-                                                    required
-                                                />
+                                        )}
+                                        {success && (
+                                            <div className="alert alert-success mt-3" role="alert">
+                                                {success}
                                             </div>
-                                            <div className="col-sm-6">
-                                                <button type="submit" className="btn btn-primary">
-                                                    Login
-                                                </button>
-                                            </div>
-                                            <div className="col-sm-6">
-                                                <ul className="list-unstyled d-flex justify-content-sm-end mb-0 mt-md-0 mt-3">
-                                                    <li>
-                                                        Don't have an account? <a href="#register">Click here</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </form>
+                                        )}
+                                        {showForgotPassword ? (
+                                            <form onSubmit={handleForgotPasswordSubmit} className="row mt-4 mb-4 mb-sm-5 align-items-center form-flat-style">
+                                                <div className="mb-3 col-sm-12">
+                                                    <label className="form-label">Email:</label>
+                                                    <input
+                                                        type="email"
+                                                        value={forgotPasswordEmail}
+                                                        onChange={(e) => setForgotPasswordEmail(e.target.value)}
+                                                        className="form-control"
+                                                        placeholder=""
+                                                        required
+                                                    />
+                                                </div>
+                                                <div className="col-sm-6">
+                                                    <button type="submit" className="btn btn-primary" disabled={isLoading}>
+                                                        {isLoading ? 'Sending...' : 'Send Reset Link'}
+                                                    </button>
+                                                </div>
+                                                <div className="col-sm-6">
+                                                    <ul className="list-unstyled d-flex justify-content-sm-end mb-0 mt-md-0 mt-3">
+                                                        <li>
+                                                            <button
+                                                                type="button"
+                                                                className="btn btn-link p-0 text-decoration-none"
+                                                                onClick={() => {
+                                                                    setShowForgotPassword(false);
+                                                                    setForgotPasswordEmail('');
+                                                                    setError('');
+                                                                }}
+                                                            >
+                                                                Back to Login
+                                                            </button>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </form>
+                                        ) : (
+                                            <form onSubmit={handleLoginSubmit} className="row mt-4 mb-4 mb-sm-5 align-items-center form-flat-style">
+                                                <div className="mb-3 col-sm-12">
+                                                    <label className="form-label">Email:</label>
+                                                    <input
+                                                        type="email"
+                                                        name="email"
+                                                        value={loginForm.email}
+                                                        onChange={handleLoginChange}
+                                                        className="form-control"
+                                                        placeholder=""
+                                                        required
+                                                    />
+                                                </div>
+                                                <div className="mb-3 col-sm-12">
+                                                    <label className="form-label">Password:</label>
+                                                    <input
+                                                        type="password"
+                                                        name="password"
+                                                        value={loginForm.password}
+                                                        onChange={handleLoginChange}
+                                                        className="form-control"
+                                                        placeholder=""
+                                                        required
+                                                    />
+                                                    <div className="mt-2 text-end">
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-link p-0 text-decoration-none"
+                                                            onClick={handleForgotPassword}
+                                                            disabled={isLoading}
+                                                            style={{ fontSize: '0.875rem' }}
+                                                        >
+                                                            Forgot Password?
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div className="col-sm-6">
+                                                    <button type="submit" className="btn btn-primary" disabled={isLoading}>
+                                                        {isLoading ? 'Logging in...' : 'Login'}
+                                                    </button>
+                                                </div>
+                                                <div className="col-sm-6">
+                                                    <ul className="list-unstyled d-flex justify-content-sm-end mb-0 mt-md-0 mt-3">
+                                                        <li>
+                                                            Don't have an account? <a href="#register" onClick={(e) => { e.preventDefault(); handleTabChange('register'); }}>Click here</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </form>
+                                        )}
                                         <div className="login-social-media bg-secondary">
                                             <div className="mb-4 d-block text-center">
                                                 <b>Login or Sign in with</b>
@@ -241,7 +406,7 @@ export default function LoginRegister() {
                                         </div>
                                     </div>
                                     <div
-                                        className="tab-pane fade"
+                                        className={`tab-pane fade ${activeTab === 'register' ? 'show active' : ''}`}
                                         id="register"
                                         role="tabpanel"
                                         aria-labelledby="register-tab"
@@ -257,18 +422,6 @@ export default function LoginRegister() {
                                             </div>
                                         )}
                                         <form onSubmit={handleRegisterSubmit} className="row mt-4 mb-4 mb-sm-5 align-items-center form-flat-style">
-                                            <div className="col-md-6 mb-3">
-                                                <label className="form-label">Username:</label>
-                                                <input
-                                                    type="text"
-                                                    name="username"
-                                                    value={registerForm.username}
-                                                    onChange={handleRegisterChange}
-                                                    className="form-control"
-                                                    placeholder=""
-                                                    required
-                                                />
-                                            </div>
                                             <div className="col-md-6 mb-3">
                                                 <label className="form-label">Email Address:</label>
                                                 <input
@@ -346,7 +499,7 @@ export default function LoginRegister() {
                                                 <ul className="list-unstyled d-flex justify-content-md-end mb-0">
                                                     <li>
                                                         Already Registered User?{" "}
-                                                        <a href="#login">Click here to login</a>
+                                                        <a href="#login" onClick={(e) => { e.preventDefault(); handleTabChange('login'); }}>Click here to login</a>
                                                     </li>
                                                 </ul>
                                             </div>
