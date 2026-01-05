@@ -14,6 +14,7 @@ import Pricing from './components/Pricing/Pricing';
 import Contact from './components/Contact/Contact';
 import LoginRegister from './components/Login Register/LoginRegister';
 import EmailVerification from './components/Email Verification/EmailVerification';
+import PasswordReset from './components/Password Reset/PasswordReset';
 import Account from './components/Account/Account';
 import Error from './components/Error/Error';
 import PrivacyPolicy from './components/Privacy Policy/PrivacyPolicy';
@@ -61,6 +62,7 @@ function AppContent() {
                     <Route path='/contact' element={<Contact />} />
                     <Route path='/login-register' element={<LoginRegister />} />
                     <Route path='/verify-email' element={<EmailVerification />} />
+                    <Route path='/password-reset' element={<PasswordReset />} />
                     <Route path='/account' element={<Account />} />
                     <Route path='/error' element={<Error />} />
                     <Route path='/privacy-policy' element={<PrivacyPolicy />} />
