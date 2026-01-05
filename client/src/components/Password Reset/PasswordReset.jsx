@@ -10,6 +10,8 @@ export default function PasswordReset() {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [isRedirecting, setIsRedirecting] = useState(false);
+    const [redirectCountdown, setRedirectCountdown] = useState(3);
     const [formData, setFormData] = useState({
         password: '',
         confirmPassword: ''
@@ -25,6 +27,22 @@ export default function PasswordReset() {
             setError('No reset token found in URL');
         }
     }, [token]);
+
+    useEffect(() => {
+        let interval;
+        if (isRedirecting && redirectCountdown > 0) {
+            interval = setInterval(() => {
+                setRedirectCountdown(prev => {
+                    if (prev <= 1) {
+                        navigate('/login-register');
+                        return 0;
+                    }
+                    return prev - 1;
+                });
+            }, 1000);
+        }
+        return () => clearInterval(interval);
+    }, [isRedirecting, redirectCountdown, navigate]);
 
     const handleTokenCheck = async () => {
         try {
@@ -76,10 +94,8 @@ export default function PasswordReset() {
                 password: '',
                 confirmPassword: ''
             });
-            // Redirect to login after a short delay
-            setTimeout(() => {
-                navigate('/login-register');
-            }, 3000);
+            // Start redirect countdown
+            setIsRedirecting(true);
         } catch (err) {
             setError(err.message || 'Failed to reset password. Please try again.');
         } finally {
@@ -114,71 +130,89 @@ export default function PasswordReset() {
                                         <p className="text-muted">Please wait while we verify your reset link.</p>
                                     </div>
                                 ) : isTokenValid ? (
-                                    <div>
-                                        <h3 className="text-white text-center mb-4">Enter New Password</h3>
+                                    isRedirecting ? (
+                                        <div className="text-center">
+                                            <div style={{ margin: '40px 0', display: 'flex', justifyContent: 'center' }}>
+                                                <div className="loader" style={{ margin: '0' }}>
+                                                    <div className="loader__container">
+                                                        <div className="loader__film">
+                                                            <img className="loader__film-img" src="/images/camera loader/film.png" alt="" />
+                                                            <img className="loader__film-img" src="/images/camera loader/film.png" alt="" />
+                                                        </div>
+                                                        <img className="loader__camera" src="/images/camera loader/camera.png" alt="" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <h4 className="text-white mb-2">Redirecting to Login...</h4>
+                                            <p className="text-muted">You will be redirected in {redirectCountdown} second{redirectCountdown !== 1 ? 's' : ''}.</p>
+                                        </div>
+                                    ) : (
+                                        <div>
+                                            <h3 className="text-white text-center mb-4">Enter New Password</h3>
 
-                                        {error && (
-                                            <div className="alert alert-danger mb-3" role="alert">
-                                                {error}
-                                            </div>
-                                        )}
+                                            {error && (
+                                                <div className="alert alert-danger mb-3" role="alert">
+                                                    {error}
+                                                </div>
+                                            )}
 
-                                        {success && (
-                                            <div className="alert alert-success mb-3" role="alert">
-                                                {success}
-                                            </div>
-                                        )}
+                                            {success && (
+                                                <div className="alert alert-success mb-3" role="alert">
+                                                    {success}
+                                                </div>
+                                            )}
 
-                                        <form onSubmit={handleSubmit} className="row">
-                                            <div className="mb-3 col-sm-12">
-                                                <label className="form-label text-white">New Password:</label>
-                                                <input
-                                                    type="password"
-                                                    name="password"
-                                                    value={formData.password}
-                                                    onChange={handleInputChange}
-                                                    className="form-control"
-                                                    placeholder="Enter your new password"
-                                                    required
-                                                    disabled={isLoading || !!success}
-                                                />
-                                            </div>
-                                            <div className="mb-3 col-sm-12">
-                                                <label className="form-label text-white">Confirm New Password:</label>
-                                                <input
-                                                    type="password"
-                                                    name="confirmPassword"
-                                                    value={formData.confirmPassword}
-                                                    onChange={handleInputChange}
-                                                    className="form-control"
-                                                    placeholder="Confirm your new password"
-                                                    required
-                                                    disabled={isLoading || !!success}
-                                                />
-                                            </div>
-                                            <div className="col-sm-12">
-                                                <button
-                                                    type="submit"
-                                                    className="btn btn-primary w-100"
-                                                    disabled={isLoading || !!success}
-                                                >
-                                                    {isLoading ? 'Resetting Password...' : 'Reset Password'}
-                                                </button>
-                                            </div>
-                                        </form>
+                                            <form onSubmit={handleSubmit} className="row">
+                                                <div className="mb-3 col-sm-12">
+                                                    <label className="form-label text-white">New Password:</label>
+                                                    <input
+                                                        type="password"
+                                                        name="password"
+                                                        value={formData.password}
+                                                        onChange={handleInputChange}
+                                                        className="form-control"
+                                                        placeholder="Enter your new password"
+                                                        required
+                                                        disabled={isLoading || !!success}
+                                                    />
+                                                </div>
+                                                <div className="mb-3 col-sm-12">
+                                                    <label className="form-label text-white">Confirm New Password:</label>
+                                                    <input
+                                                        type="password"
+                                                        name="confirmPassword"
+                                                        value={formData.confirmPassword}
+                                                        onChange={handleInputChange}
+                                                        className="form-control"
+                                                        placeholder="Confirm your new password"
+                                                        required
+                                                        disabled={isLoading || !!success}
+                                                    />
+                                                </div>
+                                                <div className="col-sm-12">
+                                                    <button
+                                                        type="submit"
+                                                        className="btn btn-primary w-100"
+                                                        disabled={isLoading || !!success}
+                                                    >
+                                                        {isLoading ? 'Resetting Password...' : 'Reset Password'}
+                                                    </button>
+                                                </div>
+                                            </form>
 
-                                        {!success && (
-                                            <div className="text-center mt-3">
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-link text-decoration-none"
-                                                    onClick={() => navigate('/login-register')}
-                                                >
-                                                    Back to Login
-                                                </button>
-                                            </div>
-                                        )}
-                                    </div>
+                                            {!success && (
+                                                <div className="text-center mt-3">
+                                                    <button
+                                                        type="button"
+                                                        className="btn btn-link text-decoration-none"
+                                                        onClick={() => navigate('/login-register')}
+                                                    >
+                                                        Back to Login
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )
                                 ) : (
                                     <div className="text-center">
                                         <div className="text-danger mb-4">
