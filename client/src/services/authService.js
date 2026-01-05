@@ -29,8 +29,10 @@ export const login = async (userData) => {
     return result;
 };
 export const logout = async () => await post(`${baseUrl}/auth/logout`);
-export const forgetPassword = async (email) => await post(`${baseUrl}/auth/forget-password/request`, { email });
 export const verifyEmail = async (token) => await post(`${baseUrl}/auth/verify-email`, { token });
+export const requestPasswordReset = async (email) => await post(`${baseUrl}/auth/password-reset/request`, { email });
+export const checkPasswordResetToken = async (token) => await post(`${baseUrl}/auth/password-reset/token-check`, { token });
+export const confirmPasswordReset = async (token, password) => await post(`${baseUrl}/auth/password-reset/confirm`, { token, password });
 
 export const resendVerification = async (token) => await post(`${baseUrl}/auth/resend-email`, { token });
 // export const getUser = async () => await get(`${baseUrl}/auth/user`);
