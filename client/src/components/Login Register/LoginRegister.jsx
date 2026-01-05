@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { register, login, forgetPassword } from '../../services/authService';
+import { register, login, requestPasswordReset } from '../../services/authService';
 
 export default function LoginRegister() {
     const [registerForm, setRegisterForm] = useState({
@@ -178,7 +178,7 @@ export default function LoginRegister() {
         setIsLoading(true);
 
         try {
-            const response = await forgetPassword(forgotPasswordEmail);
+            const response = await requestPasswordReset(forgotPasswordEmail);
             setSuccess(response.message || 'Password reset email sent! Please check your inbox.');
             setShowForgotPassword(false);
             setForgotPasswordEmail('');
