@@ -106,10 +106,28 @@ export default function Results() {
   }).filter(id => id !== null) : [];
   const [selectedGenres, setSelectedGenres] = useState(initialGenres);
 
+  // Update selectedGenres when URL genres parameter changes
+  useEffect(() => {
+    const currentGenresParam = searchParams.get('genres');
+    const newGenres = currentGenresParam ? currentGenresParam.split(',').map(genreName => {
+      // Try to find genre by name (handle both display name and backend name)
+      const genre = hardcodedGenres.find(g => g.name === genreName || convertGenreForBackend(g.name) === genreName);
+      return genre ? genre.id : null;
+    }).filter(id => id !== null) : [];
+    setSelectedGenres(newGenres);
+  }, [searchParams]);
+
   // Initialize selectedTypes from URL parameters
   const typesParam = searchParams.get('types');
   const initialTypes = typesParam ? typesParam.split(',').filter(type => type.trim()) : [];
   const [selectedTypes, setSelectedTypes] = useState(initialTypes);
+
+  // Update selectedTypes when URL types parameter changes
+  useEffect(() => {
+    const currentTypesParam = searchParams.get('types');
+    const newTypes = currentTypesParam ? currentTypesParam.split(',').filter(type => type.trim()) : [];
+    setSelectedTypes(newTypes);
+  }, [searchParams]);
 
   // Add state for collection search input
   const [collectionSearchInput, setCollectionSearchInput] = useState(collectionQuery || '');
@@ -356,7 +374,7 @@ export default function Results() {
     };
 
     fetchResults();
-  }, [mode, query, collectionQuery, genre, media, category, currentPage, setLoading, forceRefetch, actorMediaType, crewId, crewName, prodId, prodName]);
+  }, [mode, query, collectionQuery, genre, media, category, types, currentPage, setLoading, forceRefetch, actorMediaType, crewId, crewName, prodId, prodName]);
 
   // Reset to first page when primary criteria changes — update URL page to 1
   useEffect(() => {
@@ -369,7 +387,7 @@ export default function Results() {
     // only update URL if it isn't already page 1
     if (currentPage !== 1) updatePageInParams(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mode, query, collectionQuery, genre, media, category, actorMediaType, crewId, crewName, prodId, prodName]);
+  }, [mode, query, collectionQuery, genre, media, category, types, actorMediaType, crewId, crewName, prodId, prodName]);
 
   // Reset page to 1 when selecting genres or types (user expects new filter to start from page 1)
   useEffect(() => {
