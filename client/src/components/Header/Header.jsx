@@ -93,7 +93,6 @@ const Header = ({ onSearchOpen }) => {
                                                     <span className="nav-title">Authentication</span>
                                                     <ul className="list-unstyled">
                                                         <li><Link className="dropdown-item" to="/login-register"><span>Login</span></Link></li>
-                                                        <li><Link className="dropdown-submenu" to="/account"><span>My Account</span></Link></li>
                                                         <li><Link className="dropdown-submenu" to="/privacy-policy"><span>Privacy Policy</span></Link></li>
                                                         <li><Link className="dropdown-submenu" to="/terms-and-conditions"><span>T&C</span></Link></li>
                                                     </ul>

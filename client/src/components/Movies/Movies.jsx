@@ -22,9 +22,9 @@ export default function Movies() {
             setLoading(true);
             try {
                 const [trending, latest, popular] = await Promise.all([
-                    getTrendingMovies(),
-                    getLatestMovies(),
-                    getPopularMovies()
+                    getTrendingMovies('movies', 1, 20, []),
+                    getLatestMovies('movies', 1, 20, []),
+                    getPopularMovies('movies', 1, 20, [])
                 ]);
                 setTrendingMovies(trending.movies || []);
                 setLatestMovies(latest.movies || []);

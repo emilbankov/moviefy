@@ -272,6 +272,7 @@ export default function LoginRegister() {
                                                     <label className="form-label">Email:</label>
                                                     <input
                                                         type="email"
+                                                        name="email"
                                                         value={forgotPasswordEmail}
                                                         onChange={(e) => setForgotPasswordEmail(e.target.value)}
                                                         className="form-control"
