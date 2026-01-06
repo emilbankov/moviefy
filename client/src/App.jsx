@@ -25,6 +25,8 @@ import CollectionDetails from './components/Collection Details/CollectionDetails
 import ScrollToTop from './components/ScrollToTop/ScrollToTop';
 import Results from './components/Results/Results';
 import { LoadingProvider, useLoading } from './contexts/LoadingContext';
+import AuthGuard from './guards/AuthGuard';
+import GuestGuard from './guards/GuestGuard';
 
 function AppContent() {
     const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -60,10 +62,18 @@ function AppContent() {
                     <Route path='/about' element={<About />} />
                     <Route path='/pricing' element={<Pricing />} />
                     <Route path='/contact' element={<Contact />} />
-                    <Route path='/login-register' element={<LoginRegister />} />
+                    <Route path='/login-register' element={
+                        <GuestGuard>
+                            <LoginRegister />
+                        </GuestGuard>
+                    } />
                     <Route path='/verify-email' element={<EmailVerification />} />
                     <Route path='/password-reset' element={<PasswordReset />} />
-                    <Route path='/account' element={<Account />} />
+                    <Route path='/account' element={
+                        <AuthGuard>
+                            <Account />
+                        </AuthGuard>
+                    } />
                     <Route path='/error' element={<Error />} />
                     <Route path='/privacy-policy' element={<PrivacyPolicy />} />
                     <Route path='/terms-and-conditions' element={<TermsConditions />} />
