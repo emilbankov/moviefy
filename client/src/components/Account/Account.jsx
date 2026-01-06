@@ -1,4 +1,9 @@
+import { useContext } from 'react';
+import AuthContext from '../../contexts/AuthProvider';
+
 export default function Account() {
+    const { user, logoutHandler } = useContext(AuthContext);
+
     return (
         <>
             <section className="inner-banner bg-holder bg-overlay-secondary-3" style={{ backgroundImage: "url(images/bg/inner-banner-bg.jpg)" }}>
@@ -29,8 +34,8 @@ export default function Account() {
                                                     />
                                                     <i className="fas fa-pencil-alt" />
                                                 </div>
-                                                <h5 className="title">Alice Williams</h5>
-                                                <span>support@example.com</span>
+                                                <h5 className="title">{user?.first_name} {user?.last_name}</h5>
+                                                <span>{user?.email}</span>
                                             </div>
                                             <div className="profile-tabs tabs">
                                                 <ul
@@ -83,10 +88,14 @@ export default function Account() {
                                                         </button>
                                                     </li>
                                                 </ul>
-                                                <a href="login.html" className="btn btn-link text-danger">
+                                                <button
+                                                    onClick={logoutHandler}
+                                                    className="btn btn-link text-danger"
+                                                    style={{ border: 'none', background: 'none', padding: 0 }}
+                                                >
                                                     <i className="fa-solid fa-arrow-right-from-bracket" />
                                                     Log Out
-                                                </a>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -160,6 +169,7 @@ export default function Account() {
                                                             type="email"
                                                             className="form-control"
                                                             placeholder="Email Address"
+                                                            defaultValue={user?.email}
                                                         />
                                                     </div>
                                                     <div className="col-md-6 mb-3">
@@ -168,6 +178,7 @@ export default function Account() {
                                                             type="text"
                                                             className="form-control"
                                                             placeholder="First name"
+                                                            defaultValue={user?.first_name}
                                                         />
                                                     </div>
                                                     <div className="col-md-6 mb-3">
@@ -176,6 +187,7 @@ export default function Account() {
                                                             type="text"
                                                             className="form-control"
                                                             placeholder="Last name"
+                                                            defaultValue={user?.last_name}
                                                         />
                                                     </div>
                                                     <div className="col-md-6 mb-3">
@@ -218,16 +230,7 @@ export default function Account() {
                                                     <div className="payment-header">
                                                         <h6>Credit Card and Debit Card</h6>
                                                         <div className="payment-card">
-                                                            <img
-                                                                className="img-fluid"
-                                                                src="images/visa.jpg"
-                                                                alt="#"
-                                                            />
-                                                            <img
-                                                                className="img-fluid"
-                                                                src="images/card.png"
-                                                                alt="#"
-                                                            />
+                                                            <span className="text-muted">Credit/Debit Cards Accepted</span>
                                                         </div>
                                                     </div>
                                                     <form className="row">
@@ -251,30 +254,12 @@ export default function Account() {
                                                             />
                                                         </div>
                                                         <div className="col-lg-6 mb-3">
-                                                            <div className="datetimepickers">
-                                                                <label className="form-label">End Date:</label>
-                                                                <div
-                                                                    className="input-group date"
-                                                                    id="datetimepicker-01"
-                                                                    data-target-input="nearest"
-                                                                >
-                                                                    <input
-                                                                        type="text"
-                                                                        className="form-control datetimepicker-input border-right-0"
-                                                                        placeholder="Depart Date"
-                                                                        data-target="#datetimepicker-01"
-                                                                    />
-                                                                    <div
-                                                                        className="input-group-append"
-                                                                        data-target="#datetimepicker-01"
-                                                                        data-toggle="datetimepicker"
-                                                                    >
-                                                                        <div className="input-group-text h-100">
-                                                                            <i className="far fa-calendar-alt" />
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
+                                                            <label className="form-label">Expiration Date:</label>
+                                                            <input
+                                                                type="text"
+                                                                className="form-control"
+                                                                placeholder="MM/YY"
+                                                            />
                                                         </div>
                                                         <div className="col-lg-6 mb-3">
                                                             <label className="form-label">CVV:</label>
