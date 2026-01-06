@@ -45,7 +45,7 @@ const Header = ({ onSearchOpen }) => {
                                     <Link className="nav-link" to="/movies"><span>Movies</span></Link>
                                 </li>
                                 <li className="dropdown nav-item">
-                                    <a className="nav-link" href="javascript:void(0)" data-bs-toggle="dropdown">
+                                    <a className="nav-link" href="#" data-bs-toggle="dropdown">
                                         Series<i className="fas fa-chevron-down fa-xs"></i>
                                     </a>
                                     <ul className="dropdown-menu series-dropdown-menu">
@@ -77,7 +77,7 @@ const Header = ({ onSearchOpen }) => {
                                     </ul>
                                 </li>
                                 <li className="dropdown nav-item mega-menu ">
-                                    <a className="nav-link" href="javascript:void(0)" data-bs-toggle="dropdown">Pages<i className="fas fa-chevron-down fa-xs"></i></a>
+                                    <a className="nav-link" href="#" data-bs-toggle="dropdown">Pages<i className="fas fa-chevron-down fa-xs"></i></a>
                                     <ul className="dropdown-menu dropdown-menu-md megamenu">
                                         <li>
                                             <div className="row">
@@ -108,7 +108,7 @@ const Header = ({ onSearchOpen }) => {
                                 <li className="search"><a href="#search" onClick={(e) => { e.preventDefault(); onSearchOpen(); }}><i className="fa fa-search"></i></a></li>
                                 <li><Link to="/account"><i className="fa-regular fa-user"></i></Link></li>
                                 <li className="dropdown">
-                                    <a href="javascript:void(0)" className="notifications dropdown-toggle" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <a href="#" className="notifications dropdown-toggle" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i className="fa-regular fa-bell"></i>
                                         <span className="count">3</span>
                                     </a>

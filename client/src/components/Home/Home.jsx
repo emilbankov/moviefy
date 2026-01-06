@@ -55,7 +55,6 @@ export default function Home() {
                 setTrendingSeries(trendingSeriesData);
                 setPopularSeries(popularSeriesData);
                 setTopRatedSeries(topRatedSeriesData);
-                console.log(bannerMovies);
             })
             .catch(err => {
                 console.error("Error fetching data:", err);
@@ -64,7 +63,6 @@ export default function Home() {
                 setLoading(false);
             });
     }, [setLoading]);
-console.log(bannerMovies);
 
     // useEffect(() => {
     //     const existingScript = document.querySelector('script[src="/js/custom.js"]');
@@ -1121,7 +1119,7 @@ console.log(bannerMovies);
                                                             <div className="movie-info">
                                                                 <h2 className="title">{series.name}</h2>
                                                                 <div className="movies-language">
-                                                                    Language: <a href="#">English</a>{" "}<a className="rating" href="#"><i className="fa-solid fa-star" /> {series.vote_average}/10</a>
+                                                                    Language: <span>English</span>{" "}<span className="rating"><i className="fa-solid fa-star" /> {series.vote_average}/10</span>
                                                                 </div>
                                                                 <div className="movies-genre">
                                                                     Genre:{" "}
@@ -1143,7 +1141,7 @@ console.log(bannerMovies);
                                                                     <a className="btn btn-link" href="#">
                                                                         <i className="fa-solid fa-play" /> Play Now
                                                                     </a>
-                                                                    <a href="javascript:void(0)" className="add-icon mx-3">
+                                                                    <a href="#" className="add-icon mx-3">
                                                                         {" "}
                                                                         Add to List
                                                                     </a>
