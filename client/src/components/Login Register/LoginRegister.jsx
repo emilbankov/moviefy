@@ -1,7 +1,10 @@
-import { useState, useEffect } from 'react';
-import { register, login, requestPasswordReset } from '../../services/authService';
+import { useState, useEffect, useContext } from 'react';
+import { register, requestPasswordReset } from '../../services/authService';
+import AuthContext from '../../contexts/AuthProvider';
 
 export default function LoginRegister() {
+    const { loginSubmitHandler, registerSubmitHandler, isLoading: authLoading, authError } = useContext(AuthContext);
+
     const [registerForm, setRegisterForm] = useState({
         email: '',
         first_name: '',
@@ -92,8 +95,6 @@ export default function LoginRegister() {
             return;
         }
 
-        setIsLoading(true);
-
         try {
             // Create userData object with only the fields needed for the API
             const userData = {
@@ -103,8 +104,8 @@ export default function LoginRegister() {
                 password: registerForm.password
             };
 
-            const response = await register(userData);
-            setSuccess(response.message || 'Registration successful! Please check your email to verify your account.');
+            await registerSubmitHandler(userData);
+            setSuccess('Registration successful! Please check your email to verify your account.');
             // Reset form
             setRegisterForm({
                 email: '',
@@ -113,10 +114,9 @@ export default function LoginRegister() {
                 password: '',
                 confirm_password: ''
             });
-        } catch (err) {
-            setError(err.message || 'Registration failed. Please try again.');
-        } finally {
-            setIsLoading(false);
+        } catch (error) {
+            // Error is handled by AuthProvider
+            setError(authError || 'Registration failed. Please try again.');
         }
     };
 
@@ -131,30 +131,20 @@ export default function LoginRegister() {
             return;
         }
 
-        setIsLoading(true);
-
         try {
-            const response = await login({
+            await loginSubmitHandler({
                 email: loginForm.email,
                 password: loginForm.password
             });
 
-            // Show the backend response message (likely email verification required)
-            setSuccess(response.message || 'Login successful!');
-
-            // Reset form
+            // Reset form on success (navigation will happen automatically)
             setLoginForm({
                 email: '',
                 password: ''
             });
-
-            // Here you could store the auth token and redirect
-            // For now, we show the backend message
-
-        } catch (err) {
-            setError(err.message || 'Login failed. Please check your credentials.');
-        } finally {
-            setIsLoading(false);
+        } catch (error) {
+            // Error is handled by AuthProvider
+            setError(authError || 'Login failed. Please try again.');
         }
     };
 
