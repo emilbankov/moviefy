@@ -1,22 +1,18 @@
 const buildOptions = (data) => {
-    const options = {};
+    const options = {
+        credentials: 'include', // Required for Spring Security session cookies
+        headers: {
+            'Accept': 'application/json'
+        }
+    };
 
     if (data) {
         options.body = JSON.stringify(data);
         options.headers = {
-            'content-type': 'application/json'
+            ...options.headers,
+            'Content-Type': 'application/json'
         };
     }
-
-    // Temporarily disable auth headers since AuthProvider is commented out
-    // const token = localStorage.getItem('accessToken');
-    //
-    // if (token) {
-    //     options.headers = {
-    //         ...options.headers,
-    //         'X-Authorization': token
-    //     };
-    // }
 
     return options;
 };

@@ -10,8 +10,10 @@ export const login = async (userData) => {
 
     const response = await fetch(`${baseUrl}/auth/login`, {
         method: 'POST',
+        credentials: 'include', // Required for Spring Security session cookies
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
+            'Accept': 'application/json',
         },
         body: formData,
     });
@@ -29,6 +31,25 @@ export const login = async (userData) => {
     return result;
 };
 export const logout = async () => await post(`${baseUrl}/auth/logout`);
+export const getCurrentUser = async () => {
+    const response = await fetch(`${baseUrl}/auth/me`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+            'Accept': 'application/json',
+        },
+    });
+
+    if (response.status === 401) {
+        return null; // User not authenticated
+    }
+
+    if (!response.ok) {
+        throw new Error('Failed to fetch user data');
+    }
+
+    return await response.json();
+};
 export const verifyEmail = async (token) => await post(`${baseUrl}/auth/verify-email`, { token });
 export const requestPasswordReset = async (email) => await post(`${baseUrl}/auth/password-reset/request`, { email });
 export const checkPasswordResetToken = async (token) => await post(`${baseUrl}/auth/password-reset/token-check`, { token });
