@@ -1,7 +1,5 @@
-// Commented out due to backend issues - will be uncommented when backend is fixed
-/*
 import { createContext, useState, useEffect, useContext } from "react";
-import { login, register } from '../services/authService';
+import { login, register, logout, getCurrentUser } from '../services/authService';
 import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext();
@@ -10,43 +8,64 @@ AuthContext.displayName = 'AuthContext';
 
 export const AuthProvider = ({ children }) => {
     const navigate = useNavigate();
-    const [auth, setAuth] = useState(() => {
-        const accessToken = localStorage.getItem('accessToken');
-        const userProfile = localStorage.getItem('userProfile') ? JSON.parse(localStorage.getItem('userProfile')) : null;
-
-        if (accessToken) {
-            return {
-                accessToken,
-                userProfile
-            };
-        }
-
-        return {};
+    const [auth, setAuth] = useState({
+        user: null,
+        isLoading: true,
+        isAuthenticated: false
     });
     const [authError, setAuthError] = useState(null);
 
-    const updateUserProfile = (profileData) => {
-        setAuth(state => ({
-            ...state,
-            userProfile: profileData
-        }));
-        localStorage.setItem('userProfile', JSON.stringify(profileData));
-    };
+    // Check authentication status on app load
+    useEffect(() => {
+        const checkAuthStatus = async () => {
+            try {
+                const user = await getCurrentUser();
+                if (user) {
+                    setAuth({
+                        user,
+                        isLoading: false,
+                        isAuthenticated: true
+                    });
+                } else {
+                    setAuth({
+                        user: null,
+                        isLoading: false,
+                        isAuthenticated: false
+                    });
+                }
+            } catch (error) {
+                console.error('Auth check failed:', error);
+                setAuth({
+                    user: null,
+                    isLoading: false,
+                    isAuthenticated: false
+                });
+            }
+        };
+
+        checkAuthStatus();
+    }, []);
 
     const loginSubmitHandler = async (values) => {
         setAuthError(null);
+        setAuth(prev => ({ ...prev, isLoading: true }));
+
         try {
-            const result = await login(values);
+            await login(values);
+
+            // Login successful - get user data
+            const user = await getCurrentUser();
 
             setAuth({
-                accessToken: result.accessToken || result.token,
-                userProfile: null
+                user,
+                isLoading: false,
+                isAuthenticated: true
             });
-
-            localStorage.setItem('accessToken', result.accessToken || result.token);
 
             navigate("/");
         } catch (error) {
+            setAuth(prev => ({ ...prev, isLoading: false }));
+
             if (error?.message?.includes('email') || error?.message?.includes('password')) {
                 setAuthError("Invalid email or password");
             } else {
@@ -77,10 +96,19 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const logoutHandler = () => {
-        setAuth({});
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('userProfile');
+    const logoutHandler = async () => {
+        try {
+            await logout();
+        } catch (error) {
+            console.error('Logout error:', error);
+        }
+
+        setAuth({
+            user: null,
+            isLoading: false,
+            isAuthenticated: false
+        });
+
         navigate("/");
     };
 
@@ -89,12 +117,11 @@ export const AuthProvider = ({ children }) => {
             loginSubmitHandler,
             registerSubmitHandler,
             logoutHandler,
-            email: auth.email,
-            isAuthenticated: !!auth.accessToken,
-            userProfile: auth.userProfile,
+            user: auth.user,
+            isAuthenticated: auth.isAuthenticated,
+            isLoading: auth.isLoading,
             authError,
-            clearAuthError: () => setAuthError(null),
-            updateUserProfile
+            clearAuthError: () => setAuthError(null)
         }}>
             {children}
         </AuthContext.Provider>
@@ -102,4 +129,3 @@ export const AuthProvider = ({ children }) => {
 }
 
 export default AuthContext;
-*/
