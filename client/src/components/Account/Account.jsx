@@ -10,12 +10,9 @@ export default function Account() {
 
     // Form state for edit profile
     const [editForm, setEditForm] = useState({
-        username: '',
         email: '',
         first_name: '',
-        last_name: '',
-        password: '',
-        confirm_password: ''
+        last_name: ''
     });
 
     useEffect(() => {
@@ -23,6 +20,7 @@ export default function Account() {
             try {
                 const profileData = await getUserProfile();
                 setProfile(profileData);
+                console.log(profileData);
                 
             } catch (error) {
                 console.error('Failed to fetch profile:', error);
@@ -45,12 +43,9 @@ export default function Account() {
         if (profile || user) {
             const userData = profile?.data || user?.data;
             setEditForm({
-                username: userData?.email || '', // Use email as username since we don't have a separate username field
                 email: userData?.email || '',
                 first_name: userData?.first_name || '',
-                last_name: userData?.last_name || '',
-                password: '', // Keep password empty for security
-                confirm_password: '' // Keep confirm password empty for security
+                last_name: userData?.last_name || ''
             });
         }
     }, [profile, user]);
@@ -59,12 +54,9 @@ export default function Account() {
     useEffect(() => {
         if (user && !profile) {
             setEditForm({
-                username: user?.data.email || '',
                 email: user?.data.email || '',
                 first_name: user?.data.first_name || '',
-                last_name: user?.data.last_name || '',
-                password: '',
-                confirm_password: ''
+                last_name: user?.data.last_name || ''
             });
         }
     }, [user, profile]);
@@ -263,17 +255,6 @@ export default function Account() {
                                                 </div>
                                                 <form className="row">
                                                     <div className="col-md-6 mb-3">
-                                                        <label className="form-label">User Name:</label>
-                                                        <input
-                                                            type="text"
-                                                            name="username"
-                                                            className="form-control"
-                                                            placeholder="User name"
-                                                            value={editForm.username}
-                                                            onChange={handleEditFormChange}
-                                                        />
-                                                    </div>
-                                                    <div className="col-md-6 mb-3">
                                                         <label className="form-label">Email Address:</label>
                                                         <input
                                                             type="email"
@@ -282,6 +263,15 @@ export default function Account() {
                                                             placeholder="Email Address"
                                                             value={editForm.email}
                                                             onChange={handleEditFormChange}
+                                                        />
+                                                    </div>
+                                                    <div className="col-md-6 mb-3">
+                                                        <label className="form-label">Member Since:</label>
+                                                        <input
+                                                            type="text"
+                                                            className="form-control"
+                                                            value={profile?.data?.created_at ? new Date(profile.data.created_at).toLocaleDateString() : 'N/A'}
+                                                            readOnly
                                                         />
                                                     </div>
                                                     <div className="col-md-6 mb-3">
@@ -303,28 +293,6 @@ export default function Account() {
                                                             className="form-control"
                                                             placeholder="Last name"
                                                             value={editForm.last_name}
-                                                            onChange={handleEditFormChange}
-                                                        />
-                                                    </div>
-                                                    <div className="col-md-6 mb-3">
-                                                        <label className="form-label">Password:</label>
-                                                        <input
-                                                            type="password"
-                                                            name="password"
-                                                            className="form-control"
-                                                            placeholder="********"
-                                                            value={editForm.password}
-                                                            onChange={handleEditFormChange}
-                                                        />
-                                                    </div>
-                                                    <div className="col-md-6 mb-3">
-                                                        <label className="form-label">Confirm Password:</label>
-                                                        <input
-                                                            type="password"
-                                                            name="confirm_password"
-                                                            className="form-control"
-                                                            placeholder="********"
-                                                            value={editForm.confirm_password}
                                                             onChange={handleEditFormChange}
                                                         />
                                                     </div>
