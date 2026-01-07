@@ -1,8 +1,97 @@
-import { useContext } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import AuthContext from '../../contexts/AuthProvider';
+import { getUserProfile } from '../../services/authService';
+import Loader from '../Loader/Loader';
 
 export default function Account() {
     const { user, logoutHandler } = useContext(AuthContext);
+    const [profile, setProfile] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    // Form state for edit profile
+    const [editForm, setEditForm] = useState({
+        username: '',
+        email: '',
+        first_name: '',
+        last_name: '',
+        password: '',
+        confirm_password: ''
+    });
+
+    useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const profileData = await getUserProfile();
+                setProfile(profileData);
+                
+            } catch (error) {
+                console.error('Failed to fetch profile:', error);
+                // Fallback to AuthContext user data if profile fetch fails
+                setProfile(user);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (user) {
+            fetchProfile();
+        } else {
+            setLoading(false);
+        }
+    }, [user]);
+
+    // Populate form when profile data is available
+    useEffect(() => {
+        if (profile || user) {
+            const userData = profile?.data || user?.data;
+            setEditForm({
+                username: userData?.email || '', // Use email as username since we don't have a separate username field
+                email: userData?.email || '',
+                first_name: userData?.first_name || '',
+                last_name: userData?.last_name || '',
+                password: '', // Keep password empty for security
+                confirm_password: '' // Keep confirm password empty for security
+            });
+        }
+    }, [profile, user]);
+
+    // Also populate form immediately if we have user data from AuthContext
+    useEffect(() => {
+        if (user && !profile) {
+            setEditForm({
+                username: user?.data.email || '',
+                email: user?.data.email || '',
+                first_name: user?.data.first_name || '',
+                last_name: user?.data.last_name || '',
+                password: '',
+                confirm_password: ''
+            });
+        }
+    }, [user, profile]);
+
+    // Handle form input changes
+    const handleEditFormChange = (e) => {
+        const { name, value } = e.target;
+        setEditForm(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    if (loading) {
+        return (
+            <div style={{
+                flex: 1,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: '#0a0a0a',
+                minHeight: '100vh'
+            }}>
+                <Loader />
+            </div>
+        );
+    }
 
     return (
         <>
@@ -34,8 +123,8 @@ export default function Account() {
                                                     />
                                                     <i className="fas fa-pencil-alt" />
                                                 </div>
-                                                <h5 className="title">{user?.first_name} {user?.last_name}</h5>
-                                                <span>{user?.email}</span>
+                                                <h5 className="title">{profile?.data?.first_name || user?.data?.first_name} {profile?.data?.last_name || user?.data?.last_name}</h5>
+                                                <span>{profile?.data?.email || user?.data?.email}</span>
                                             </div>
                                             <div className="profile-tabs tabs">
                                                 <ul
@@ -71,6 +160,20 @@ export default function Account() {
                                                         >
                                                             <i className="fa-regular fa-rectangle-list" /> Edit
                                                             Profile
+                                                        </button>
+                                                    </li>
+                                                    <li className="nav-item" role="presentation">
+                                                        <button
+                                                            className="nav-link"
+                                                            id="pills-favorites-tab"
+                                                            data-bs-toggle="pill"
+                                                            data-bs-target="#pills-favorites"
+                                                            type="button"
+                                                            role="tab"
+                                                            aria-controls="pills-favorites"
+                                                            aria-selected="false"
+                                                        >
+                                                            <i className="fa-solid fa-heart" /> Favorites
                                                         </button>
                                                     </li>
                                                     <li className="nav-item" role="presentation">
@@ -125,20 +228,24 @@ export default function Account() {
                                                             <td>Active</td>
                                                         </tr>
                                                         <tr className="table-active">
-                                                            <td>Start Date</td>
-                                                            <td>September 01, 2022</td>
+                                                            <td>Member Since</td>
+                                                            <td>{profile?.data?.created_at ? new Date(profile.data.created_at).toLocaleDateString() : 'N/A'}</td>
                                                         </tr>
                                                         <tr>
-                                                            <td>Expiration Date</td>
-                                                            <td>September 30, 2022</td>
+                                                            <td>Favorite Movies</td>
+                                                            <td>{profile?.data?.favorite_movies?.length || 0}</td>
                                                         </tr>
                                                         <tr className="table-active">
+                                                            <td>Favorite TV Series</td>
+                                                            <td>{profile?.data?.favorite_tv_series?.length || 0}</td>
+                                                        </tr>
+                                                        <tr>
                                                             <td>Actions</td>
                                                             <td>
                                                                 <a className="me-3" href="#">
-                                                                    Change
+                                                                    Upgrade
                                                                 </a>{" "}
-                                                                <a href="#">Cancel</a>
+                                                                <a href="#">Manage</a>
                                                             </td>
                                                         </tr>
                                                     </tbody>
@@ -159,51 +266,66 @@ export default function Account() {
                                                         <label className="form-label">User Name:</label>
                                                         <input
                                                             type="text"
+                                                            name="username"
                                                             className="form-control"
                                                             placeholder="User name"
+                                                            value={editForm.username}
+                                                            onChange={handleEditFormChange}
                                                         />
                                                     </div>
                                                     <div className="col-md-6 mb-3">
                                                         <label className="form-label">Email Address:</label>
                                                         <input
                                                             type="email"
+                                                            name="email"
                                                             className="form-control"
                                                             placeholder="Email Address"
-                                                            defaultValue={user?.email}
+                                                            value={editForm.email}
+                                                            onChange={handleEditFormChange}
                                                         />
                                                     </div>
                                                     <div className="col-md-6 mb-3">
                                                         <label className="form-label">First Name:</label>
                                                         <input
                                                             type="text"
+                                                            name="first_name"
                                                             className="form-control"
                                                             placeholder="First name"
-                                                            defaultValue={user?.first_name}
+                                                            value={editForm.first_name}
+                                                            onChange={handleEditFormChange}
                                                         />
                                                     </div>
                                                     <div className="col-md-6 mb-3">
                                                         <label className="form-label">Last Name:</label>
                                                         <input
                                                             type="text"
+                                                            name="last_name"
                                                             className="form-control"
                                                             placeholder="Last name"
-                                                            defaultValue={user?.last_name}
+                                                            value={editForm.last_name}
+                                                            onChange={handleEditFormChange}
                                                         />
                                                     </div>
                                                     <div className="col-md-6 mb-3">
                                                         <label className="form-label">Password:</label>
                                                         <input
-                                                            type="Password"
+                                                            type="password"
+                                                            name="password"
                                                             className="form-control"
                                                             placeholder="********"
+                                                            value={editForm.password}
+                                                            onChange={handleEditFormChange}
                                                         />
                                                     </div>
                                                     <div className="col-md-6 mb-3">
                                                         <label className="form-label">Confirm Password:</label>
                                                         <input
-                                                            type="Password"
+                                                            type="password"
+                                                            name="confirm_password"
                                                             className="form-control"
                                                             placeholder="********"
+                                                            value={editForm.confirm_password}
+                                                            onChange={handleEditFormChange}
                                                         />
                                                     </div>
                                                     <div className="col-xl-6">
@@ -215,6 +337,68 @@ export default function Account() {
                                                         </button>
                                                     </div>
                                                 </form>
+                                            </div>
+                                            <div
+                                                className="tab-pane fade"
+                                                id="pills-favorites"
+                                                role="tabpanel"
+                                                aria-labelledby="pills-favorites-tab"
+                                                tabIndex={0}
+                                            >
+                                                <div className="section-title">
+                                                    <h4>My Favorites</h4>
+                                                </div>
+                                                <div className="favorites-content">
+                                                    <div className="mb-4">
+                                                        <h5 className="text-white mb-3">
+                                                            <i className="fa-solid fa-film me-2"></i>
+                                                            Favorite Movies ({profile?.data?.favorite_movies?.length || 0})
+                                                        </h5>
+                                                        {profile?.data?.favorite_movies?.length > 0 ? (
+                                                            <div className="row">
+                                                                {profile.data.favorite_movies.map((movie, index) => (
+                                                                    <div key={index} className="col-md-4 mb-3">
+                                                                        <div className="favorite-item bg-secondary p-3 rounded">
+                                                                            <h6 className="text-white mb-2">{movie.title || movie.name || 'Unknown Movie'}</h6>
+                                                                            <small className="text-muted">
+                                                                                {movie.release_date || movie.first_air_date ?
+                                                                                    new Date(movie.release_date || movie.first_air_date).getFullYear() : 'N/A'
+                                                                                }
+                                                                            </small>
+                                                                        </div>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        ) : (
+                                                            <p className="text-muted">No favorite movies yet.</p>
+                                                        )}
+                                                    </div>
+
+                                                    <div>
+                                                        <h5 className="text-white mb-3">
+                                                            <i className="fa-solid fa-tv me-2"></i>
+                                                            Favorite TV Series ({profile?.data?.favorite_tv_series?.length || 0})
+                                                        </h5>
+                                                        {profile?.data?.favorite_tv_series?.length > 0 ? (
+                                                            <div className="row">
+                                                                {profile.data.favorite_tv_series.map((series, index) => (
+                                                                    <div key={index} className="col-md-4 mb-3">
+                                                                        <div className="favorite-item bg-secondary p-3 rounded">
+                                                                            <h6 className="text-white mb-2">{series.title || series.name || 'Unknown Series'}</h6>
+                                                                            <small className="text-muted">
+                                                                                {series.release_date || series.first_air_date ?
+                                                                                    new Date(series.release_date || series.first_air_date).getFullYear() : 'N/A'
+                                                                                }
+                                                                            </small>
+                                                                        </div>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        ) : (
+                                                            <p className="text-muted">No favorite TV series yet.</p>
+                                                        )}
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div
                                                 className="tab-pane fade"
