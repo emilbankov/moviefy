@@ -132,6 +132,29 @@ export const resendVerification = async (token) => await post(`${baseUrl}/auth/r
 // export const deleteUser = async () => await del(`${baseUrl}/auth/user`);
 // export const updateUserProfile = async (userId, userData) => await put(`${baseUrl}/users/${userId}`, userData);
 // export const deleteUserProfile = async (userId) => await del(`${baseUrl}/users/${userId}`);
-export const getUserProfile = async (userId) => await get(`${baseUrl}/users/${userId}`);
+export const getUserProfile = async () => {
+    try {
+        const response = await fetch(`${baseUrl}/users/me`, {
+            method: 'GET',
+            credentials: 'include', // Required for Spring Security session cookies
+            headers: {
+                'Accept': 'application/json',
+            },
+        });
+
+        if (response.status === 401) {
+            return null; // User not authenticated
+        }
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch user profile');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Failed to fetch user profile:', error);
+        throw error;
+    }
+};
 // export const updateUserProfile = async (userId, userData) => await put(`${baseUrl}/users/${userId}`, userData);
 // export const deleteUserProfile = async (userId) => await del(`${baseUrl}/users/${userId}`);
