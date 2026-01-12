@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
+import { get } from './lib/request';
 
 import Header from './components/Header/Header';
 import Search from './components/Search/Search';
@@ -31,6 +32,10 @@ import GuestGuard from './guards/GuestGuard';
 function AppContent() {
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const { loading } = useLoading();
+
+    useEffect(() => {
+        get(`https://p01--moviefy--kc4tkpjph9bk.code.run/ping`).catch(() => { });
+    }, []);
 
     return (
         <div className='bg-dark' style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>

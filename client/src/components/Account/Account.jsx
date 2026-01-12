@@ -407,11 +407,11 @@ export default function Account() {
                                                         </div>
                                                         <div className="col-lg-6 mb-3">
                                                             <label className="form-label">Expiration Date:</label>
-                                                            <input
-                                                                type="text"
+                                                                    <input
+                                                                        type="text"
                                                                 className="form-control"
                                                                 placeholder="MM/YY"
-                                                            />
+                                                                    />
                                                         </div>
                                                         <div className="col-lg-6 mb-3">
                                                             <label className="form-label">CVV:</label>

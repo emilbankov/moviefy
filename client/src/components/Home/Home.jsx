@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import * as moviesService from '../../services/moviesService'
 import * as seriesService from '../../services/seriesService'
+import * as userService from '../../services/userService'
 import { useLoading } from '../../contexts/LoadingContext';
 
 // Helper function to convert genre display name to database name
@@ -25,7 +26,37 @@ export default function Home() {
     const [popularSeries, setPopularSeries] = useState([]);
     const [topRatedSeries, setTopRatedSeries] = useState([]);
 
+    // Favorites state
+    const [favoriteMovieIds, setFavoriteMovieIds] = useState(new Set());
+    const [favoriteSeriesIds, setFavoriteSeriesIds] = useState(new Set());
+
+    // Notification state
+    const [notification, setNotification] = useState({ show: false, message: '', type: 'success', id: null });
+
     const { setLoading } = useLoading();
+
+    // Notification function
+    const showNotification = (message, type = 'add') => {
+        const notificationId = Date.now();
+
+        // If there's a notification currently showing, hide it first
+        if (notification.show) {
+            setNotification(prev => ({ ...prev, show: false }));
+            // Wait for hide animation, then show new one
+            setTimeout(() => {
+                setNotification({ show: true, message, type, id: notificationId });
+                setTimeout(() => {
+                    setNotification(prev => ({ ...prev, show: false }));
+                }, 2000); // 2 seconds as requested
+            }, 200); // Brief pause for hide animation
+        } else {
+            // No current notification, show immediately
+            setNotification({ show: true, message, type, id: notificationId });
+            setTimeout(() => {
+                setNotification(prev => ({ ...prev, show: false }));
+            }, 2000); // 2 seconds as requested
+        }
+    };
 
     useEffect(() => {
         setLoading(true);
@@ -41,9 +72,11 @@ export default function Home() {
             seriesService.getTrendingSeries("", 1, 10, ""),
             seriesService.getPopularSeries("", 1, 10),
             seriesService.getTopRatedSeries("", 1, 10, ""),
+            userService.getFavoriteMoviesIds(),
+            userService.getFavoriteSeriesIds(),
 
         ])
-            .then(([banner, latest, trending, popular, topRated, collections, bannerSeries, latestSeriesData, trendingSeriesData, popularSeriesData, topRatedSeriesData]) => {
+            .then(([banner, latest, trending, popular, topRated, collections, bannerSeries, latestSeriesData, trendingSeriesData, popularSeriesData, topRatedSeriesData, favoriteMovies, favoriteSeries]) => {
                 setBannerMovies(banner);
                 setLatestMovies(latest);
                 setTrendingMovies(trending);
@@ -55,6 +88,8 @@ export default function Home() {
                 setTrendingSeries(trendingSeriesData);
                 setPopularSeries(popularSeriesData);
                 setTopRatedSeries(topRatedSeriesData);
+                setFavoriteMovieIds(new Set(favoriteMovies.data));
+                setFavoriteSeriesIds(new Set(favoriteSeries.data));
             })
             .catch(err => {
                 console.error("Error fetching data:", err);
@@ -148,8 +183,81 @@ export default function Home() {
         };
     }, [bannerMovies.rest_movies, latestMovies.movies, trendingMovies.movies, popularMovies.movies, topRatedMovies.movies, popularCollections.collections, latestSeries.series, bannerSeries.series, trendingSeries.series, popularSeries.series, topRatedSeries.series]);
 
+    const toggleFavorite = async (mediaType, id, e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const isMovie = mediaType === 'movie';
+        const currentFavorites = isMovie ? favoriteMovieIds : favoriteSeriesIds;
+        const isFavorited = currentFavorites.has(id);
+
+        try {
+            if (isFavorited) {
+                // Remove from favorites - wait for API success
+                if (isMovie) {
+                    const response = await userService.removeMovieFromFavorites(id);
+                    setFavoriteMovieIds(prev => {
+                        const newSet = new Set(prev);
+                        newSet.delete(id);
+                        return newSet;
+                    });
+                    showNotification(response.message, 'remove');
+                } else {
+                    const response = await userService.removeSeriesFromFavorites(id);
+                    setFavoriteSeriesIds(prev => {
+                        const newSet = new Set(prev);
+                        newSet.delete(id);
+                        return newSet;
+                    });
+                    showNotification(response.message, 'remove');
+                }
+            } else {
+                // Add to favorites - wait for API success
+                if (isMovie) {
+                    const response = await userService.addMovieToFavorites(id);
+                    setFavoriteMovieIds(prev => new Set([...prev, id]));
+                    showNotification(response.message, 'add');
+                } else {
+                    const response = await userService.addSeriesToFavorites(id);
+                    setFavoriteSeriesIds(prev => new Set([...prev, id]));
+                    showNotification(response.message, 'add');
+                }
+            }
+        } catch (error) {
+            console.error('Error toggling favorite:', error);
+            // Don't update UI on error - heart stays in current state
+        }
+    };
+
     return (
         <>
+            {/* Notification */}
+            <div
+                 key={notification.id}
+                 style={{
+                     position: 'fixed',
+                     top: notification.show ? '20px' : '-100px',
+                     left: '50%',
+                     transform: 'translateX(-50%)',
+                     zIndex: 9999,
+                     backgroundColor: notification.type === 'add' ? '#28a745' : '#dc3545',
+                     color: 'white',
+                     padding: '16px 32px',
+                     borderRadius: '8px',
+                     boxShadow: '0 6px 20px rgba(0,0,0,0.4)',
+                     border: '2px solid rgba(255,255,255,0.2)',
+                     transition: 'all 0.4s ease-in-out',
+                     opacity: notification.show ? 1 : 0,
+                     fontWeight: '600',
+                     fontSize: '16px',
+                     whiteSpace: 'nowrap',
+                     minWidth: '300px',
+                     textAlign: 'center',
+                     pointerEvents: notification.show ? 'auto' : 'none'
+                 }}>
+                {notification.show ? notification.message : ''}
+            </div>
+
             <section className="banner banner-1 position-relative">
                 <div className="shape-01"><img className="img-fluid" src="images/banner/home-01/shape-01.png" alt="#" /></div>
                 <div className="shape-02"><img className="img-fluid" src="images/banner/home-01/shape-02.png" alt="#" /></div>
@@ -254,7 +362,7 @@ export default function Home() {
                                                         />
                                                         <div className="info-top">
                                                             <div className="ms-auto">
-                                                                <a href="javascript:void(0)" className="like" onClick={(e) => e.preventDefault()} />
+                                                                <a href="javascript:void(0)" className={`like ${favoriteMovieIds.has(movie.id) ? 'active' : ''}`} onClick={(e) => toggleFavorite('movie', movie.id, e)} style={{ color: favoriteMovieIds.has(movie.id) ? '#ffc107' : 'inherit' }} />
                                                                 <a className="views" href="#" onClick={(e) => e.preventDefault()}><i className="fa-solid fa-star" />{movie.vote_average}</a>
                                                             </div>
                                                         </div>
@@ -321,7 +429,7 @@ export default function Home() {
                                                     <a className="views" href="#">
                                                         <i className="far fa-eye" />
                                                     </a>
-                                                    <a href="javascript:void(0)" className="like" />
+                                                    <a href="javascript:void(0)" className={`like ${favoriteMovieIds.has(latest.id) ? 'active' : ''}`} onClick={(e) => toggleFavorite('movie', latest.id, e)} style={{ color: favoriteMovieIds.has(latest.id) ? '#ffc107' : 'inherit' }} />
                                                     <a className="rating" href="#">
                                                         <i className="fa-solid fa-star" /> {latest.vote_average}/10
                                                     </a>
@@ -384,7 +492,7 @@ export default function Home() {
                                                                 {trending.genre}
                                                             </Link>
                                                             <div className="ms-auto">
-                                                                <a href="javascript:void(0)" className="like" onClick={(e) => e.preventDefault()} />
+                                                                <a href="javascript:void(0)" className={`like ${favoriteMovieIds.has(trending.id) ? 'active' : ''}`} onClick={(e) => toggleFavorite('movie', trending.id, e)} style={{ color: favoriteMovieIds.has(trending.id) ? '#ffc107' : 'inherit' }} />
                                                                 <a className="views" href="#" onClick={(e) => e.preventDefault()}>
                                                                     <i className="fa-solid fa-star" /> {trending.vote_average}
                                                                 </a>
@@ -829,7 +937,7 @@ export default function Home() {
                                                                 {popular.genre}
                                                             </Link>
                                                             <div className="ms-auto">
-                                                                <a href="javascript:void(0)" className="like" onClick={(e) => e.preventDefault()} />
+                                                                <a href="javascript:void(0)" className={`like ${favoriteMovieIds.has(popular.id) ? 'active' : ''}`} onClick={(e) => toggleFavorite('movie', popular.id, e)} style={{ color: favoriteMovieIds.has(popular.id) ? '#ffc107' : 'inherit' }} />
                                                                 <a className="views" href="#" onClick={(e) => e.preventDefault()}>
                                                                     <i className="fa-solid fa-star" /> {popular.vote_average}
                                                                 </a>
@@ -951,7 +1059,7 @@ export default function Home() {
                                                                 {topRated.genre}
                                                             </Link>
                                                             <div className="ms-auto">
-                                                                <a href="javascript:void(0)" className="like" onClick={(e) => e.preventDefault()} />
+                                                                <a href="javascript:void(0)" className={`like ${favoriteMovieIds.has(topRated.id) ? 'active' : ''}`} onClick={(e) => toggleFavorite('movie', topRated.id, e)} style={{ color: favoriteMovieIds.has(topRated.id) ? '#ffc107' : 'inherit' }} />
                                                                 <a className="views" href="#" onClick={(e) => e.preventDefault()}>
                                                                     <i className="fa-solid fa-star" /> {topRated.score.toFixed(1)}
                                                                 </a>
@@ -1048,7 +1156,7 @@ export default function Home() {
                                                 alt={collection.name}
                                             />
                                             <div className="info-top">
-                                                <a href="javascript:void(0)" className="like" onClick={(e) => e.preventDefault()} />
+                                                <a href="javascript:void(0)" className={`like ${favoriteMovieIds.has(collection.id) ? 'active' : ''}`} onClick={(e) => toggleFavorite('movie', collection.id, e)} style={{ color: favoriteMovieIds.has(collection.id) ? '#ffc107' : 'inherit' }} />
                                                 <a className="views" href="#" onClick={(e) => e.preventDefault()}>
                                                     <i className="fa-solid fa-star" /> {collection.vote_average.toFixed(1)}
                                                 </a>
@@ -1216,7 +1324,7 @@ export default function Home() {
                                                         />
                                                         <div className="info-top">
                                                             <div className="ms-auto">
-                                                                <a href="javascript:void(0)" className="like" />
+                                                                <a href="javascript:void(0)" className={`like ${favoriteSeriesIds.has(series.id) ? 'active' : ''}`} onClick={(e) => toggleFavorite('series', series.id, e)} style={{ color: favoriteSeriesIds.has(series.id) ? '#ffc107' : 'inherit' }} />
                                                                 <a className="rating" href="#"><i className="fa-solid fa-star" /> {series.vote_average}/10</a>
                                                             </div>
                                                         </div>
@@ -1290,7 +1398,7 @@ export default function Home() {
                                                                 {trending.genre}
                                                             </Link>
                                                             <div className="ms-auto">
-                                                                <a href="javascript:void(0)" className="like" onClick={(e) => e.preventDefault()} />
+                                                                <a href="javascript:void(0)" className={`like ${favoriteSeriesIds.has(trending.id) ? 'active' : ''}`} onClick={(e) => toggleFavorite('series', trending.id, e)} style={{ color: favoriteSeriesIds.has(trending.id) ? '#ffc107' : 'inherit' }} />
                                                                 <a className="views" href="#" onClick={(e) => e.preventDefault()}>
                                                                     <i className="fa-solid fa-star" /> {trending.vote_average}
                                                                 </a>
@@ -1403,7 +1511,7 @@ export default function Home() {
                                                     <a className="views" href="#">
                                                         <i className="far fa-eye" />
                                                     </a>
-                                                    <a href="javascript:void(0)" className="like" />
+                                                    <a href="javascript:void(0)" className={`like ${favoriteSeriesIds.has(latest.id) ? 'active' : ''}`} onClick={(e) => toggleFavorite('series', latest.id, e)} style={{ color: favoriteSeriesIds.has(latest.id) ? '#ffc107' : 'inherit' }} />
                                                     <a className="rating" href="#">
                                                         <i className="fa-solid fa-star" /> {latest.vote_average}/10
                                                     </a>
@@ -1466,7 +1574,7 @@ export default function Home() {
                                                                 {popular.genre}
                                                             </Link>
                                                             <div className="ms-auto">
-                                                                <a href="javascript:void(0)" className="like" onClick={(e) => e.preventDefault()} />
+                                                                <a href="javascript:void(0)" className={`like ${favoriteSeriesIds.has(popular.id) ? 'active' : ''}`} onClick={(e) => toggleFavorite('series', popular.id, e)} style={{ color: favoriteSeriesIds.has(popular.id) ? '#ffc107' : 'inherit' }} />
                                                                 <a className="views" href="#" onClick={(e) => e.preventDefault()}>
                                                                     <i className="fa-solid fa-star" /> {popular.vote_average}
                                                                 </a>
@@ -1588,7 +1696,7 @@ export default function Home() {
                                                                 {topRated.genre}
                                                             </Link>
                                                             <div className="ms-auto">
-                                                                <a href="javascript:void(0)" className="like" onClick={(e) => e.preventDefault()} />
+                                                                <a href="javascript:void(0)" className={`like ${favoriteSeriesIds.has(topRated.id) ? 'active' : ''}`} onClick={(e) => toggleFavorite('series', topRated.id, e)} style={{ color: favoriteSeriesIds.has(topRated.id) ? '#ffc107' : 'inherit' }} />
                                                                 <a className="views" href="#" onClick={(e) => e.preventDefault()}>
                                                                     <i className="fa-solid fa-star" /> {topRated.score.toFixed(1)}
                                                                 </a>
