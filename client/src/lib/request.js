@@ -1,42 +1,56 @@
-const buildOptions = (data) => {
-    const options = {
-        credentials: 'include', // Required for Spring Security session cookies
-        headers: {
-            'Accept': 'application/json'
-        }
+let csrfToken = null;
+
+const buildOptions = (data, method) => {
+  const options = {
+    credentials: "include",
+    headers: {
+      Accept: "application/json",
+    },
+  };
+
+  if (data !== undefined) {
+    options.body = JSON.stringify(data);
+    options.headers = {
+      ...options.headers,
+      "Content-Type": "application/json",
     };
+  }
 
-    if (data) {
-        options.body = JSON.stringify(data);
-        options.headers = {
-            ...options.headers,
-            'Content-Type': 'application/json'
-        };
-    }
+  if (method !== "GET" && csrfToken) {
+    options.headers = {
+      ...options.headers,
+      "X-XSRF-TOKEN": csrfToken,
+    };
+  }
 
-    return options;
+  return options;
 };
 
 const request = async (method, url, data) => {
-    const response = await fetch(url, {
-        ...buildOptions(data),
-        method,
-    });
+  const response = await fetch(url, {
+    ...buildOptions(data, method),
+    method,
+  });
 
-    if (response.status === 204) {
-        return {};
-    }
+  const newToken = response.headers.get("X-XSRF-TOKEN");
+  if (newToken) {
+    csrfToken = newToken;
+  }
 
-    const result = await response.json();
+  if (response.status === 204) {
+    return {};
+  }
 
-    if (!response.ok) {
-        throw result;
-    }
+  const result = await response.json();
 
-    return result;
+  if (!response.ok) {
+    throw result;
+  }
+
+  return result;
 };
 
-export const get = request.bind(null, 'GET');
-export const post = request.bind(null, 'POST');
-export const put = request.bind(null, 'PUT');
-export const del = request.bind(null, 'DELETE');
+export const get = request.bind(null, "GET");
+export const post = request.bind(null, "POST");
+export const put = request.bind(null, "PUT");
+export const del = request.bind(null, "DELETE");
