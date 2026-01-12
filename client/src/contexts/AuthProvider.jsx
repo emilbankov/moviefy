@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect, useContext } from "react";
-import { login, register, logout, getCurrentUser, refreshAuthCache } from '../services/authService';
+import { login, register, logout, getCurrentUser } from '../services/authService';
 import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext();
@@ -112,41 +112,11 @@ export const AuthProvider = ({ children }) => {
         navigate("/");
     };
 
-    const refreshAuthHandler = async () => {
-        try {
-            console.log('Manually refreshing auth...');
-            const user = await refreshAuthCache();
-            if (user) {
-                setAuth({
-                    user,
-                    isLoading: false,
-                    isAuthenticated: true
-                });
-                console.log('Auth refreshed successfully');
-            } else {
-                setAuth({
-                    user: null,
-                    isLoading: false,
-                    isAuthenticated: false
-                });
-                console.log('Auth refresh failed - no valid session');
-            }
-        } catch (error) {
-            console.error('Auth refresh error:', error);
-            setAuth({
-                user: null,
-                isLoading: false,
-                isAuthenticated: false
-            });
-        }
-    };
-
     return (
         <AuthContext.Provider value={{
             loginSubmitHandler,
             registerSubmitHandler,
             logoutHandler,
-            refreshAuthHandler,
             user: auth.user,
             isAuthenticated: auth.isAuthenticated,
             isLoading: auth.isLoading,
