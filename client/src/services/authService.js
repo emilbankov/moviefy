@@ -89,6 +89,27 @@ export const refreshAuthCache = async () => {
     return null;
 };
 export const getCurrentUser = async () => {
+    // On mobile, first check cache to avoid unnecessary network requests
+    if (isMobile()) {
+        const cachedAuth = localStorage.getItem(MOBILE_AUTH_KEY);
+        const cachedUser = localStorage.getItem(MOBILE_USER_KEY);
+
+        if (cachedAuth && cachedUser) {
+            const authTime = parseInt(cachedAuth);
+            const now = Date.now();
+            const sevenDays = 7 * 24 * 60 * 60 * 1000;
+
+            if (now - authTime < sevenDays) {
+                // Use cached data first on mobile
+                return JSON.parse(cachedUser);
+            } else {
+                // Clear expired auth
+                localStorage.removeItem(MOBILE_AUTH_KEY);
+                localStorage.removeItem(MOBILE_USER_KEY);
+            }
+        }
+    }
+
     try {
         const response = await fetch(`${baseUrl}/auth/me`, {
             method: 'GET',
@@ -123,18 +144,18 @@ export const getCurrentUser = async () => {
     } catch (error) {
         console.warn('Auth check failed:', error);
 
-        // Mobile fallback: check if we have cached auth data
+        // Mobile fallback: if server request fails, try cache again
         if (isMobile()) {
             const cachedAuth = localStorage.getItem(MOBILE_AUTH_KEY);
             const cachedUser = localStorage.getItem(MOBILE_USER_KEY);
 
             if (cachedAuth && cachedUser) {
-                // Check if auth is still valid (within 7 days)
                 const authTime = parseInt(cachedAuth);
                 const now = Date.now();
                 const sevenDays = 7 * 24 * 60 * 60 * 1000;
 
                 if (now - authTime < sevenDays) {
+                    console.log('Using cached auth data as fallback');
                     return JSON.parse(cachedUser);
                 } else {
                     // Clear expired auth
@@ -159,28 +180,9 @@ export const resendVerification = async (token) => await post(`${baseUrl}/auth/r
 // export const updateUserProfile = async (userId, userData) => await put(`${baseUrl}/users/${userId}`, userData);
 // export const deleteUserProfile = async (userId) => await del(`${baseUrl}/users/${userId}`);
 export const getUserProfile = async () => {
-    try {
-        const response = await fetch(`${baseUrl}/users/me`, {
-            method: 'GET',
-            credentials: 'include', // Required for Spring Security session cookies
-            headers: {
-                'Accept': 'application/json',
-            },
-        });
-
-        if (response.status === 401) {
-            return null; // User not authenticated
-        }
-
-        if (!response.ok) {
-            throw new Error('Failed to fetch user profile');
-        }
-
-        return await response.json();
-    } catch (error) {
-        console.error('Failed to fetch user profile:', error);
-        throw error;
-    }
+    // Use the same endpoint as getCurrentUser for consistency
+    // This avoids mobile cookie issues with different endpoints
+    return await getCurrentUser();
 };
 // export const updateUserProfile = async (userId, userData) => await put(`${baseUrl}/users/${userId}`, userData);
 // export const deleteUserProfile = async (userId) => await del(`${baseUrl}/users/${userId}`);
