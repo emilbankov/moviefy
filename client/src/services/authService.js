@@ -179,10 +179,6 @@ export const resendVerification = async (token) => await post(`${baseUrl}/auth/r
 // export const deleteUser = async () => await del(`${baseUrl}/auth/user`);
 // export const updateUserProfile = async (userId, userData) => await put(`${baseUrl}/users/${userId}`, userData);
 // export const deleteUserProfile = async (userId) => await del(`${baseUrl}/users/${userId}`);
-export const getUserProfile = async () => {
-    // Use the same endpoint as getCurrentUser for consistency
-    // This avoids mobile cookie issues with different endpoints
-    return await getCurrentUser();
-};
+export const getUserProfile = async () => await get(`${baseUrl}/users/me`);
 // export const updateUserProfile = async (userId, userData) => await put(`${baseUrl}/users/${userId}`, userData);
 // export const deleteUserProfile = async (userId) => await del(`${baseUrl}/users/${userId}`);

@@ -60,73 +60,50 @@ export default function Home() {
 
     useEffect(() => {
         setLoading(true);
-        // Fetch data with proper error handling for favorites
-        const fetchData = async () => {
-            const [
-                banner,
-                latest,
-                trending,
-                popular,
-                topRated,
-                collections,
-                bannerSeries,
-                latestSeriesData,
-                trendingSeriesData,
-                popularSeriesData,
-                topRatedSeriesData
-            ] = await Promise.all([
-                moviesService.getBannerMovies(),
-                moviesService.getLatestMovies("movies", 1, 12, ""),
-                moviesService.getTrendingMovies("movies", 1, 10, ""),
-                moviesService.getPopularMovies("movies", 1, 10, ""),
-                moviesService.getTopRatedMovies("movies", 1, 10, ""),
-                moviesService.getPopularCollections(1, 10),
-                seriesService.getBannerSeries(),
-                seriesService.getLatestSeries("", 1, 12),
-                seriesService.getTrendingSeries("", 1, 10, ""),
-                seriesService.getPopularSeries("", 1, 10),
-                seriesService.getTopRatedSeries("", 1, 10, "")
-            ]);
-
-            // Try to fetch favorites, but handle auth errors gracefully
-            let favoriteMovies = { data: [] };
-            let favoriteSeries = { data: [] };
-
-            try {
-                favoriteMovies = await userService.getFavoriteMoviesIds();
-            } catch (error) {
-                console.log('User not authenticated for movies favorites, using empty list');
-            }
-
-            try {
-                favoriteSeries = await userService.getFavoriteSeriesIds();
-            } catch (error) {
-                console.log('User not authenticated for series favorites, using empty list');
-            }
-
+      
+        Promise.all([
+          moviesService.getBannerMovies(),
+          moviesService.getLatestMovies("movies", 1, 12, ""),
+          moviesService.getTrendingMovies("movies", 1, 10, ""),
+          moviesService.getPopularMovies("movies", 1, 10, ""),
+          moviesService.getTopRatedMovies("movies", 1, 10, ""),
+          moviesService.getPopularCollections(1, 10),
+          seriesService.getBannerSeries(),
+          seriesService.getLatestSeries("", 1, 12),
+          seriesService.getTrendingSeries("", 1, 10, ""),
+          seriesService.getPopularSeries("", 1, 10),
+          seriesService.getTopRatedSeries("", 1, 10, ""),
+        ])
+          .then(([
+            banner, latest, trending, popular, topRated, collections,
+            bannerSeries, latestSeriesData, trendingSeriesData, popularSeriesData, topRatedSeriesData
+          ]) => {
             setBannerMovies(banner);
             setLatestMovies(latest);
             setTrendingMovies(trending);
             setPopularMovies(popular);
             setTopRatedMovies(topRated);
             setPopularCollections(collections);
+      
             setBannerSeries(bannerSeries);
             setLatestSeries(latestSeriesData);
             setTrendingSeries(trendingSeriesData);
             setPopularSeries(popularSeriesData);
             setTopRatedSeries(topRatedSeriesData);
-            setFavoriteMovieIds(new Set(favoriteMovies.data || []));
-            setFavoriteSeriesIds(new Set(favoriteSeries.data || []));
-        };
-
-        fetchData()
-            .catch(err => {
-                console.error("Error fetching data:", err);
-            })
-            .finally(() => {
-                setLoading(false);
-            });
-    }, [setLoading]);
+      
+            // favorites - best effort
+            return Promise.all([
+              userService.getFavoriteMoviesIds(),
+              userService.getFavoriteSeriesIds(),
+            ]).catch(() => [ { data: [] }, { data: [] } ]);
+          })
+          .then(([favoriteMovies, favoriteSeries]) => {
+            setFavoriteMovieIds(new Set(favoriteMovies.data));
+            setFavoriteSeriesIds(new Set(favoriteSeries.data));
+          })
+          .catch(err => console.error("Error fetching data:", err))
+          .finally(() => setLoading(false));
+      }, [setLoading]);
 
     // useEffect(() => {
     //     const existingScript = document.querySelector('script[src="/js/custom.js"]');
