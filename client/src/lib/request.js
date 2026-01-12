@@ -1,4 +1,4 @@
-let csrfToken = localStorage.getItem('csrf_token') || null;
+let csrfToken = null;
 
 const buildOptions = (data, method) => {
   const options = {
@@ -35,19 +35,21 @@ const request = async (method, url, data) => {
   const newToken = response.headers.get("X-XSRF-TOKEN");
   if (newToken) {
     csrfToken = newToken;
-    localStorage.setItem('csrf_token', newToken);
   }
 
   if (response.status === 204) {
     return {};
   }
 
-  const result = await response.json();
-
+  // Handle redirects and other error statuses before parsing JSON
   if (!response.ok) {
-    throw result;
+    const error = new Error(`HTTP ${response.status}`);
+    error.status = response.status;
+    error.response = response;
+    throw error;
   }
 
+  const result = await response.json();
   return result;
 };
 

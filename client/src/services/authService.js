@@ -4,12 +4,7 @@ const baseUrl = 'https://p01--moviefy--kc4tkpjph9bk.code.run';
 
 // Mobile detection utility
 const isMobile = () => {
-    // Check user agent for mobile devices
-    const mobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    // Also check if it's a touch device (covers more cases)
-    const touchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-    // Don't rely on screen width alone as tablets might be > 768px
-    return mobileUA || (touchDevice && window.innerWidth <= 1024);
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 };
 
 // Store auth token for mobile fallback
@@ -34,9 +29,9 @@ export const login = async (userData) => {
 
     if (response.status === 204) {
         // Store login success for mobile fallback
-        const loginTime = Date.now().toString();
-        localStorage.setItem(MOBILE_AUTH_KEY, loginTime);
-        console.log('Login successful, cached auth time:', loginTime);
+        if (isMobile()) {
+            localStorage.setItem(MOBILE_AUTH_KEY, Date.now().toString());
+        }
         return {};
     }
 
@@ -47,9 +42,9 @@ export const login = async (userData) => {
     }
 
     // Store login success for mobile fallback
-    const loginTime = Date.now().toString();
-    localStorage.setItem(MOBILE_AUTH_KEY, loginTime);
-    console.log('Login successful with response, cached auth time:', loginTime);
+    if (isMobile()) {
+        localStorage.setItem(MOBILE_AUTH_KEY, Date.now().toString());
+    }
 
     return result;
 };
@@ -60,17 +55,16 @@ export const logout = async () => {
         console.warn('Server logout failed:', error);
     } finally {
         // Always clear mobile auth data
-        localStorage.removeItem(MOBILE_AUTH_KEY);
-        localStorage.removeItem(MOBILE_USER_KEY);
-        localStorage.removeItem('csrf_token');
-        console.log('Cleared all auth cache on logout');
+        if (isMobile()) {
+            localStorage.removeItem(MOBILE_AUTH_KEY);
+            localStorage.removeItem(MOBILE_USER_KEY);
+        }
     }
 };
 
 // Force refresh auth cache from server (useful for mobile debugging)
 export const refreshAuthCache = async () => {
     try {
-        console.log('Force refreshing auth cache...');
         const response = await fetch(`${baseUrl}/auth/me`, {
             method: 'GET',
             credentials: 'include',
@@ -82,9 +76,10 @@ export const refreshAuthCache = async () => {
         if (response.ok) {
             const userData = await response.json();
             if (userData) {
-                localStorage.setItem(MOBILE_USER_KEY, JSON.stringify(userData));
-                localStorage.setItem(MOBILE_AUTH_KEY, Date.now().toString());
-                console.log('Auth cache refreshed successfully');
+                if (isMobile()) {
+                    localStorage.setItem(MOBILE_USER_KEY, JSON.stringify(userData));
+                    localStorage.setItem(MOBILE_AUTH_KEY, Date.now().toString());
+                }
                 return userData;
             }
         }
@@ -94,34 +89,7 @@ export const refreshAuthCache = async () => {
     return null;
 };
 export const getCurrentUser = async () => {
-    console.log('getCurrentUser called, isMobile:', isMobile());
-
-    // For mobile devices, first check if we have valid cached auth data
-    // This prevents unnecessary network requests that might fail due to cookie issues
-    if (isMobile()) {
-        const cachedAuth = localStorage.getItem(MOBILE_AUTH_KEY);
-        const cachedUser = localStorage.getItem(MOBILE_USER_KEY);
-        console.log('Mobile cached auth:', cachedAuth, 'cached user:', !!cachedUser);
-
-        if (cachedAuth && cachedUser) {
-            const authTime = parseInt(cachedAuth);
-            const now = Date.now();
-            const sevenDays = 7 * 24 * 60 * 60 * 1000; // Extended to 7 days
-
-            if (now - authTime < sevenDays) {
-                console.log('Using cached auth data for mobile (first check)');
-                return JSON.parse(cachedUser);
-            } else {
-                console.log('Cached auth expired, clearing...');
-                // Clear expired auth
-                localStorage.removeItem(MOBILE_AUTH_KEY);
-                localStorage.removeItem(MOBILE_USER_KEY);
-            }
-        }
-    }
-
     try {
-        console.log('Making server auth check request...');
         const response = await fetch(`${baseUrl}/auth/me`, {
             method: 'GET',
             credentials: 'include',
@@ -130,10 +98,7 @@ export const getCurrentUser = async () => {
             },
         });
 
-        console.log('Server auth response status:', response.status);
-
         if (response.status === 401) {
-            console.log('Server returned 401 - user not authenticated');
             // Clear mobile auth data if server says unauthorized
             if (isMobile()) {
                 localStorage.removeItem(MOBILE_AUTH_KEY);
@@ -143,37 +108,33 @@ export const getCurrentUser = async () => {
         }
 
         if (!response.ok) {
-            console.log('Server returned non-ok status:', response.status);
             throw new Error('Failed to fetch user data');
         }
 
         const userData = await response.json();
-        console.log('Server returned user data:', !!userData);
 
-        // Cache user data for mobile fallback (always, not just when isMobile)
-        if (userData) {
+        // Cache user data for mobile fallback
+        if (isMobile() && userData) {
             localStorage.setItem(MOBILE_USER_KEY, JSON.stringify(userData));
-            if (isMobile()) {
-                localStorage.setItem(MOBILE_AUTH_KEY, Date.now().toString());
-            }
+            localStorage.setItem(MOBILE_AUTH_KEY, Date.now().toString());
         }
 
         return userData;
     } catch (error) {
-        console.warn('Server auth check failed:', error);
+        console.warn('Auth check failed:', error);
 
-        // Mobile fallback: check if we have cached auth data as backup
+        // Mobile fallback: check if we have cached auth data
         if (isMobile()) {
             const cachedAuth = localStorage.getItem(MOBILE_AUTH_KEY);
             const cachedUser = localStorage.getItem(MOBILE_USER_KEY);
 
             if (cachedAuth && cachedUser) {
+                // Check if auth is still valid (within 7 days)
                 const authTime = parseInt(cachedAuth);
                 const now = Date.now();
                 const sevenDays = 7 * 24 * 60 * 60 * 1000;
 
                 if (now - authTime < sevenDays) {
-                    console.log('Using cached auth data for mobile (fallback)');
                     return JSON.parse(cachedUser);
                 } else {
                     // Clear expired auth
