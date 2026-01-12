@@ -1,162 +1,91 @@
-import { get, post, put, del } from '../lib/request.js';
+import { get, post } from '../lib/request.js';
 
 const baseUrl = 'https://p01--moviefy--kc4tkpjph9bk.code.run';
 
-// Mobile detection utility
-const isMobile = () => {
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+/* =========================
+   AUTH
+========================= */
+
+export const register = async (userData) => {
+  return post(`${baseUrl}/auth/register`, userData);
 };
 
-// Store auth token for mobile fallback
-const MOBILE_AUTH_KEY = 'moviefy_mobile_auth';
-const MOBILE_USER_KEY = 'moviefy_mobile_user';
+export const login = async ({ email, password }) => {
+  const formData = new URLSearchParams({
+    email,
+    password,
+  });
 
-export const register = async (userData) => await post(`${baseUrl}/auth/register`, userData);
-export const login = async (userData) => {
-    const formData = new URLSearchParams();
-    formData.append('email', userData.email);
-    formData.append('password', userData.password);
+  const response = await fetch(`${baseUrl}/auth/login`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: formData,
+  });
 
-    const response = await fetch(`${baseUrl}/auth/login`, {
-        method: 'POST',
-        credentials: 'include', // Required for Spring Security session cookies
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Accept': 'application/json',
-        },
-        body: formData,
-    });
-
-    if (response.status === 204) {
-        // Store login success for mobile fallback
-        if (isMobile()) {
-            localStorage.setItem(MOBILE_AUTH_KEY, Date.now().toString());
-        }
-        return {};
-    }
-
-    const result = await response.json();
-
-    if (!response.ok) {
-        throw result;
-    }
-
-    // Store login success for mobile fallback
-    if (isMobile()) {
-        localStorage.setItem(MOBILE_AUTH_KEY, Date.now().toString());
-    }
-
-    return result;
-};
-export const logout = async () => {
-    try {
-        await post(`${baseUrl}/auth/logout`);
-    } catch (error) {
-        console.warn('Server logout failed:', error);
-    } finally {
-        // Always clear mobile auth data
-        if (isMobile()) {
-            localStorage.removeItem(MOBILE_AUTH_KEY);
-            localStorage.removeItem(MOBILE_USER_KEY);
-        }
-    }
-};
-
-// Force refresh auth cache from server (useful for mobile debugging)
-export const refreshAuthCache = async () => {
-    try {
-        const userData = await get(`${baseUrl}/auth/me`);
-        if (userData) {
-            if (isMobile()) {
-                localStorage.setItem(MOBILE_USER_KEY, JSON.stringify(userData));
-                localStorage.setItem(MOBILE_AUTH_KEY, Date.now().toString());
-            }
-            return userData;
-        }
-    } catch (error) {
-        console.warn('Failed to refresh auth cache:', error);
-    }
+  // Spring Security often returns 204 on success
+  if (response.status === 204) {
     return null;
+  }
+
+  if (!response.ok) {
+    const message = await response.text();
+    throw new Error(message || 'Login failed');
+  }
+
+  return response.json();
 };
+
+export const logout = async () => {
+  await post(`${baseUrl}/auth/logout`);
+};
+
+/* =========================
+   SESSION
+========================= */
+
 export const getCurrentUser = async () => {
-    // On mobile, first check cache to avoid unnecessary network requests
-    if (isMobile()) {
-        const cachedAuth = localStorage.getItem(MOBILE_AUTH_KEY);
-        const cachedUser = localStorage.getItem(MOBILE_USER_KEY);
-
-        if (cachedAuth && cachedUser) {
-            const authTime = parseInt(cachedAuth);
-            const now = Date.now();
-            const sevenDays = 7 * 24 * 60 * 60 * 1000;
-
-            if (now - authTime < sevenDays) {
-                // Use cached data first on mobile
-                return JSON.parse(cachedUser);
-            } else {
-                // Clear expired auth
-                localStorage.removeItem(MOBILE_AUTH_KEY);
-                localStorage.removeItem(MOBILE_USER_KEY);
-            }
-        }
-    }
-
-    try {
-        const userData = await get(`${baseUrl}/auth/me`);
-
-        // Cache user data for mobile fallback
-        if (isMobile() && userData) {
-            localStorage.setItem(MOBILE_USER_KEY, JSON.stringify(userData));
-            localStorage.setItem(MOBILE_AUTH_KEY, Date.now().toString());
-        }
-
-        return userData;
-    } catch (error) {
-        console.warn('Auth check failed:', error);
-
-        // Handle 401 errors (server throws error with status)
-        if (error.status === 401) {
-            if (isMobile()) {
-                localStorage.removeItem(MOBILE_AUTH_KEY);
-                localStorage.removeItem(MOBILE_USER_KEY);
-            }
-            return null;
-        }
-
-        // Mobile fallback: if server request fails, try cache again
-        if (isMobile()) {
-            const cachedAuth = localStorage.getItem(MOBILE_AUTH_KEY);
-            const cachedUser = localStorage.getItem(MOBILE_USER_KEY);
-
-            if (cachedAuth && cachedUser) {
-                const authTime = parseInt(cachedAuth);
-                const now = Date.now();
-                const sevenDays = 7 * 24 * 60 * 60 * 1000;
-
-                if (now - authTime < sevenDays) {
-                    console.log('Using cached auth data as fallback');
-                    return JSON.parse(cachedUser);
-                } else {
-                    // Clear expired auth
-                    localStorage.removeItem(MOBILE_AUTH_KEY);
-                    localStorage.removeItem(MOBILE_USER_KEY);
-                }
-            }
-        }
-
-        return null;
-    }
+  try {
+    return await get(`${baseUrl}/auth/me`);
+  } catch {
+    return null;
+  }
 };
-export const verifyEmail = async (token) => await post(`${baseUrl}/auth/verify-email`, { token });
-export const requestPasswordReset = async (email) => await post(`${baseUrl}/auth/password-reset/request`, { email });
-export const checkPasswordResetToken = async (token) => await post(`${baseUrl}/auth/password-reset/token-check`, { token });
-export const confirmPasswordReset = async (token, password) => await post(`${baseUrl}/auth/password-reset/confirm`, { token, password });
 
-export const resendVerification = async (token) => await post(`${baseUrl}/auth/resend-email`, { token });
-// export const getUser = async () => await get(`${baseUrl}/auth/user`);
-// export const updateUser = async (userData) => await put(`${baseUrl}/auth/user`, userData);
-// export const deleteUser = async () => await del(`${baseUrl}/auth/user`);
-// export const updateUserProfile = async (userId, userData) => await put(`${baseUrl}/users/${userId}`, userData);
-// export const deleteUserProfile = async (userId) => await del(`${baseUrl}/users/${userId}`);
-export const getUserProfile = async () => await get(`${baseUrl}/users/me`);
-// export const updateUserProfile = async (userId, userData) => await put(`${baseUrl}/users/${userId}`, userData);
-// export const deleteUserProfile = async (userId) => await del(`${baseUrl}/users/${userId}`);
+/* =========================
+   ACCOUNT
+========================= */
+
+export const verifyEmail = async (token) => {
+  return post(`${baseUrl}/auth/verify-email`, { token });
+};
+
+export const resendVerification = async (token) => {
+  return post(`${baseUrl}/auth/resend-email`, { token });
+};
+
+export const requestPasswordReset = async (email) => {
+  return post(`${baseUrl}/auth/password-reset/request`, { email });
+};
+
+export const checkPasswordResetToken = async (token) => {
+  return post(`${baseUrl}/auth/password-reset/token-check`, { token });
+};
+
+export const confirmPasswordReset = async (token, password) => {
+  return post(`${baseUrl}/auth/password-reset/confirm`, {
+    token,
+    password,
+  });
+};
+
+/* =========================
+   USER
+========================= */
+
+export const getUserProfile = async () => {
+  return get(`${baseUrl}/users/me`);
+};
