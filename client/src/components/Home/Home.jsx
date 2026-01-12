@@ -60,37 +60,66 @@ export default function Home() {
 
     useEffect(() => {
         setLoading(true);
-        Promise.all([
-            moviesService.getBannerMovies(),
-            moviesService.getLatestMovies("movies", 1, 12, ""),
-            moviesService.getTrendingMovies("movies", 1, 10, ""),
-            moviesService.getPopularMovies("movies", 1, 10, ""),
-            moviesService.getTopRatedMovies("movies", 1, 10, ""),
-            moviesService.getPopularCollections(1, 10),
-            seriesService.getBannerSeries(),
-            seriesService.getLatestSeries("", 1, 12),
-            seriesService.getTrendingSeries("", 1, 10, ""),
-            seriesService.getPopularSeries("", 1, 10),
-            seriesService.getTopRatedSeries("", 1, 10, ""),
-            userService.getFavoriteMoviesIds(),
-            userService.getFavoriteSeriesIds(),
+        // Fetch data with proper error handling for favorites
+        const fetchData = async () => {
+            const [
+                banner,
+                latest,
+                trending,
+                popular,
+                topRated,
+                collections,
+                bannerSeries,
+                latestSeriesData,
+                trendingSeriesData,
+                popularSeriesData,
+                topRatedSeriesData
+            ] = await Promise.all([
+                moviesService.getBannerMovies(),
+                moviesService.getLatestMovies("movies", 1, 12, ""),
+                moviesService.getTrendingMovies("movies", 1, 10, ""),
+                moviesService.getPopularMovies("movies", 1, 10, ""),
+                moviesService.getTopRatedMovies("movies", 1, 10, ""),
+                moviesService.getPopularCollections(1, 10),
+                seriesService.getBannerSeries(),
+                seriesService.getLatestSeries("", 1, 12),
+                seriesService.getTrendingSeries("", 1, 10, ""),
+                seriesService.getPopularSeries("", 1, 10),
+                seriesService.getTopRatedSeries("", 1, 10, "")
+            ]);
 
-        ])
-            .then(([banner, latest, trending, popular, topRated, collections, bannerSeries, latestSeriesData, trendingSeriesData, popularSeriesData, topRatedSeriesData, favoriteMovies, favoriteSeries]) => {
-                setBannerMovies(banner);
-                setLatestMovies(latest);
-                setTrendingMovies(trending);
-                setPopularMovies(popular);
-                setTopRatedMovies(topRated);
-                setPopularCollections(collections);
-                setBannerSeries(bannerSeries);
-                setLatestSeries(latestSeriesData);
-                setTrendingSeries(trendingSeriesData);
-                setPopularSeries(popularSeriesData);
-                setTopRatedSeries(topRatedSeriesData);
-                setFavoriteMovieIds(new Set(favoriteMovies.data));
-                setFavoriteSeriesIds(new Set(favoriteSeries.data));
-            })
+            // Try to fetch favorites, but handle auth errors gracefully
+            let favoriteMovies = { data: [] };
+            let favoriteSeries = { data: [] };
+
+            try {
+                favoriteMovies = await userService.getFavoriteMoviesIds();
+            } catch (error) {
+                console.log('User not authenticated for movies favorites, using empty list');
+            }
+
+            try {
+                favoriteSeries = await userService.getFavoriteSeriesIds();
+            } catch (error) {
+                console.log('User not authenticated for series favorites, using empty list');
+            }
+
+            setBannerMovies(banner);
+            setLatestMovies(latest);
+            setTrendingMovies(trending);
+            setPopularMovies(popular);
+            setTopRatedMovies(topRated);
+            setPopularCollections(collections);
+            setBannerSeries(bannerSeries);
+            setLatestSeries(latestSeriesData);
+            setTrendingSeries(trendingSeriesData);
+            setPopularSeries(popularSeriesData);
+            setTopRatedSeries(topRatedSeriesData);
+            setFavoriteMovieIds(new Set(favoriteMovies.data || []));
+            setFavoriteSeriesIds(new Set(favoriteSeries.data || []));
+        };
+
+        fetchData()
             .catch(err => {
                 console.error("Error fetching data:", err);
             })
@@ -225,6 +254,14 @@ export default function Home() {
             }
         } catch (error) {
             console.error('Error toggling favorite:', error);
+
+            // Handle authentication errors (including redirects to login)
+            if (error.status === 401 || error.status === 403 || error.status === 302) {
+                showNotification('You need to be logged in to add favorites', 'auth');
+            } else {
+                showNotification('Failed to update favorite', 'remove');
+            }
+
             // Don't update UI on error - heart stays in current state
         }
     };
@@ -236,13 +273,13 @@ export default function Home() {
                  key={notification.id}
                  style={{
                      position: 'fixed',
-                     top: notification.show ? '20px' : '-100px',
+                     top: notification.show ? '20px' : '-120px',
                      left: '50%',
                      transform: 'translateX(-50%)',
                      zIndex: 9999,
-                     backgroundColor: notification.type === 'add' ? '#28a745' : '#dc3545',
+                     backgroundColor: notification.type === 'add' ? '#28a745' : notification.type === 'auth' ? '#17a2b8' : '#dc3545',
                      color: 'white',
-                     padding: '16px 32px',
+                     padding: notification.type === 'auth' ? '20px 32px' : '16px 32px',
                      borderRadius: '8px',
                      boxShadow: '0 6px 20px rgba(0,0,0,0.4)',
                      border: '2px solid rgba(255,255,255,0.2)',
@@ -251,11 +288,39 @@ export default function Home() {
                      fontWeight: '600',
                      fontSize: '16px',
                      whiteSpace: 'nowrap',
-                     minWidth: '300px',
+                     minWidth: notification.type === 'auth' ? '400px' : '300px',
                      textAlign: 'center',
-                     pointerEvents: notification.show ? 'auto' : 'none'
+                     pointerEvents: notification.show ? 'auto' : 'none',
+                     display: 'flex',
+                     flexDirection: 'column',
+                     alignItems: 'center',
+                     gap: notification.type === 'auth' ? '12px' : '0'
                  }}>
-                {notification.show ? notification.message : ''}
+                {notification.show && (
+                    <>
+                        <div>{notification.message}</div>
+                        {notification.type === 'auth' && (
+                            <Link
+                                to="/login-register"
+                                style={{
+                                    backgroundColor: 'rgba(255,255,255,0.2)',
+                                    color: 'white',
+                                    padding: '8px 16px',
+                                    borderRadius: '4px',
+                                    textDecoration: 'none',
+                                    fontSize: '14px',
+                                    fontWeight: '500',
+                                    border: '1px solid rgba(255,255,255,0.3)',
+                                    transition: 'background-color 0.2s ease'
+                                }}
+                                onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.3)'}
+                                onMouseLeave={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.2)'}
+                            >
+                                Login to Add Favorites
+                            </Link>
+                        )}
+                    </>
+                )}
             </div>
 
             <section className="banner banner-1 position-relative">
