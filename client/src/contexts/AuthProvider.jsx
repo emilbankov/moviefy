@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect, useContext } from "react";
-import { login, register, logout, getCurrentUser } from '../services/authService';
+import { login, register, logout, getCurrentUser, refreshAuthCache } from '../services/authService';
 import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext();
@@ -19,7 +19,9 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         const checkAuthStatus = async () => {
             try {
+                console.log('AuthProvider: Checking auth status...');
                 const user = await getCurrentUser();
+                console.log('AuthProvider: Auth check result:', !!user);
                 if (user) {
                     setAuth({
                         user,
@@ -34,7 +36,7 @@ export const AuthProvider = ({ children }) => {
                     });
                 }
             } catch (error) {
-                console.error('Auth check failed:', error);
+                console.error('AuthProvider: Auth check failed:', error);
                 setAuth({
                     user: null,
                     isLoading: false,
@@ -51,10 +53,13 @@ export const AuthProvider = ({ children }) => {
         setAuth(prev => ({ ...prev, isLoading: true }));
 
         try {
+            console.log('AuthProvider: Attempting login...');
             await login(values);
+            console.log('AuthProvider: Login API call successful');
 
             // Login successful - get user data
             const user = await getCurrentUser();
+            console.log('AuthProvider: Got user data after login:', !!user);
 
             setAuth({
                 user,
@@ -64,6 +69,7 @@ export const AuthProvider = ({ children }) => {
 
             navigate("/");
         } catch (error) {
+            console.error('AuthProvider: Login failed:', error);
             setAuth(prev => ({ ...prev, isLoading: false }));
 
             if (error?.message?.includes('email') || error?.message?.includes('password')) {
@@ -112,11 +118,41 @@ export const AuthProvider = ({ children }) => {
         navigate("/");
     };
 
+    const refreshAuthHandler = async () => {
+        try {
+            console.log('Manually refreshing auth...');
+            const user = await refreshAuthCache();
+            if (user) {
+                setAuth({
+                    user,
+                    isLoading: false,
+                    isAuthenticated: true
+                });
+                console.log('Auth refreshed successfully');
+            } else {
+                setAuth({
+                    user: null,
+                    isLoading: false,
+                    isAuthenticated: false
+                });
+                console.log('Auth refresh failed - no valid session');
+            }
+        } catch (error) {
+            console.error('Auth refresh error:', error);
+            setAuth({
+                user: null,
+                isLoading: false,
+                isAuthenticated: false
+            });
+        }
+    };
+
     return (
         <AuthContext.Provider value={{
             loginSubmitHandler,
             registerSubmitHandler,
             logoutHandler,
+            refreshAuthHandler,
             user: auth.user,
             isAuthenticated: auth.isAuthenticated,
             isLoading: auth.isLoading,

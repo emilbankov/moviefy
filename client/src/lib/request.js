@@ -1,4 +1,4 @@
-let csrfToken = null;
+let csrfToken = localStorage.getItem('csrf_token') || null;
 
 const buildOptions = (data, method) => {
   const options = {
@@ -35,6 +35,7 @@ const request = async (method, url, data) => {
   const newToken = response.headers.get("X-XSRF-TOKEN");
   if (newToken) {
     csrfToken = newToken;
+    localStorage.setItem('csrf_token', newToken);
   }
 
   if (response.status === 204) {
