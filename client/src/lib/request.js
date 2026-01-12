@@ -10,17 +10,11 @@ const buildOptions = (data, method) => {
 
   if (data !== undefined) {
     options.body = JSON.stringify(data);
-    options.headers = {
-      ...options.headers,
-      "Content-Type": "application/json",
-    };
+    options.headers["Content-Type"] = "application/json";
   }
 
   if (method !== "GET" && csrfToken) {
-    options.headers = {
-      ...options.headers,
-      "X-XSRF-TOKEN": csrfToken,
-    };
+    options.headers["X-XSRF-TOKEN"] = csrfToken;
   }
 
   return options;
@@ -33,24 +27,16 @@ const request = async (method, url, data) => {
   });
 
   const newToken = response.headers.get("X-XSRF-TOKEN");
-  if (newToken) {
-    csrfToken = newToken;
-  }
+  if (newToken) csrfToken = newToken;
 
-  if (response.status === 204) {
-    return {};
-  }
+  if (response.status === 204) return null;
 
-  // Handle redirects and other error statuses before parsing JSON
   if (!response.ok) {
-    const error = new Error(`HTTP ${response.status}`);
-    error.status = response.status;
-    error.response = response;
-    throw error;
+    const error = await response.text();
+    throw new Error(error || response.status);
   }
 
-  const result = await response.json();
-  return result;
+  return response.json();
 };
 
 export const get = request.bind(null, "GET");
