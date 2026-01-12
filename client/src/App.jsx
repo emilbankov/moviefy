@@ -34,7 +34,7 @@ function AppContent() {
     const { loading } = useLoading();
 
     useEffect(() => {
-        get(`https://p01--moviefy--kc4tkpjph9bk.code.run/ping`).catch(() => { });
+        get(`https://api.moviefy.live/ping`).catch(() => { });
     }, []);
 
     return (

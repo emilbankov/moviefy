@@ -1,6 +1,6 @@
 import { get, post } from '../lib/request.js';
 
-const baseUrl = 'https://p01--moviefy--kc4tkpjph9bk.code.run';
+const baseUrl = 'https://api.moviefy.live';
 
 /* =========================
    AUTH
