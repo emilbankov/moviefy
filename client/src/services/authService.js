@@ -65,23 +65,13 @@ export const logout = async () => {
 // Force refresh auth cache from server (useful for mobile debugging)
 export const refreshAuthCache = async () => {
     try {
-        const response = await fetch(`${baseUrl}/auth/me`, {
-            method: 'GET',
-            credentials: 'include',
-            headers: {
-                'Accept': 'application/json',
-            },
-        });
-
-        if (response.ok) {
-            const userData = await response.json();
-            if (userData) {
-                if (isMobile()) {
-                    localStorage.setItem(MOBILE_USER_KEY, JSON.stringify(userData));
-                    localStorage.setItem(MOBILE_AUTH_KEY, Date.now().toString());
-                }
-                return userData;
+        const userData = await get(`${baseUrl}/auth/me`);
+        if (userData) {
+            if (isMobile()) {
+                localStorage.setItem(MOBILE_USER_KEY, JSON.stringify(userData));
+                localStorage.setItem(MOBILE_AUTH_KEY, Date.now().toString());
             }
+            return userData;
         }
     } catch (error) {
         console.warn('Failed to refresh auth cache:', error);
@@ -111,28 +101,7 @@ export const getCurrentUser = async () => {
     }
 
     try {
-        const response = await fetch(`${baseUrl}/auth/me`, {
-            method: 'GET',
-            credentials: 'include',
-            headers: {
-                'Accept': 'application/json',
-            },
-        });
-
-        if (response.status === 401) {
-            // Clear mobile auth data if server says unauthorized
-            if (isMobile()) {
-                localStorage.removeItem(MOBILE_AUTH_KEY);
-                localStorage.removeItem(MOBILE_USER_KEY);
-            }
-            return null; // User not authenticated
-        }
-
-        if (!response.ok) {
-            throw new Error('Failed to fetch user data');
-        }
-
-        const userData = await response.json();
+        const userData = await get(`${baseUrl}/auth/me`);
 
         // Cache user data for mobile fallback
         if (isMobile() && userData) {
@@ -143,6 +112,15 @@ export const getCurrentUser = async () => {
         return userData;
     } catch (error) {
         console.warn('Auth check failed:', error);
+
+        // Handle 401 errors (server throws error with status)
+        if (error.status === 401) {
+            if (isMobile()) {
+                localStorage.removeItem(MOBILE_AUTH_KEY);
+                localStorage.removeItem(MOBILE_USER_KEY);
+            }
+            return null;
+        }
 
         // Mobile fallback: if server request fails, try cache again
         if (isMobile()) {
