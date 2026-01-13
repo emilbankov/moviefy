@@ -327,7 +327,7 @@ export default function Home() {
                                                 <img className="img-fluid" src="/images/tmdb-logo.svg" alt="#" />{bannerMovies.first_movie.vote_average}
                                             </a>
                                         </span>
-                                        <a href="javascript:void(0)" className={`like ${favoriteMovieIds.has(bannerMovies.first_movie.id) ? 'active' : ''}`} onClick={(e) => toggleFavorite('movie', bannerMovies.first_movie.id, e)} />
+                                        <span className={`like ${favoriteMovieIds.has(bannerMovies.first_movie.id) ? 'active' : ''}`} data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Like" onClick={(e) => toggleFavorite('movie', bannerMovies.first_movie.id, e)} style={{ cursor: 'pointer' }} />
                                     </div>
                                     <p>{bannerMovies.first_movie.overview.length > 140 ? `${bannerMovies.first_movie.overview.substring(0, 140)}...` : bannerMovies.first_movie.overview}</p>
                                     <div className="author-info">
