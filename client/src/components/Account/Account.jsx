@@ -365,9 +365,11 @@ export default function Account() {
                                                                                                         >
                                                                                                             <i className="fa-solid fa-play" />
                                                                                                         </a>
-                                                                                                        <h6 style={{ fontSize: '18px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                                                                                            {movie.title}
-                                                                                                        </h6>
+                                                                                                        <h5>
+                                                                                                            <span className="title mt-0">
+                                                                                                                {movie.title}
+                                                                                                            </span>
+                                                                                                        </h5>
                                                                                                     </div>
                                                                                                 </div>
                                                                                             </div>
@@ -438,9 +440,11 @@ export default function Account() {
                                                                                                         >
                                                                                                             <i className="fa-solid fa-play" />
                                                                                                         </a>
-                                                                                                        <h6 style={{ fontSize: '18px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                                                                                            {series.title || series.name}
-                                                                                                        </h6>
+                                                                                                        <h5>
+                                                                                                            <span className="title mt-0">
+                                                                                                                {series.title}
+                                                                                                            </span>
+                                                                                                        </h5>
                                                                                                     </div>
                                                                                                 </div>
                                                                                             </div>
