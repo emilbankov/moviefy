@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import * as moviesService from '../../services/moviesService';
 import { useLoading } from '../../contexts/LoadingContext';
 import { Link } from 'react-router-dom';
+import MetaTags from '../Meta Tags/MetaTags';
 
 // Helper function to convert genre display name to database name
 const getGenreParam = (genreName) => {

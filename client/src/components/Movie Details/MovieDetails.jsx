@@ -4,6 +4,7 @@ import * as moviesService from '../../services/moviesService'
 import * as reviewsService from '../../services/reviewsService'
 import * as userService from '../../services/userService'
 import { useLoading } from '../../contexts/LoadingContext';
+import MetaTags from '../Meta Tags/MetaTags';
 
 // Helper function to convert genre display name to database name
 const getGenreParam = (genreName) => {
@@ -289,6 +290,11 @@ export default function MovieDetails() {
 
     return (
         <>
+            <MetaTags
+                title={movie.movies ? `${movie.movies.title} | Moviefy` : 'Moviefy | Филм'}
+                description={movie.movies ? `${movie.movies.overview || ''} Разгледайте ${movie.movies.title} на Moviefy - вашият източник за филми онлайн.` : 'Разгледайте филми на Moviefy'}
+                keywords={movie.movies ? `${movie.movies.title}, филми, ${movie.movies.genres?.map(g => g.name).join(', ') || ''}, ${movie.movies.year || ''}, ревюта, рейтинг, гледане онлайн` : 'филми, кино, онлайн'}
+            />
             {/* Notification */}
             <div
                  key={notification.id}

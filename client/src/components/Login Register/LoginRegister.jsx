@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { register, requestPasswordReset } from '../../services/authService';
 import AuthContext from '../../contexts/AuthProvider';
+import MetaTags from '../Meta Tags/MetaTags';
 
 export default function LoginRegister() {
     const { loginSubmitHandler, registerSubmitHandler, isLoading: authLoading, authError } = useContext(AuthContext);
