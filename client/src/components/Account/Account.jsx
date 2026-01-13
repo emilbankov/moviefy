@@ -366,7 +366,7 @@ export default function Account() {
                                                                                                             <i className="fa-solid fa-play" />
                                                                                                         </a>
                                                                                                         <h5>
-                                                                                                            <span className="title mt-0" style={{ fontSize: '16px' }}>
+                                                                                                            <span className="title mt-0" style={{ fontSize: '16px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', wordBreak: 'break-all' }}>
                                                                                                                 {movie.title}
                                                                                                             </span>
                                                                                                         </h5>
@@ -441,7 +441,7 @@ export default function Account() {
                                                                                                             <i className="fa-solid fa-play" />
                                                                                                         </a>
                                                                                                         <h5>
-                                                                                                            <span className="title mt-0" style={{ fontSize: '16px' }}>
+                                                                                                            <span className="title mt-0" style={{ fontSize: '16px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', wordBreak: 'break-all' }}>
                                                                                                                 {series.title}
                                                                                                             </span>
                                                                                                         </h5>
