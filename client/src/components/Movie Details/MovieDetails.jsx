@@ -135,7 +135,7 @@ export default function MovieDetails() {
         }
     }, [currentPage, showAllReviews]);
 
-console.log(movie);
+    console.log(movie);
 
     useEffect(() => {
         // Wait for all images to load before initializing carousel
@@ -339,21 +339,9 @@ console.log(movie);
                                                     ))}
                                                 </div>
                                                 <div className="d-sm-flex">
-                                                    <span className="year">{new Date(movie.movies.release_date).getFullYear()}</span>
+                                                    <span className="year">{new Date(movie.movies.release_date).toLocaleDateString('en-GB')}</span>
                                                     <a className="time" href="#"><i className="far fa-clock me-2" />{Math.floor(movie.movies.runtime / 60)}hr : {movie.movies.runtime % 60}mins</a>
                                                     <span className="quality">Quality: <a href="#">720p, 1080p</a></span>
-                                                </div>
-                                                <div className="d-sm-flex my-2">
-                                                    <a href="javascript:void(0)" className="add-icon me-3"> Add to List</a>
-                                                    <div className="share-box">
-                                                        <a href="#"><i className="fas fa-share-alt" /> Share</a>
-                                                        <ul className="list-unstyled share-box-social">
-                                                            <li><a href="#"><i className="fab fa-facebook-f" /></a></li>
-                                                            <li><a href="#"><i className="fab fa-twitter" /></a></li>
-                                                            <li><a href="#"><i className="fab fa-linkedin" /></a></li>
-                                                            <li><a href="#"><i className="fab fa-instagram" /></a></li>
-                                                        </ul>
-                                                    </div>
                                                 </div>
                                                 <p className="mb-4">{movie.movies.overview}</p>
                                                 <a className="btn btn-primary popup-youtube" href={`https://www.youtube.com/watch?v=${movie.movies.trailer}`}><i className="fa-solid fa-play" /> Watch Trailer</a>
@@ -517,22 +505,25 @@ console.log(movie);
                                                                 className="movie-author"
                                                                 style={{ textDecoration: 'none', color: 'inherit' }}
                                                             >
-                                                                <div className="author-img">
+                                                                <div className="author-img" style={{
+                                                                    display: "flex",
+                                                                    alignItems: "center",
+                                                                    justifyContent: "center",
+                                                                    width: company.logo_path ? "auto" : "120px",
+                                                                    height: "50px",
+                                                                    borderRadius: "0"
+                                                                }}>
                                                                     <img
-                                                                        className="img-fluid"
-                                                                        src={company.logo_path
-                                                                            ? `https://image.tmdb.org/t/p/w300${company.logo_path}`
-                                                                            : '/images/no-image.jpg'}
+                                                                        src={company.logo_path ? `https://image.tmdb.org/t/p/w300${company.logo_path}` : '/images/no-image-episodes.png'}
                                                                         alt={company.name}
-                                                                        onError={(e) => { e.target.src = '/images/no-image.jpg'; }}
+                                                                        className="img-fluid"
                                                                         style={{
-                                                                            width: '100%',
-                                                                            height: '120px',
+                                                                            width: company.logo_path ? "auto" : "120px",
+                                                                            height: "50px",
                                                                             objectFit: 'contain',
-                                                                            backgroundColor: '#f8f9fa',
-                                                                            borderRadius: '8px',
-                                                                            padding: '10px'
+                                                                            borderRadius: "0"
                                                                         }}
+                                                                        onError={(e) => { e.target.src = '/images/no-image.jpg'; }}
                                                                     />
                                                                 </div>
                                                                 <div className="author-details">

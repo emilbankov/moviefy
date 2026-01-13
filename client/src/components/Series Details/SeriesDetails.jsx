@@ -262,80 +262,80 @@ export default function SeriesDetails() {
                             <div className="col-12 ">
                                 <div className="movie-details-bg bg-overlay-dark-5" style={{ backgroundImage: showMoviePlayer ? 'none' : `url(https://image.tmdb.org/t/p/original${series.series.backdrop_path || ''})`, padding: showMoviePlayer ? 0 : undefined }}>
                                     {showMoviePlayer ? (
-                                <div style={{
-                                    width: '100%',
-                                    position: 'relative',
-                                    background: 'transparent',
-                                    margin: 0,
-                                    padding: 0
-                                }}>
-                                    <button
-                                        className="btn btn-sm btn-light"
-                                        style={{ position: 'absolute', top: 20, right: 20, zIndex: 10 }}
-                                        onClick={() => {
-                                            setShowMoviePlayer(false);
-                                            setPlayingEpisode({ season: null, episode: null });
-                                        }}
-                                    >
-                                        Back to Details
-                                    </button>
-                                    <iframe
-                                        src={players[selectedPlayer]?.url}
-                                        frameBorder="0"
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                        allowFullScreen
-                                        title="Series Player"
-                                        style={{
+                                        <div style={{
                                             width: '100%',
-                                            height: '70vh',
+                                            position: 'relative',
                                             background: 'transparent',
                                             margin: 0,
-                                            padding: 0,
-                                            display: 'block'
-                                        }}
-                                    />
-                                    <div className="d-flex justify-content-center mt-3 mb-3">
-                                        <div className="player-selector" style={{
-                                            display: 'flex',
-                                            border: '1px solid #444',
-                                            borderRadius: '6px',
-                                            overflow: 'hidden',
-                                            backgroundColor: '#1a1a1a'
+                                            padding: 0
                                         }}>
-                                            {Object.entries(players).map(([playerId, player]) => (
-                                                <button
-                                                    key={playerId}
-                                                    type="button"
-                                                    style={{
-                                                        backgroundColor: selectedPlayer === playerId ? '#f6be00' : 'transparent',
-                                                        color: selectedPlayer === playerId ? '#000' : '#fff',
-                                                        border: 'none',
-                                                        padding: '10px 20px',
-                                                        cursor: 'pointer',
-                                                        fontSize: '16px',
-                                                        fontWeight: '500',
-                                                        transition: 'none',
-                                                        borderRadius: '0'
-                                                    }}
-                                                    onClick={() => handlePlayerChange(playerId)}
-                                                    onMouseEnter={(e) => {
-                                                        if (selectedPlayer !== playerId) {
-                                                            e.target.style.backgroundColor = '#333';
-                                                        }
-                                                    }}
-                                                    onMouseLeave={(e) => {
-                                                        if (selectedPlayer !== playerId) {
-                                                            e.target.style.backgroundColor = 'transparent';
-                                                        }
-                                                    }}
-                                                >
-                                                    {player.name}
-                                                </button>
-                                            ))}
+                                            <button
+                                                className="btn btn-sm btn-light"
+                                                style={{ position: 'absolute', top: 20, right: 20, zIndex: 10 }}
+                                                onClick={() => {
+                                                    setShowMoviePlayer(false);
+                                                    setPlayingEpisode({ season: null, episode: null });
+                                                }}
+                                            >
+                                                Back to Details
+                                            </button>
+                                            <iframe
+                                                src={players[selectedPlayer]?.url}
+                                                frameBorder="0"
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                allowFullScreen
+                                                title="Series Player"
+                                                style={{
+                                                    width: '100%',
+                                                    height: '70vh',
+                                                    background: 'transparent',
+                                                    margin: 0,
+                                                    padding: 0,
+                                                    display: 'block'
+                                                }}
+                                            />
+                                            <div className="d-flex justify-content-center mt-3 mb-3">
+                                                <div className="player-selector" style={{
+                                                    display: 'flex',
+                                                    border: '1px solid #444',
+                                                    borderRadius: '6px',
+                                                    overflow: 'hidden',
+                                                    backgroundColor: '#1a1a1a'
+                                                }}>
+                                                    {Object.entries(players).map(([playerId, player]) => (
+                                                        <button
+                                                            key={playerId}
+                                                            type="button"
+                                                            style={{
+                                                                backgroundColor: selectedPlayer === playerId ? '#f6be00' : 'transparent',
+                                                                color: selectedPlayer === playerId ? '#000' : '#fff',
+                                                                border: 'none',
+                                                                padding: '10px 20px',
+                                                                cursor: 'pointer',
+                                                                fontSize: '16px',
+                                                                fontWeight: '500',
+                                                                transition: 'none',
+                                                                borderRadius: '0'
+                                                            }}
+                                                            onClick={() => handlePlayerChange(playerId)}
+                                                            onMouseEnter={(e) => {
+                                                                if (selectedPlayer !== playerId) {
+                                                                    e.target.style.backgroundColor = '#333';
+                                                                }
+                                                            }}
+                                                            onMouseLeave={(e) => {
+                                                                if (selectedPlayer !== playerId) {
+                                                                    e.target.style.backgroundColor = 'transparent';
+                                                                }
+                                                            }}
+                                                        >
+                                                            {player.name}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                            ) : (
+                                    ) : (
                                         <div className="row position-relative">
                                             <div className="col-xxl-6 col-xl-7 col-lg-6 col-md-8 col-sm-12 order-md-1 order-2">
                                                 <div className="movie-details">
@@ -388,7 +388,7 @@ export default function SeriesDetails() {
                                                             ))}
                                                         </div>
                                                         <div className="d-sm-flex">
-                                                            <span className="year">{new Date(series.series.first_air_date).getFullYear()}</span>
+                                                            <span className="year">{new Date(series.series.first_air_date).toLocaleDateString('en-GB')}</span>
                                                             <a className="time" href="#">
                                                                 SS {series.series.seasons[series.series.seasons.length - 1].season_number}
                                                                 <span className="dot"></span>
@@ -397,44 +397,6 @@ export default function SeriesDetails() {
                                                             <span className="quality">
                                                                 Quality: <a href="#">720P, 1080P</a>
                                                             </span>
-                                                        </div>
-                                                        <div className="d-sm-flex my-2">
-                                                            <a href="javascript:void(0)" className="add-icon me-3">
-                                                                {" "}
-                                                                Add to List
-                                                            </a>
-                                                            <div className="share-box">
-                                                                <a href="#">
-                                                                    {" "}
-                                                                    <i className="fas fa-share-alt" /> Share
-                                                                </a>
-                                                                <ul className="list-unstyled share-box-social">
-                                                                    <li>
-                                                                        {" "}
-                                                                        <a href="#">
-                                                                            <i className="fab fa-facebook-f" />
-                                                                        </a>{" "}
-                                                                    </li>
-                                                                    <li>
-                                                                        {" "}
-                                                                        <a href="#">
-                                                                            <i className="fab fa-twitter" />
-                                                                        </a>{" "}
-                                                                    </li>
-                                                                    <li>
-                                                                        {" "}
-                                                                        <a href="#">
-                                                                            <i className="fab fa-linkedin" />
-                                                                        </a>{" "}
-                                                                    </li>
-                                                                    <li>
-                                                                        {" "}
-                                                                        <a href="#">
-                                                                            <i className="fab fa-instagram" />
-                                                                        </a>{" "}
-                                                                    </li>
-                                                                </ul>
-                                                            </div>
                                                         </div>
                                                         <p className="mb-4">
                                                             {series.series.overview}
@@ -730,22 +692,25 @@ export default function SeriesDetails() {
                                                                 className="movie-author"
                                                                 style={{ textDecoration: 'none', color: 'inherit' }}
                                                             >
-                                                                <div className="author-img">
+                                                                <div className="author-img" style={{
+                                                                    display: "flex",
+                                                                    alignItems: "center",
+                                                                    justifyContent: "center",
+                                                                    width: company.logo_path ? "auto" : "120px",
+                                                                    height: "50px",
+                                                                    borderRadius: "0"
+                                                                }}>
                                                                     <img
-                                                                        className="img-fluid"
-                                                                        src={company.logo_path
-                                                                            ? `https://image.tmdb.org/t/p/w300${company.logo_path}`
-                                                                            : '/images/no-image.jpg'}
+                                                                        src={company.logo_path ? `https://image.tmdb.org/t/p/w300${company.logo_path}` : '/images/no-image-episodes.png'}
                                                                         alt={company.name}
-                                                                        onError={(e) => { e.target.src = '/images/no-image.jpg'; }}
+                                                                        className="img-fluid"
                                                                         style={{
-                                                                            width: '100%',
-                                                                            height: '120px',
+                                                                            width: company.logo_path ? "auto" : "120px",
+                                                                            height: "50px",
                                                                             objectFit: 'contain',
-                                                                            backgroundColor: '#f8f9fa',
-                                                                            borderRadius: '8px',
-                                                                            padding: '10px'
+                                                                            borderRadius: "0"
                                                                         }}
+                                                                        onError={(e) => { e.target.src = '/images/no-image.jpg'; }}
                                                                     />
                                                                 </div>
                                                                 <div className="author-details">
