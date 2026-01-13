@@ -338,7 +338,7 @@ export default function Account() {
                                                                                         />
                                                                                         <div className="info-top">
                                                                                             {movie.genre && (
-                                                                                                <a className="tag" href="#">{movie.genre}</a>
+                                                                                                <a className="tag" href="#">{movie.genre.length > 11 ? movie.genre.substring(0, 11) + '...' : movie.genre}</a>
                                                                                             )}
                                                                                             <div className="ms-auto">
                                                                                                 <a className="views" href="#" onClick={e => e.preventDefault()}>
@@ -411,7 +411,7 @@ export default function Account() {
                                                                                         />
                                                                                         <div className="info-top">
                                                                                             {series.genre && (
-                                                                                                <a className="tag" href="#">{series.genre}</a>
+                                                                                                <a className="tag" href="#">{series.genre.length > 11 ? series.genre.substring(0, 11) + '...' : series.genre}</a>
                                                                                             )}
                                                                                             <div className="ms-auto">
                                                                                                 <a className="views" href="#" onClick={e => e.preventDefault()}>
@@ -421,10 +421,8 @@ export default function Account() {
                                                                                         </div>
                                                                                         <div className="movies-info">
                                                                                             <div className="content">
-                                                                                                <span className="time" style={{ fontSize: '13px' }}>
-                                                                                                    <span className="year">{series.year}</span>{" "}
-                                                                                                    <i className="far fa-clock me-2" style={{ marginLeft: "8px" }} />
-                                                                                                    SS {series.seasons} <span className="dot"></span> EPS {series.episodes}
+                                                                                                <span className="time" style={{ fontSize: '14px' }}>
+                                                                                                    <span>SS {series.seasons} <span className="dot"></span> EPS {series.episodes}</span>
                                                                                                 </span>
                                                                                                 <div className="info-content">
                                                                                                     <div className="movies-title">
