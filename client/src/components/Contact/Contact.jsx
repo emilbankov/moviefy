@@ -1,6 +1,13 @@
+import MetaTags from '../Meta Tags/MetaTags';
+
 export default function Contact() {
     return (
         <>
+            <MetaTags
+                title="Moviefy | Свържете се с нас"
+                description="Свържете се с екипа на Moviefy. Имате въпроси, предложения или нужда от помощ? Свържете се с нас и ще се радваме да ви помогнем."
+                keywords="контакт, свържете се, Moviefy, поддръжка, въпроси, помощ, съобщение, обратна връзка"
+            />
             <section className="inner-banner bg-holder bg-overlay-secondary-3" style={{ backgroundImage: "url(images/bg/inner-banner-bg.jpg)" }}>
                 <div className="container position-relative">
                     <div className="row">

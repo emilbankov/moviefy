@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { verifyEmail, resendVerification } from '../../services/authService';
+import MetaTags from '../Meta Tags/MetaTags';
 
 export default function EmailVerification() {
     const [searchParams] = useSearchParams();
@@ -86,6 +87,11 @@ export default function EmailVerification() {
 
     return (
         <>
+            <MetaTags
+                title="Moviefy | Потвърждение на имейл"
+                description="Потвърдете вашия имейл адрес в Moviefy, за да активирате вашия акаунт и да получите пълен достъп до всички функции."
+                keywords="потвърждение на имейл, верификация, активация на акаунт, Moviefy, имейл потвърждение"
+            />
             <section className="inner-banner bg-holder bg-overlay-secondary-3" style={{ backgroundImage: "url(images/bg/inner-banner-bg.jpg)" }}>
                 <div className="container position-relative">
                     <div className="row">

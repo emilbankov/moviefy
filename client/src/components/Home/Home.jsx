@@ -4,6 +4,7 @@ import * as moviesService from '../../services/moviesService'
 import * as seriesService from '../../services/seriesService'
 import * as userService from '../../services/userService'
 import { useLoading } from '../../contexts/LoadingContext';
+import MetaTags from '../Meta Tags/MetaTags';
 
 // Helper function to convert genre display name to database name
 const getGenreParam = (genreName) => {
@@ -245,6 +246,11 @@ export default function Home() {
 
     return (
         <>
+            <MetaTags
+                title="Moviefy | Начало"
+                description="Открийте най-новите филми и сериали в Moviefy. Разгледайте тенденциите, популярните и топ рейтинговите заглавия. Вашият източник за развлечения онлайн."
+                keywords="филми, кино, сериали, телевизия, стрийминг, развлечения, филми онлайн, гледане на филми, сериали онлайн, гледане на сериали, най-нови филми, тенденции във филмите, популярни сериали, ревюта на филми, ревюта на сериали, база данни с филми, база данни със сериали, развлекателна платформа"
+            />
             {/* Notification */}
             <div
                  key={notification.id}
