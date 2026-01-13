@@ -366,7 +366,7 @@ export default function Account() {
                                                                                                             <i className="fa-solid fa-play" />
                                                                                                         </a>
                                                                                                         <h6 className="title mt-0">
-                                                                                                            {movie.title}
+                                                                                                            {movie.title.length > 10 ? movie.title.substring(0, 10) + '...' : movie.title}
                                                                                                         </h6>
                                                                                                     </div>
                                                                                                 </div>
@@ -438,8 +438,8 @@ export default function Account() {
                                                                                                         >
                                                                                                             <i className="fa-solid fa-play" />
                                                                                                         </a>
-                                                                                                        <h6 className="title mt-0">    
-                                                                                                            {series.title}
+                                                                                                        <h6 style={{ fontSize: '16px' }}>
+                                                                                                            {series.title.length > 10 ? series.title.substring(0, 10) + '...' : series.title}
                                                                                                         </h6>
                                                                                                     </div>
                                                                                                 </div>
