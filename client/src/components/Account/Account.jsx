@@ -326,8 +326,8 @@ export default function Account() {
                                                         {profile?.data?.favorite_movies?.length > 0 ? (
                                                             <>
                                                                 <div className="row">
-                                                                    {profile.data.favorite_movies.slice(0, 6).map((movie, index) => (
-                                                                        <div key={movie.id || index} className="col-lg-4 col-md-6 col-sm-6 mb-3">
+                                                                    {profile.data.favorite_movies.slice(0, 8).map((movie, index) => (
+                                                                        <div key={movie.id || index} className="col-lg-3 col-md-6 col-sm-6 mb-3">
                                                                             <Link to={`/movie/details/${movie.api_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                                                                                 <div className="movies-categories br-20">
                                                                                     <div className="movies-img">
@@ -403,7 +403,7 @@ export default function Account() {
                                                                         </div>
                                                                     ))}
                                                                 </div>
-                                                                {profile.data.favorite_movies.length > 6 && (
+                                                                {profile.data.favorite_movies.length > 8 && (
                                                                     <div className="text-center mt-3">
                                                                         <button className="btn btn-primary">
                                                                             View All Favorite Movies ({profile.data.favorite_movies.length})
@@ -424,8 +424,8 @@ export default function Account() {
                                                         {profile?.data?.favorite_tv_series?.length > 0 ? (
                                                             <>
                                                                 <div className="row">
-                                                                    {profile.data.favorite_tv_series.slice(0, 6).map((series, index) => (
-                                                                        <div key={series.id || index} className="col-lg-4 col-md-6 col-sm-6 mb-3">
+                                                                    {profile.data.favorite_tv_series.slice(0, 8).map((series, index) => (
+                                                                        <div key={series.id || index} className="col-lg-3 col-md-6 col-sm-6 mb-3">
                                                                             <Link to={`/series/details/${series.api_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                                                                                 <div className="movies-categories br-20">
                                                                                     <div className="movies-img">
@@ -501,7 +501,7 @@ export default function Account() {
                                                                         </div>
                                                                     ))}
                                                                 </div>
-                                                                {profile.data.favorite_tv_series.length > 6 && (
+                                                                {profile.data.favorite_tv_series.length > 8 && (
                                                                     <div className="text-center mt-3">
                                                                         <button className="btn btn-primary">
                                                                             View All Favorite TV Series ({profile.data.favorite_tv_series.length})
