@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import * as moviesService from '../../services/moviesService';
 import { useLoading } from '../../contexts/LoadingContext';
+import MetaTags from '../Meta Tags/MetaTags';
 
 export default function CollectionDetails() {
     const { movieId } = useParams();
@@ -34,7 +35,13 @@ export default function CollectionDetails() {
     const collectionTitle = movieData?.collection_name || 'Collection';
 
     return (
-        <section className="space-ptb">
+        <>
+            <MetaTags
+                title={movieData?.collection?.name ? `${movieData.collection.name} | Moviefy` : 'Moviefy | Колекция'}
+                description={movieData?.collection?.overview ? `${movieData.collection.overview} Разгледайте колекцията ${movieData.collection.name} на Moviefy.` : 'Разгледайте филмовата колекция на Moviefy.'}
+                keywords={movieData?.collection?.name ? `${movieData.collection.name}, филмова колекция, филми, Moviefy` : 'колекция, филми, Moviefy'}
+            />
+            <section className="space-ptb">
             <div className="container">
                 <div className="row">
                     <div className="col-md-12">

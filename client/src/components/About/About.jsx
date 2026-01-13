@@ -1,6 +1,13 @@
+import MetaTags from '../Meta Tags/MetaTags';
+
 export default function About() {
     return (
         <>
+            <MetaTags
+                title="Moviefy | За нас"
+                description="Научете повече за Moviefy - вашият водещ портал за филми и сериали. Открийте нашата мисия и визия за предоставяне на най-доброто развлекателно съдържание."
+                keywords="за нас, Moviefy, филми, сериали, онлайн платформа, развлечения, информация, мисия, визия"
+            />
             <section className="inner-banner bg-holder bg-overlay-secondary-3" style={{ backgroundImage: "url(images/bg/inner-banner-bg.jpg)" }}>
                 <div className="container position-relative">
                     <div className="row">

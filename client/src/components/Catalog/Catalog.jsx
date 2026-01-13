@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getLatestMovies, getPopularMovies, getTrendingMovies } from '../../services/moviesService';
 import { useLoading } from '../../contexts/LoadingContext';
+import MetaTags from '../Meta Tags/MetaTags';
 
 export default function Catalog() {
     const [movies, setMovies] = useState([]);
@@ -80,6 +81,11 @@ export default function Catalog() {
 
     return (
         <>
+            <MetaTags
+                title="Moviefy | Каталог"
+                description="Разгледайте нашия пълен каталог с филми и сериали. Най-новите, популярните, тенденциите и топ рейтинговите заглавия на едно място."
+                keywords="каталог, филми, сериали, най-нови, популярни, тенденции, топ рейтинг, Moviefy, онлайн каталог"
+            />
             <section className="space-ptb">
                 <div className="container">
                     <div className="row">

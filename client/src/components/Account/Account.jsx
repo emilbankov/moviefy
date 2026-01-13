@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import AuthContext from '../../contexts/AuthProvider';
 import { getUserProfile } from '../../services/authService';
 import Loader from '../Loader/Loader';
+import MetaTags from '../Meta Tags/MetaTags';
 
 export default function Account() {
     const { user, logoutHandler } = useContext(AuthContext);
