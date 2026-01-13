@@ -22,7 +22,7 @@ export default function Account() {
                 const profileData = await getUserProfile();
                 setProfile(profileData);
                 console.log(profileData);
-                
+
             } catch (error) {
                 console.error('Failed to fetch profile:', error);
                 // Fallback to AuthContext user data if profile fetch fails
@@ -341,9 +341,9 @@ export default function Account() {
                                                                                                 <a className="tag" href="#">{movie.genre}</a>
                                                                                             )}
                                                                                             <div className="ms-auto">
-                                                                                                <span className="views">
-                                                                                                    <i className="far fa-eye" /> {movie.vote_average ? `${movie.vote_average.toFixed(1)}★` : 'N/A'}
-                                                                                                </span>
+                                                                                                <a className="rating" href="#">
+                                                                                                    <i className="fa-solid fa-star" /> {movie.vote_average}/10
+                                                                                                </a>
                                                                                             </div>
                                                                                         </div>
                                                                                         <div className="movies-info">
@@ -368,31 +368,6 @@ export default function Account() {
                                                                                                                 {movie.title || movie.name}
                                                                                                             </span>
                                                                                                         </h6>
-                                                                                                    </div>
-                                                                                                    <div className="share-info">
-                                                                                                        <a href="#" className="add-icon" onClick={e => e.preventDefault()} />
-                                                                                                        <div className="share-box">
-                                                                                                            <a href="#" onClick={e => e.preventDefault()}>
-                                                                                                                <i className="fas fa-share-alt" />
-                                                                                                            </a>
-                                                                                                            <ul className="list-unstyled share-box-social">
-                                                                                                                <li>
-                                                                                                                    <a href="#" onClick={e => e.preventDefault()}>
-                                                                                                                        <i className="fab fa-facebook-f" />
-                                                                                                                    </a>
-                                                                                                                </li>
-                                                                                                                <li>
-                                                                                                                    <a href="#" onClick={e => e.preventDefault()}>
-                                                                                                                        <i className="fab fa-twitter" />
-                                                                                                                    </a>
-                                                                                                                </li>
-                                                                                                                <li>
-                                                                                                                    <a href="#" onClick={e => e.preventDefault()}>
-                                                                                                                        <i className="fab fa-instagram" />
-                                                                                                                    </a>
-                                                                                                                </li>
-                                                                                                            </ul>
-                                                                                                        </div>
                                                                                                     </div>
                                                                                                 </div>
                                                                                             </div>
@@ -439,9 +414,9 @@ export default function Account() {
                                                                                                 <a className="tag" href="#">{series.genre}</a>
                                                                                             )}
                                                                                             <div className="ms-auto">
-                                                                                                <span className="views">
-                                                                                                    <i className="far fa-eye" /> {series.vote_average ? `${series.vote_average.toFixed(1)}★` : 'N/A'}
-                                                                                                </span>
+                                                                                                <a className="rating" href="#">
+                                                                                                    <i className="fa-solid fa-star" /> {series.vote_average}/10
+                                                                                                </a>
                                                                                             </div>
                                                                                         </div>
                                                                                         <div className="movies-info">
@@ -466,31 +441,6 @@ export default function Account() {
                                                                                                                 {series.title || series.name}
                                                                                                             </span>
                                                                                                         </h6>
-                                                                                                    </div>
-                                                                                                    <div className="share-info">
-                                                                                                        <a href="#" className="add-icon" onClick={e => e.preventDefault()} />
-                                                                                                        <div className="share-box">
-                                                                                                            <a href="#" onClick={e => e.preventDefault()}>
-                                                                                                                <i className="fas fa-share-alt" />
-                                                                                                            </a>
-                                                                                                            <ul className="list-unstyled share-box-social">
-                                                                                                                <li>
-                                                                                                                    <a href="#" onClick={e => e.preventDefault()}>
-                                                                                                                        <i className="fab fa-facebook-f" />
-                                                                                                                    </a>
-                                                                                                                </li>
-                                                                                                                <li>
-                                                                                                                    <a href="#" onClick={e => e.preventDefault()}>
-                                                                                                                        <i className="fab fa-twitter" />
-                                                                                                                    </a>
-                                                                                                                </li>
-                                                                                                                <li>
-                                                                                                                    <a href="#" onClick={e => e.preventDefault()}>
-                                                                                                                        <i className="fab fa-instagram" />
-                                                                                                                    </a>
-                                                                                                                </li>
-                                                                                                            </ul>
-                                                                                                        </div>
                                                                                                     </div>
                                                                                                 </div>
                                                                                             </div>
@@ -554,11 +504,11 @@ export default function Account() {
                                                         </div>
                                                         <div className="col-lg-6 mb-3">
                                                             <label className="form-label">Expiration Date:</label>
-                                                                    <input
-                                                                        type="text"
+                                                            <input
+                                                                type="text"
                                                                 className="form-control"
                                                                 placeholder="MM/YY"
-                                                                    />
+                                                            />
                                                         </div>
                                                         <div className="col-lg-6 mb-3">
                                                             <label className="form-label">CVV:</label>
