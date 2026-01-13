@@ -361,20 +361,12 @@ export default function Account() {
                                                                                                             onClick={(e) => e.stopPropagation()}
                                                                                                             target="_blank"
                                                                                                             rel="noopener noreferrer"
+                                                                                                            style={{ marginRight: '10px !important' }}
                                                                                                         >
                                                                                                             <i className="fa-solid fa-play" />
                                                                                                         </a>
-                                                                                                        <h6 style={{ fontSize: '18px' }}>
-                                                                                                            <span className="title mt-0" style={{
-                                                                                                                WebkitLineClamp: 'unset',
-                                                                                                                lineClamp: 'unset',
-                                                                                                                display: 'block',
-                                                                                                                overflow: 'hidden',
-                                                                                                                textOverflow: 'ellipsis',
-                                                                                                                whiteSpace: 'nowrap'
-                                                                                                            }}>
-                                                                                                                {movie.title || movie.name}
-                                                                                                            </span>
+                                                                                                        <h6 style={{ fontSize: '18px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                                                                                            {movie.title}
                                                                                                         </h6>
                                                                                                     </div>
                                                                                                 </div>
@@ -442,20 +434,12 @@ export default function Account() {
                                                                                                             onClick={(e) => e.stopPropagation()}
                                                                                                             target="_blank"
                                                                                                             rel="noopener noreferrer"
+                                                                                                            style={{ marginRight: '10px !important' }}
                                                                                                         >
                                                                                                             <i className="fa-solid fa-play" />
                                                                                                         </a>
-                                                                                                        <h6 style={{ fontSize: '18px' }}>
-                                                                                                            <span className="title mt-0" style={{
-                                                                                                                WebkitLineClamp: 'unset',
-                                                                                                                lineClamp: 'unset',
-                                                                                                                display: 'block',
-                                                                                                                overflow: 'hidden',
-                                                                                                                textOverflow: 'ellipsis',
-                                                                                                                whiteSpace: 'nowrap'
-                                                                                                            }}>
-                                                                                                                {series.title || series.name}
-                                                                                                            </span>
+                                                                                                        <h6 style={{ fontSize: '18px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                                                                                            {series.title || series.name}
                                                                                                         </h6>
                                                                                                     </div>
                                                                                                 </div>
