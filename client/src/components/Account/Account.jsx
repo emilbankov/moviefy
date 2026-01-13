@@ -341,16 +341,17 @@ export default function Account() {
                                                                                                 <a className="tag" href="#">{movie.genre}</a>
                                                                                             )}
                                                                                             <div className="ms-auto">
-                                                                                                <a className="rating" href="#">
-                                                                                                    <i className="fa-solid fa-star" /> {movie.vote_average}/10
+                                                                                                <a className="views" href="#" onClick={e => e.preventDefault()}>
+                                                                                                    <i className="fa-solid fa-star" /> {movie.vote_average.toFixed(1)}
                                                                                                 </a>
                                                                                             </div>
                                                                                         </div>
                                                                                         <div className="movies-info">
                                                                                             <div className="content">
                                                                                                 <span className="time">
-                                                                                                    <i className="far fa-clock me-2" />
-                                                                                                    {movie.runtime ? `${Math.floor(movie.runtime / 60)}hr : ${movie.runtime % 60}mins` : 'N/A'}
+                                                                                                    <span className="year" style={{ fontSize: '12px' }}>{movie.year}</span>{" "}
+                                                                                                    <i className="far fa-clock me-2" style={{ marginLeft: "8px" }} />
+                                                                                                    {Math.floor(movie.runtime / 60)}hr : {movie.runtime % 60}min
                                                                                                 </span>
                                                                                                 <div className="info-content">
                                                                                                     <div className="movies-title">
@@ -364,7 +365,7 @@ export default function Account() {
                                                                                                             <i className="fa-solid fa-play" />
                                                                                                         </a>
                                                                                                         <h6 style={{ fontSize: '18px' }}>
-                                                                                                            <span className="title mt-0">
+                                                                                                            <span className="title mt-0" style={{ WebkitLineClamp: 'unset', lineClamp: 'unset', display: 'block' }}>
                                                                                                                 {movie.title || movie.name}
                                                                                                             </span>
                                                                                                         </h6>
@@ -414,16 +415,17 @@ export default function Account() {
                                                                                                 <a className="tag" href="#">{series.genre}</a>
                                                                                             )}
                                                                                             <div className="ms-auto">
-                                                                                                <a className="rating" href="#">
-                                                                                                    <i className="fa-solid fa-star" /> {series.vote_average}/10
+                                                                                                <a className="views" href="#" onClick={e => e.preventDefault()}>
+                                                                                                    <i className="fa-solid fa-star" /> {series.vote_average.toFixed(1)}
                                                                                                 </a>
                                                                                             </div>
                                                                                         </div>
                                                                                         <div className="movies-info">
                                                                                             <div className="content">
                                                                                                 <span className="time">
-                                                                                                    <i className="far fa-clock me-2" />
-                                                                                                    {series.runtime ? `${Math.floor(series.runtime / 60)}hr : ${series.runtime % 60}mins` : 'N/A'}
+                                                                                                    <span className="year" style={{ fontSize: '12px' }}>{series.year}</span>{" "}
+                                                                                                    <i className="far fa-clock me-2" style={{ marginLeft: "8px" }} />
+                                                                                                    {Math.floor(series.runtime / 60)}hr : {series.runtime % 60}min
                                                                                                 </span>
                                                                                                 <div className="info-content">
                                                                                                     <div className="movies-title">
@@ -437,7 +439,7 @@ export default function Account() {
                                                                                                             <i className="fa-solid fa-play" />
                                                                                                         </a>
                                                                                                         <h6 style={{ fontSize: '18px' }}>
-                                                                                                            <span className="title mt-0">
+                                                                                                            <span className="title mt-0" style={{ WebkitLineClamp: 'unset', lineClamp: 'unset', display: 'block' }}>
                                                                                                                 {series.title || series.name}
                                                                                                             </span>
                                                                                                         </h6>
