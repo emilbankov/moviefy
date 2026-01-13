@@ -5,14 +5,44 @@ import { getPopularSeries, getTrendingSeries, getLatestSeries, getTopRatedSeries
 import { useLoading } from '../../contexts/LoadingContext';
 import { getActorsMedia, getCrewMedia, getProductionCompanies } from '../../services/castService';
 import { getUserProfile } from '../../services/authService';
+import * as userService from '../../services/userService';
+import { useContext } from 'react';
+import AuthContext from '../../contexts/AuthProvider';
 
 export default function Results() {
   // NOTE: we now get setSearchParams so we can read/write the page in the URL
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const { setLoading } = useLoading();
+  const { user } = useContext(AuthContext);
 
   const [apiData, setApiData] = useState(null);
+
+  // Notification state
+  const [notification, setNotification] = useState({ show: false, message: '', type: 'success', id: null });
+
+  // Notification function
+  const showNotification = (message, type = 'add') => {
+    const notificationId = Date.now();
+
+    // If there's a notification currently showing, hide it first
+    if (notification.show) {
+      setNotification(prev => ({ ...prev, show: false }));
+      // Wait for hide animation, then show new one
+      setTimeout(() => {
+        setNotification({ show: true, message, type, id: notificationId });
+        setTimeout(() => {
+          setNotification(prev => ({ ...prev, show: false }));
+        }, 2000); // 2 seconds as requested
+      }, 200);
+    } else {
+      // No current notification, show immediately
+      setNotification({ show: true, message, type, id: notificationId });
+      setTimeout(() => {
+        setNotification(prev => ({ ...prev, show: false }));
+      }, 2000);
+    }
+  };
 
   // page is *derived* from URL params — this keeps browser history correct
   const currentPage = searchParams.get('page') ? parseInt(searchParams.get('page'), 10) : 1;
@@ -269,6 +299,50 @@ export default function Results() {
       delete paramsObj.types; // Remove the parameter if no types selected
     }
     setSearchParams(paramsObj);
+  };
+
+  // Toggle favorite function for favorites mode
+  const toggleFavorite = async (mediaType, id, e) => {
+    if (!user) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    const isMovie = mediaType === 'movie';
+
+    try {
+      if (isMovie) {
+        const response = await userService.removeMovieFromFavorites(id);
+        showNotification(response.message, 'remove');
+      } else {
+        const response = await userService.removeSeriesFromFavorites(id);
+        showNotification(response.message, 'remove');
+      }
+
+      // Re-fetch favorites data to update the display
+      setLoading(true);
+      const profileData = await getUserProfile();
+      if (favorites === 'movies') {
+        const updatedData = {
+          results: profileData.data.favorite_movies || [],
+          total_pages: 1,
+          total_results: (profileData.data.favorite_movies || []).length
+        };
+        setApiData(updatedData);
+      } else if (favorites === 'series') {
+        const updatedData = {
+          results: profileData.data.favorite_tv_series || [],
+          total_pages: 1,
+          total_results: (profileData.data.favorite_tv_series || []).length
+        };
+        setApiData(updatedData);
+      }
+      setLoading(false);
+    } catch (error) {
+      console.error('Error removing from favorites:', error);
+      showNotification('Failed to remove from favorites', 'error');
+      setLoading(false);
+    }
   };
 
 
@@ -1148,7 +1222,7 @@ export default function Results() {
                             alt={item.name || item.title}
                           />
                           <div className="info-top">
-                            <a href="javascript:void(0)" className={`like ${mode === 'favorites' ? 'active' : ''}`} onClick={(e) => e.preventDefault()} />
+                            <a href="javascript:void(0)" className={`like ${mode === 'favorites' ? 'active' : ''}`} onClick={(e) => mode === 'favorites' ? toggleFavorite('movie', item.api_id, e) : e.preventDefault()} />
                             <a className="views" href="#" onClick={(e) => e.preventDefault()}>
                               <i className="fa-solid fa-star" /> {item.vote_average ? (typeof item.vote_average === 'number' ? item.vote_average.toFixed(1) : item.vote_average) : '0'}
                             </a>
@@ -1214,7 +1288,7 @@ export default function Results() {
                               <a className="views" href="#" onClick={(e) => e.preventDefault()}>
                                 <i className="far fa-eye" />
                               </a>
-                              <a href="#" className={`like ${mode === 'favorites' ? 'active' : ''}`} onClick={(e) => e.preventDefault()} />
+                              <a href="#" className={`like ${mode === 'favorites' ? 'active' : ''}`} onClick={(e) => mode === 'favorites' ? toggleFavorite(isSeriesItem(item) ? 'series' : 'movie', item.api_id, e) : e.preventDefault()} />
                               <a className="rating" href="#" onClick={(e) => e.preventDefault()}>
                                 <i className="fa-solid fa-star" /> {item.vote_average ? (item.vote_average.toFixed(1)) : "0"}
                               </a>
@@ -1416,6 +1490,46 @@ export default function Results() {
           )}
         </div>
       </section>
+
+      {/* Notification */}
+      <div
+        key={notification.id}
+        style={{
+          position: 'fixed',
+          top: notification.show ? '20px' : '-120px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          zIndex: 9999,
+          backgroundColor: notification.type === 'add' ? '#28a745' : notification.type === 'auth' ? '#17a2b8' : '#dc3545',
+          color: 'white',
+          padding: notification.type === 'auth' ? '20px 32px' : '16px 32px',
+          borderRadius: '8px',
+          boxShadow: '0 6px 20px rgba(0,0,0,0.4)',
+          border: '2px solid rgba(255,255,255,0.2)',
+          transition: 'all 0.4s ease-in-out',
+          opacity: notification.show ? 1 : 0,
+          fontWeight: '600',
+          fontSize: '16px',
+          whiteSpace: 'nowrap',
+          minWidth: notification.type === 'auth' ? '400px' : '300px',
+          textAlign: 'center',
+          pointerEvents: notification.show ? 'auto' : 'none',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: notification.type === 'auth' ? '12px' : '0'
+        }}>
+        {notification.show && (
+          <>
+            <div>{notification.message}</div>
+            {notification.type === 'auth' && (
+              <div style={{ fontSize: '14px', fontWeight: '400', marginTop: '8px' }}>
+                Redirecting to login...
+              </div>
+            )}
+          </>
+        )}
+      </div>
     </>
   );
 }
