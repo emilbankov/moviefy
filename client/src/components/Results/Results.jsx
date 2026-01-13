@@ -8,6 +8,7 @@ import { getUserProfile } from '../../services/authService';
 import * as userService from '../../services/userService';
 import { useContext } from 'react';
 import AuthContext from '../../contexts/AuthProvider';
+import MetaTags from '../Meta Tags/MetaTags';
 
 export default function Results() {
   // NOTE: we now get setSearchParams so we can read/write the page in the URL
@@ -631,8 +632,54 @@ export default function Results() {
     );
   }
 
+  // Generate dynamic meta tags based on search/filter
+  const getMetaTitle = () => {
+    if (query) return `Резултати за "${query}" | Moviefy`;
+    if (genre) return `${genre} ${media === 'movies' ? 'филми' : media === 'series' ? 'сериали' : 'филми и сериали'} | Moviefy`;
+    if (category) {
+      const categoryNames = {
+        'popular': 'Популярни',
+        'trending': 'Тенденции',
+        'latest': 'Най-нови',
+        'top_rated': 'Топ рейтинг'
+      };
+      return `${categoryNames[category] || category} ${media === 'movies' ? 'филми' : media === 'series' ? 'сериали' : ''} | Moviefy`;
+    }
+    return 'Резултати | Moviefy';
+  };
+
+  const getMetaDescription = () => {
+    if (query) return `Резултати от търсенето за "${query}" на Moviefy. Намерете филми и сериали, които отговарят на вашите интереси.`;
+    if (genre) return `Разгледайте ${genre} ${media === 'movies' ? 'филми' : media === 'series' ? 'сериали' : 'филми и сериали'} на Moviefy.`;
+    if (category) {
+      const categoryNames = {
+        'popular': 'популярни',
+        'trending': 'тенденции',
+        'latest': 'най-нови',
+        'top_rated': 'топ рейтингови'
+      };
+      return `Разгледайте ${categoryNames[category] || category} ${media === 'movies' ? 'филми' : media === 'series' ? 'сериали' : ''} на Moviefy.`;
+    }
+    return 'Разгледайте резултатите от вашите търсения на Moviefy.';
+  };
+
+  const getMetaKeywords = () => {
+    const keywords = ['Moviefy'];
+    if (query) keywords.push(query, 'търсене', 'резултати');
+    if (genre) keywords.push(genre);
+    if (media === 'movies') keywords.push('филми');
+    if (media === 'series') keywords.push('сериали');
+    if (category) keywords.push(category);
+    return keywords.join(', ');
+  };
+
   return (
     <>
+      <MetaTags
+        title={getMetaTitle()}
+        description={getMetaDescription()}
+        keywords={getMetaKeywords()}
+      />
       <section ref={sectionRef}>
         <div className="container">
           <div className="row genres-container">

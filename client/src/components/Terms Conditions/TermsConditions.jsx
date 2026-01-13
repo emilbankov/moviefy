@@ -1,6 +1,13 @@
+import MetaTags from '../Meta Tags/MetaTags';
+
 export default function TermsConditions() {
     return (
         <>
+            <MetaTags
+                title="Moviefy | Условия за ползване"
+                description="Прочетете нашите условия за ползване на Moviefy. Научете за вашите права и задължения при използване на нашата платформа."
+                keywords="условия за ползване, правила, условия, Moviefy, условия на услугата, правни условия"
+            />
             <section className="inner-banner bg-holder bg-overlay-secondary-3" style={{ backgroundImage: "url(images/bg/inner-banner-bg.jpg)" }}>
                 <div className="container position-relative">
                     <div className="row">

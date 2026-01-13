@@ -866,6 +866,7 @@ import { useEffect, useState } from "react";
 import * as seriesService from '../../services/seriesService'
 import * as reviewsService from '../../services/reviewsService'
 import { useLoading } from '../../contexts/LoadingContext';
+import MetaTags from '../Meta Tags/MetaTags';
 
 // Helper function to convert genre display name to database name
 const getGenreParam = (genreName) => {
@@ -1170,6 +1171,11 @@ export default function SeriesDetails() {
 
     return (
         <>
+            <MetaTags
+                title={series.series ? `${series.series.name} | Moviefy` : 'Moviefy | Сериал'}
+                description={series.series ? `${series.series.overview || ''} Разгледайте ${series.series.name} на Moviefy - вашият източник за сериали онлайн.` : 'Разгледайте сериали на Moviefy'}
+                keywords={series.series ? `${series.series.name}, сериали, ${series.series.genres?.map(g => g.name).join(', ') || ''}, ${series.series.first_air_date ? new Date(series.series.first_air_date).getFullYear() : ''}, ревюта, рейтинг, гледане онлайн` : 'сериали, телевизия, онлайн'}
+            />
             {series.series && (
                 <section className="single-movie-details space-pb bg-holder bg-overlay-dark-99 overflow-hidden" style={{ backgroundImage: "url(/images/bg/03.jpg)" }}>
                     <div className="container position-relative">

@@ -1,6 +1,13 @@
+import MetaTags from '../Meta Tags/MetaTags';
+
 export default function Series() {
     return (
         <>
+            <MetaTags
+                title="Moviefy | Сериали"
+                description="Разгледайте огромна колекция от сериали на Moviefy. Най-новите премиери, тенденциите, популярните и топ рейтинговите сериали на едно място."
+                keywords="сериали, телевизия, най-нови сериали, популярни сериали, тенденции, топ рейтинг, сериали онлайн, гледане на сериали, каталог сериали"
+            />
             <section className="tv-banner bg-secondary overflow-hidden">
                 <div className="container">
                     <div className="row justify-content-center">
