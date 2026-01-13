@@ -243,7 +243,6 @@ export default function Results() {
           };
           setCollectionSearchResults(filteredData);
         }
-        console.log('Collection search results:', data);
       } catch (error) {
         console.error('Collection search error:', error);
         setCollectionSearchResults(null);
@@ -341,15 +340,12 @@ export default function Results() {
         if (mode === 'crew_media') {
           // Fetch crew's movies and series
           data = await getCrewMedia(crewId, currentPage, 30, actorMediaType);
-          console.log('Crew media results:', data);
         } else if (mode === 'actor_media') {
           // Fetch actor's movies and series
           data = await getActorsMedia(actorId, currentPage, 30, actorMediaType);
-          console.log('Actor media results:', data);
         } else if (mode === 'production_company_media') {
           // Fetch production company's movies and series
           data = await getProductionCompanies(prodId, currentPage, 30, actorMediaType);
-          console.log('Production company media results:', data);
         } else if (mode === 'favorites') {
           // Fetch user's favorite movies or series
           const profileData = await getUserProfile();
@@ -366,15 +362,12 @@ export default function Results() {
               total_results: (profileData.data.favorite_tv_series || []).length
             };
           }
-          console.log('Favorites results:', data);
         } else if (mode === 'search') {
           // Note: current moviesService.search may ignore page/size; backend can be updated later.
           data = await search(media, query, currentPage, 30);
-          console.log('Search results:', data);
         } else if (mode === 'collection_search') {
           // Search within collections using the new dedicated endpoint
           data = await searchPopularCollections(collectionQuery, currentPage, 20);
-          console.log('Collection search results:', data);
         } else if (mode === 'genre') {
           // Convert selected genre IDs to genre names
           const selectedGenreNames = selectedGenres.length > 0
@@ -387,7 +380,6 @@ export default function Results() {
           const allGenreNames = genre ? [genre, ...selectedGenreNames] : selectedGenreNames;
           const genresParam = allGenreNames.join(',');
           data = await getGenres(media, genresParam, 30, currentPage);
-          console.log('Genre results:', data);
         } else if (mode === 'catalog') {
           // Catalog mode: fetch by media/category with pagination
           if (media === 'movies' || media === 'all') {
@@ -412,11 +404,9 @@ export default function Results() {
                 data = await getPopularMovies(media, currentPage, size, genreNames);
                 break;
             }
-            console.log('Catalog movies:', media, category, data);
           } else if (media === 'collections') {
             const size = 20; // collections: 20 per page
             data = await getPopularCollections(currentPage, size);
-            console.log('Catalog collections:', category, data);
           } else if (media === 'series') {
             // Series endpoints now support pagination; request 30 per page
             const size = 30;
@@ -440,7 +430,6 @@ export default function Results() {
                 data = await getPopularSeries(typesParam, currentPage, size, genreNames);
                 break;
             }
-            console.log('Catalog series:', category, selectedTypes, selectedGenres, data);
           }
         }
         setApiData(data);
@@ -500,7 +489,6 @@ export default function Results() {
     // If we've performed a collection search, show search results (even if empty/null)
     if (hasPerformedCollectionSearch) {
       const searchResults = collectionSearchResults?.results || collectionSearchResults?.collections || [];
-      console.log('Returning search results:', searchResults.length, 'hasPerformedCollectionSearch:', hasPerformedCollectionSearch, 'collectionSearchResults exists:', !!collectionSearchResults);
       return searchResults;
     }
 

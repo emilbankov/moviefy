@@ -327,11 +327,7 @@ export default function Home() {
                                                 <img className="img-fluid" src="/images/tmdb-logo.svg" alt="#" />{bannerMovies.first_movie.vote_average}
                                             </a>
                                         </span>
-                                        <span className="bookmark save" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Bookmark" />
-                                        <span className="like" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Like" />
-                                        <span className="reting" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rating">
-                                            <i className="fa-regular fa-star" />
-                                        </span>
+                                        <a href="javascript:void(0)" className={`like ${favoriteMovieIds.has(bannerMovies.first_movie.id) ? 'active' : ''}`} onClick={(e) => toggleFavorite('movie', bannerMovies.first_movie.id, e)} />
                                     </div>
                                     <p>{bannerMovies.first_movie.overview.length > 140 ? `${bannerMovies.first_movie.overview.substring(0, 140)}...` : bannerMovies.first_movie.overview}</p>
                                     <div className="author-info">
@@ -561,36 +557,6 @@ export default function Home() {
                                                                                 {trending.title}
                                                                             </span>
                                                                         </h5>
-                                                                    </div>
-                                                                    <div className="share-info">
-                                                                        <a href="javascript:void(0)" className="add-icon" onClick={(e) => e.preventDefault()} />
-                                                                        <div className="share-box">
-                                                                            <a href="#" onClick={(e) => e.preventDefault()}>
-                                                                                <i className="fas fa-share-alt" />
-                                                                            </a>
-                                                                            <ul className="list-unstyled share-box-social">
-                                                                                <li>
-                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
-                                                                                        <i className="fab fa-facebook-f" />
-                                                                                    </a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
-                                                                                        <i className="fab fa-twitter" />
-                                                                                    </a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
-                                                                                        <i className="fab fa-linkedin" />
-                                                                                    </a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
-                                                                                        <i className="fab fa-instagram" />
-                                                                                    </a>
-                                                                                </li>
-                                                                            </ul>
-                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -1007,36 +973,6 @@ export default function Home() {
                                                                             </span>
                                                                         </h5>
                                                                     </div>
-                                                                    <div className="share-info">
-                                                                        <a href="javascript:void(0)" className="add-icon" onClick={(e) => e.preventDefault()} />
-                                                                        <div className="share-box">
-                                                                            <a href="#" onClick={(e) => e.preventDefault()}>
-                                                                                <i className="fas fa-share-alt" />
-                                                                            </a>
-                                                                            <ul className="list-unstyled share-box-social">
-                                                                                <li>
-                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
-                                                                                        <i className="fab fa-facebook-f" />
-                                                                                    </a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
-                                                                                        <i className="fab fa-twitter" />
-                                                                                    </a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
-                                                                                        <i className="fab fa-linkedin" />
-                                                                                    </a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
-                                                                                        <i className="fab fa-instagram" />
-                                                                                    </a>
-                                                                                </li>
-                                                                            </ul>
-                                                                        </div>
-                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -1128,36 +1064,6 @@ export default function Home() {
                                                                                 {topRated.title}
                                                                             </span>
                                                                         </h5>
-                                                                    </div>
-                                                                    <div className="share-info">
-                                                                        <a href="javascript:void(0)" className="add-icon" onClick={(e) => e.preventDefault()} />
-                                                                        <div className="share-box">
-                                                                            <a href="#" onClick={(e) => e.preventDefault()}>
-                                                                                <i className="fas fa-share-alt" />
-                                                                            </a>
-                                                                            <ul className="list-unstyled share-box-social">
-                                                                                <li>
-                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
-                                                                                        <i className="fab fa-facebook-f" />
-                                                                                    </a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
-                                                                                        <i className="fab fa-twitter" />
-                                                                                    </a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
-                                                                                        <i className="fab fa-linkedin" />
-                                                                                    </a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
-                                                                                        <i className="fab fa-instagram" />
-                                                                                    </a>
-                                                                                </li>
-                                                                            </ul>
-                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -1291,42 +1197,6 @@ export default function Home() {
                                                                     <a className="btn btn-link" href="#">
                                                                         <i className="fa-solid fa-play" /> Play Now
                                                                     </a>
-                                                                    <a href="#" className="add-icon mx-3">
-                                                                        {" "}
-                                                                        Add to List
-                                                                    </a>
-                                                                    <div className="share-box">
-                                                                        <a href="#">
-                                                                            {" "}
-                                                                            <i className="fas fa-share-alt" /> Share
-                                                                        </a>
-                                                                        <ul className="list-unstyled share-box-social">
-                                                                            <li>
-                                                                                {" "}
-                                                                                <a href="#">
-                                                                                    <i className="fab fa-facebook-f" />
-                                                                                </a>
-                                                                            </li>
-                                                                            <li>
-                                                                                {" "}
-                                                                                <a href="#">
-                                                                                    <i className="fab fa-twitter" />
-                                                                                </a>
-                                                                            </li>
-                                                                            <li>
-                                                                                {" "}
-                                                                                <a href="#">
-                                                                                    <i className="fab fa-linkedin" />
-                                                                                </a>
-                                                                            </li>
-                                                                            <li>
-                                                                                {" "}
-                                                                                <a href="#">
-                                                                                    <i className="fab fa-instagram" />
-                                                                                </a>
-                                                                            </li>
-                                                                        </ul>
-                                                                    </div>
                                                                 </div>
                                                                 <p className="series-overview">{series.overview.length > 270 ? `${series.overview.substring(0, 270)}...` : series.overview}</p>
                                                             </div>
@@ -1467,36 +1337,6 @@ export default function Home() {
                                                                                 {trending.name}
                                                                             </span>
                                                                         </h6>
-                                                                    </div>
-                                                                    <div className="share-info">
-                                                                        <a href="javascript:void(0)" className="add-icon" onClick={(e) => e.preventDefault()} />
-                                                                        <div className="share-box">
-                                                                            <a href="#" onClick={(e) => e.preventDefault()}>
-                                                                                <i className="fas fa-share-alt" />
-                                                                            </a>
-                                                                            <ul className="list-unstyled share-box-social">
-                                                                                <li>
-                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
-                                                                                        <i className="fab fa-facebook-f" />
-                                                                                    </a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
-                                                                                        <i className="fab fa-twitter" />
-                                                                                    </a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
-                                                                                        <i className="fab fa-linkedin" />
-                                                                                    </a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
-                                                                                        <i className="fab fa-instagram" />
-                                                                                    </a>
-                                                                                </li>
-                                                                            </ul>
-                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -1644,36 +1484,6 @@ export default function Home() {
                                                                             </span>
                                                                         </h6>
                                                                     </div>
-                                                                    <div className="share-info">
-                                                                        <a href="javascript:void(0)" className="add-icon" onClick={(e) => e.preventDefault()} />
-                                                                        <div className="share-box">
-                                                                            <a href="#" onClick={(e) => e.preventDefault()}>
-                                                                                <i className="fas fa-share-alt" />
-                                                                            </a>
-                                                                            <ul className="list-unstyled share-box-social">
-                                                                                <li>
-                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
-                                                                                        <i className="fab fa-facebook-f" />
-                                                                                    </a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
-                                                                                        <i className="fab fa-twitter" />
-                                                                                    </a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
-                                                                                        <i className="fab fa-linkedin" />
-                                                                                    </a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
-                                                                                        <i className="fab fa-instagram" />
-                                                                                    </a>
-                                                                                </li>
-                                                                            </ul>
-                                                                        </div>
-                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -1765,36 +1575,6 @@ export default function Home() {
                                                                                 {topRated.name}
                                                                             </span>
                                                                         </h6>
-                                                                    </div>
-                                                                    <div className="share-info">
-                                                                        <a href="javascript:void(0)" className="add-icon" onClick={(e) => e.preventDefault()} />
-                                                                        <div className="share-box">
-                                                                            <a href="#" onClick={(e) => e.preventDefault()}>
-                                                                                <i className="fas fa-share-alt" />
-                                                                            </a>
-                                                                            <ul className="list-unstyled share-box-social">
-                                                                                <li>
-                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
-                                                                                        <i className="fab fa-facebook-f" />
-                                                                                    </a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
-                                                                                        <i className="fab fa-twitter" />
-                                                                                    </a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
-                                                                                        <i className="fab fa-linkedin" />
-                                                                                    </a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <a href="#" onClick={(e) => e.preventDefault()}>
-                                                                                        <i className="fab fa-instagram" />
-                                                                                    </a>
-                                                                                </li>
-                                                                            </ul>
-                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
