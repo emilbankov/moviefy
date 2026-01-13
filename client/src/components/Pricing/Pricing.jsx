@@ -1,6 +1,13 @@
+import MetaTags from '../Meta Tags/MetaTags';
+
 export default function Pricing() {
     return (
         <>
+            <MetaTags
+                title="Moviefy | Цени и планове"
+                description="Изберете вашия стрийминг план на Moviefy. Разгледайте нашите цени и планове за достъп до огромна колекция от филми и сериали."
+                keywords="цени, планове, стрийминг, абонамент, Moviefy, премиум, достъп, филми, сериали"
+            />
             <section className="inner-banner bg-holder bg-overlay-secondary-3" style={{ backgroundImage: "url(images/bg/inner-banner-bg.jpg)" }}>
                 <div className="container position-relative">
                     <div className="row">

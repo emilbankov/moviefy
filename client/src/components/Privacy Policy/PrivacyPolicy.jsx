@@ -1,6 +1,13 @@
+import MetaTags from '../Meta Tags/MetaTags';
+
 export default function PrivacyPolicy() {
     return (
         <>
+            <MetaTags
+                title="Moviefy | Политика за поверителност"
+                description="Прочетете нашата политика за поверителност на Moviefy. Научете как събираме, използваме и защитаваме вашата лична информация."
+                keywords="политика за поверителност, поверителност, лични данни, защита на данни, Moviefy, GDPR"
+            />
             <section className="inner-banner bg-holder bg-overlay-secondary-3" style={{ backgroundImage: "url(images/bg/inner-banner-bg.jpg)" }}>
                 <div className="container position-relative">
                     <div className="row">

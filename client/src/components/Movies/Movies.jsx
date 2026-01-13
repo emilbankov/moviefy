@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getLatestMovies, getTrendingMovies, getPopularMovies } from '../../services/moviesService';
 import { useLoading } from '../../contexts/LoadingContext';
+import MetaTags from '../Meta Tags/MetaTags';
 
 // Helper function to convert genre display name to database name
 const getGenreParam = (genreName) => {
@@ -80,6 +81,11 @@ export default function Movies() {
 
     return (
         <>
+            <MetaTags
+                title="Moviefy | Филми"
+                description="Разгледайте огромна колекция от филми на Moviefy. Най-новите премиери, тенденциите, популярните и топ рейтинговите филми на едно място."
+                keywords="филми, кино, най-нови филми, популярни филми, тенденции, топ рейтинг, филми онлайн, гледане на филми, каталог филми"
+            />
             <section className="movie-banner bg-secondary">
                 <div id="main-slider" className="swiper-container">
                     <div className="swiper-wrapper">

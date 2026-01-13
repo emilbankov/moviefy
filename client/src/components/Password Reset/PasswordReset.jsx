@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { checkPasswordResetToken, confirmPasswordReset } from '../../services/authService';
+import MetaTags from '../Meta Tags/MetaTags';
 
 export default function PasswordReset() {
     const [searchParams] = useSearchParams();
@@ -105,6 +106,11 @@ export default function PasswordReset() {
 
     return (
         <>
+            <MetaTags
+                title="Moviefy | Възстановяване на парола"
+                description="Възстановете вашата парола в Moviefy. Въведете нова парола, за да възстановите достъпа до вашия акаунт."
+                keywords="възстановяване на парола, забравена парола, нова парола, Moviefy, reset password"
+            />
             <section className="inner-banner bg-holder bg-overlay-secondary-3" style={{ backgroundImage: "url(images/bg/inner-banner-bg.jpg)" }}>
                 <div className="container position-relative">
                     <div className="row">
