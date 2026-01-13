@@ -365,10 +365,8 @@ export default function Account() {
                                                                                                         >
                                                                                                             <i className="fa-solid fa-play" />
                                                                                                         </a>
-                                                                                                        <h6>
-                                                                                                            <span className="title mt-0">
-                                                                                                                {movie.title}
-                                                                                                            </span>
+                                                                                                        <h6 className="title mt-0">
+                                                                                                            {movie.title}
                                                                                                         </h6>
                                                                                                     </div>
                                                                                                 </div>
@@ -440,10 +438,8 @@ export default function Account() {
                                                                                                         >
                                                                                                             <i className="fa-solid fa-play" />
                                                                                                         </a>
-                                                                                                        <h6>
-                                                                                                            <span className="title mt-0">
-                                                                                                                {series.title}
-                                                                                                            </span>
+                                                                                                        <h6 className="title mt-0">    
+                                                                                                            {series.title}
                                                                                                         </h6>
                                                                                                     </div>
                                                                                                 </div>
