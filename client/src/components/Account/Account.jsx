@@ -383,7 +383,7 @@ export default function Account() {
                                                                     <div className="text-center mt-3">
                                                                         <button
                                                                             className="btn btn-primary"
-                                                                            onClick={() => navigate('/results?favorites=movies')}
+                                                                            onClick={() => navigate('/favorites?favorites=movies')}
                                                                         >
                                                                             View All Favorite Movies ({profile.data.favorite_movies.length})
                                                                         </button>
@@ -455,7 +455,10 @@ export default function Account() {
                                                                 </div>
                                                                 {profile.data.favorite_tv_series.length > 8 && (
                                                                     <div className="text-center mt-3">
-                                                                        <button className="btn btn-primary">
+                                                                        <button
+                                                                            className="btn btn-primary"
+                                                                            onClick={() => navigate('/favorites?favorites=series')}
+                                                                        >
                                                                             View All Favorite TV Series ({profile.data.favorite_tv_series.length})
                                                                         </button>
                                                                     </div>
@@ -463,16 +466,6 @@ export default function Account() {
                                                             </>
                                                         ) : (
                                                             <p className="text-muted">No favorite TV series yet.</p>
-                                                        )}
-                                                        {profile.data.favorite_tv_series.length > 8 && (
-                                                            <div className="text-center mt-3">
-                                                                <button
-                                                                    className="btn btn-primary"
-                                                                    onClick={() => navigate('/results?favorites=series')}
-                                                                >
-                                                                    View All Favorite TV Series ({profile.data.favorite_tv_series.length})
-                                                                </button>
-                                                            </div>
                                                         )}
                                                     </div>
                                                 </div>
