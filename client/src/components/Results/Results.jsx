@@ -471,7 +471,9 @@ export default function Results() {
   const itemsPerPage = collectionSearchResults?.items_on_page || apiData?.items_on_page || (Array.isArray(results) ? results.length : 30);
 
   const handleTabChange = (newMedia) => {
-    if (mode === 'search') {
+    if (mode === 'favorites') {
+      navigate(`/results?favorites=${newMedia === 'movies' ? 'movies' : 'series'}`);
+    } else if (mode === 'search') {
       navigate(`/search?q=${query}&media=${newMedia}`);
     } else if (mode === 'collection_search') {
       navigate(`/search?cq=${collectionQuery}&media=${newMedia}`);
@@ -549,6 +551,9 @@ export default function Results() {
       return `Collection Search Results for "${lastSearchedTerm}"`;
     }
 
+    if (mode === 'favorites') {
+      return favorites === 'movies' ? 'My Favorite Movies' : 'My Favorite TV Series';
+    }
     if (mode === 'crew_media') return crewName ? `${crewName}'s Media` : `Crew's Media`;
     if (mode === 'actor_media') return actorName ? `${actorName}'s Media` : `Actor's Media`;
     if (mode === 'production_company_media') return prodName ? `${prodName} Movies` : `Production Company Media`;
@@ -586,7 +591,7 @@ export default function Results() {
       <section ref={sectionRef}>
         <div className="container">
           <div className="row genres-container">
-            {mode !== 'search' && mode !== 'collection_search' && mode !== 'actor_media' && mode !== 'crew_media' && mode !== 'production_company_media' && mode && media !== 'collections' && (
+            {mode !== 'search' && mode !== 'collection_search' && mode !== 'actor_media' && mode !== 'crew_media' && mode !== 'production_company_media' && mode !== 'favorites' && mode && media !== 'collections' && (
               <div className="row">
                 <div className="col-12">
                   {/* Show both genres and types for series catalog in one dropdown, otherwise show one */}
@@ -1062,7 +1067,7 @@ export default function Results() {
                         )}
                       </div>
                     ) : (
-                      /* Pills on the right - hide for collections catalog */
+                      /* Pills on the right - hide for collections catalog and favorites */
                       (mode === 'search' || mode === 'genre' || mode === 'catalog' || mode === 'actor_media' || mode === 'crew_media' || mode === 'production_company_media') && (
                         <div className="tabs tabs-catalog">
                           <ul className="nav nav-tabs nav-pills" id="pills-tab" role="tablist">
@@ -1143,9 +1148,9 @@ export default function Results() {
                             alt={item.name || item.title}
                           />
                           <div className="info-top">
-                            <a href="javascript:void(0)" className="like" onClick={(e) => e.preventDefault()} />
+                            <a href="javascript:void(0)" className="like" onClick={(e) => e.preventDefault()} style={mode === 'favorites' ? { backgroundColor: '#f6be00', color: '#0a0a0a' } : {}} />
                             <a className="views" href="#" onClick={(e) => e.preventDefault()}>
-                              <i className="fa-solid fa-star" /> {item.vote_average ? (typeof item.vote_average === 'number' ? item.vote_average.toFixed(1) : item.vote_average) : 'N/A'}
+                              <i className="fa-solid fa-star" /> {item.vote_average ? (typeof item.vote_average === 'number' ? item.vote_average.toFixed(1) : item.vote_average) : '0'}
                             </a>
                           </div>
                           <div className="movie-info-content">
@@ -1209,9 +1214,9 @@ export default function Results() {
                               <a className="views" href="#" onClick={(e) => e.preventDefault()}>
                                 <i className="far fa-eye" />
                               </a>
-                              <a href="#" className="like" onClick={(e) => e.preventDefault()} />
+                              <a href="#" className="like" onClick={(e) => e.preventDefault()} style={mode === 'favorites' ? { backgroundColor: '#f6be00', color: '#0a0a0a' } : {}} />
                               <a className="rating" href="#" onClick={(e) => e.preventDefault()}>
-                                <i className="fa-solid fa-star" /> {item.vote_average ? (typeof item.vote_average === 'number' ? item.vote_average.toFixed(1) : item.vote_average) : 'N/A'}/10
+                                <i className="fa-solid fa-star" /> {item.vote_average ? (item.vote_average.toFixed(1)) : "0"}
                               </a>
                             </div>
                           </div>
