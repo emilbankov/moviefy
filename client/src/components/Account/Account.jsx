@@ -326,7 +326,7 @@ export default function Account() {
                                                         {profile?.data?.favorite_movies?.length > 0 ? (
                                                             <>
                                                                 <div className="row">
-                                                                    {profile.data.favorite_movies && profile.data.favorite_movies.slice(0, 8).map((movie, index) => (
+                                                                    {profile.data.favorite_movies.slice(0, 8).map((movie, index) => (
                                                                         <div key={movie.id || index} className="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-3">
                                                                             <Link to={`/movie/details/${movie.api_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                                                                                 <div className="movies-categories br-20">
@@ -399,7 +399,7 @@ export default function Account() {
                                                         {profile?.data?.favorite_tv_series?.length > 0 ? (
                                                             <>
                                                                 <div className="row">
-                                                                    {profile.data.favorite_tv_series && profile.data.favorite_tv_series.slice(0, 8).map((series, index) => (
+                                                                    {profile.data.favorite_tv_series.slice(0, 8).map((series, index) => (
                                                                         <div key={series.id || index} className="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-3">
                                                                             <Link to={`/series/details/${series.api_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                                                                                 <div className="movies-categories br-20">
@@ -422,7 +422,7 @@ export default function Account() {
                                                                                         <div className="movies-info">
                                                                                             <div className="content">
                                                                                                 <span className="time" style={{ fontSize: '14px', flexDirection: "column", justifyContent: "center" }}>
-                                                                                                    <span className="year">{movie.year}</span>{" "}
+                                                                                                    <span className="year">{series.year}</span>{" "}
                                                                                                     <span>SS {series.seasons} <span className="dot"></span> EPS {series.episodes}</span>
                                                                                                 </span>
                                                                                                 <div className="info-content">
