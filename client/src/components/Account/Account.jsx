@@ -365,11 +365,11 @@ export default function Account() {
                                                                                                         >
                                                                                                             <i className="fa-solid fa-play" />
                                                                                                         </a>
-                                                                                                        <h5>
-                                                                                                            <span style={{ fontSize: '16px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', wordBreak: 'break-all' }}>
+                                                                                                        <h6>
+                                                                                                            <span className="title mt-0">
                                                                                                                 {movie.title}
                                                                                                             </span>
-                                                                                                        </h5>
+                                                                                                        </h6>
                                                                                                     </div>
                                                                                                 </div>
                                                                                             </div>
@@ -440,11 +440,11 @@ export default function Account() {
                                                                                                         >
                                                                                                             <i className="fa-solid fa-play" />
                                                                                                         </a>
-                                                                                                        <h5>
-                                                                                                            <span style={{ fontSize: '16px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', wordBreak: 'break-all' }}>
+                                                                                                        <h6>
+                                                                                                            <span className="title mt-0">
                                                                                                                 {series.title}
                                                                                                             </span>
-                                                                                                        </h5>
+                                                                                                        </h6>
                                                                                                     </div>
                                                                                                 </div>
                                                                                             </div>
