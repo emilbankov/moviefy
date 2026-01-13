@@ -327,7 +327,7 @@ export default function Account() {
                                                             <>
                                                                 <div className="row">
                                                                     {profile.data.favorite_movies.slice(0, 8).map((movie, index) => (
-                                                                        <div key={movie.id || index} className="col-xl-3 col-lg-3 col-md-6 col-sm-6 mb-3">
+                                                                        <div key={movie.id || index} className="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-3">
                                                                             <Link to={`/movie/details/${movie.api_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                                                                                 <div className="movies-categories br-20">
                                                                                     <div className="movies-img">
@@ -348,8 +348,8 @@ export default function Account() {
                                                                                         </div>
                                                                                         <div className="movies-info">
                                                                                             <div className="content">
-                                                                                                <span className="time">
-                                                                                                    <span className="year" style={{ fontSize: '12px' }}>{movie.year}</span>{" "}
+                                                                                                <span className="time" style={{ fontSize: '13px' }}>
+                                                                                                    <span className="year">{movie.year}</span>{" "}
                                                                                                     <i className="far fa-clock me-2" style={{ marginLeft: "8px" }} />
                                                                                                     {Math.floor(movie.runtime / 60)}hr : {movie.runtime % 60}min
                                                                                                 </span>
@@ -365,7 +365,14 @@ export default function Account() {
                                                                                                             <i className="fa-solid fa-play" />
                                                                                                         </a>
                                                                                                         <h6 style={{ fontSize: '18px' }}>
-                                                                                                            <span className="title mt-0" style={{ WebkitLineClamp: 'unset', lineClamp: 'unset', display: 'block' }}>
+                                                                                                            <span className="title mt-0" style={{
+                                                                                                                WebkitLineClamp: 'unset',
+                                                                                                                lineClamp: 'unset',
+                                                                                                                display: 'block',
+                                                                                                                overflow: 'hidden',
+                                                                                                                textOverflow: 'ellipsis',
+                                                                                                                whiteSpace: 'nowrap'
+                                                                                                            }}>
                                                                                                                 {movie.title || movie.name}
                                                                                                             </span>
                                                                                                         </h6>
@@ -401,7 +408,7 @@ export default function Account() {
                                                             <>
                                                                 <div className="row">
                                                                     {profile.data.favorite_tv_series.slice(0, 8).map((series, index) => (
-                                                                        <div key={series.id || index} className="col-xl-3 col-lg-3 col-md-6 col-sm-6 mb-3">
+                                                                        <div key={series.id || index} className="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-6 mb-3">
                                                                             <Link to={`/series/details/${series.api_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                                                                                 <div className="movies-categories br-20">
                                                                                     <div className="movies-img">
@@ -422,8 +429,8 @@ export default function Account() {
                                                                                         </div>
                                                                                         <div className="movies-info">
                                                                                             <div className="content">
-                                                                                                <span className="time">
-                                                                                                    <span className="year" style={{ fontSize: '12px' }}>{series.year}</span>{" "}
+                                                                                                <span className="time" style={{ fontSize: '13px' }}>
+                                                                                                    <span className="year">{series.year}</span>{" "}
                                                                                                     <i className="far fa-clock me-2" style={{ marginLeft: "8px" }} />
                                                                                                     {Math.floor(series.runtime / 60)}hr : {series.runtime % 60}min
                                                                                                 </span>
@@ -439,7 +446,14 @@ export default function Account() {
                                                                                                             <i className="fa-solid fa-play" />
                                                                                                         </a>
                                                                                                         <h6 style={{ fontSize: '18px' }}>
-                                                                                                            <span className="title mt-0" style={{ WebkitLineClamp: 'unset', lineClamp: 'unset', display: 'block' }}>
+                                                                                                            <span className="title mt-0" style={{
+                                                                                                                WebkitLineClamp: 'unset',
+                                                                                                                lineClamp: 'unset',
+                                                                                                                display: 'block',
+                                                                                                                overflow: 'hidden',
+                                                                                                                textOverflow: 'ellipsis',
+                                                                                                                whiteSpace: 'nowrap'
+                                                                                                            }}>
                                                                                                                 {series.title || series.name}
                                                                                                             </span>
                                                                                                         </h6>
