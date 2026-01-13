@@ -1,4 +1,5 @@
 import { useContext, useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import AuthContext from '../../contexts/AuthProvider';
 import { getUserProfile } from '../../services/authService';
 import Loader from '../Loader/Loader';
@@ -323,20 +324,93 @@ export default function Account() {
                                                             Favorite Movies ({profile?.data?.favorite_movies?.length || 0})
                                                         </h5>
                                                         {profile?.data?.favorite_movies?.length > 0 ? (
-                                                            <div className="row">
-                                                                {profile.data.favorite_movies.map((movie, index) => (
-                                                                    <div key={index} className="col-md-4 mb-3">
-                                                                        <div className="favorite-item bg-secondary p-3 rounded">
-                                                                            <h6 className="text-white mb-2">{movie.title || movie.name || 'Unknown Movie'}</h6>
-                                                                            <small className="text-muted">
-                                                                                {movie.release_date || movie.first_air_date ?
-                                                                                    new Date(movie.release_date || movie.first_air_date).getFullYear() : 'N/A'
-                                                                                }
-                                                                            </small>
+                                                            <>
+                                                                <div className="row">
+                                                                    {profile.data.favorite_movies.slice(0, 6).map((movie, index) => (
+                                                                        <div key={movie.id || index} className="col-lg-2 col-md-3 col-sm-4 mb-3">
+                                                                            <Link to={`/movie/details/${movie.api_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                                                                <div className="movies-categories br-20">
+                                                                                    <div className="movies-img">
+                                                                                        <img
+                                                                                            className="img-fluid"
+                                                                                            src={movie.poster_path ? `https://image.tmdb.org/t/p/w500/${movie.poster_path}` : 'images/movie/movie-01.jpg'}
+                                                                                            alt={movie.title || movie.name}
+                                                                                        />
+                                                                                        <div className="info-top">
+                                                                                            {movie.genre && (
+                                                                                                <span className="tag">{movie.genre}</span>
+                                                                                            )}
+                                                                                            <div className="ms-auto">
+                                                                                                <span className="views">
+                                                                                                    <i className="far fa-eye" /> {movie.vote_average ? `${movie.vote_average.toFixed(1)}★` : 'N/A'}
+                                                                                                </span>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div className="movies-info">
+                                                                                            <div className="content">
+                                                                                                <span className="time">
+                                                                                                    <i className="far fa-clock me-2" />
+                                                                                                    {movie.runtime ? `${Math.floor(movie.runtime / 60)}hr : ${movie.runtime % 60}mins` : 'N/A'}
+                                                                                                </span>
+                                                                                                <div className="info-content">
+                                                                                                    <div className="movies-title">
+                                                                                                        <a
+                                                                                                            className="play-btn popup-youtube"
+                                                                                                            href={movie.trailer ? `https://www.youtube.com/watch?v=${movie.trailer}` : "#"}
+                                                                                                            onClick={(e) => e.stopPropagation()}
+                                                                                                            target="_blank"
+                                                                                                            rel="noopener noreferrer"
+                                                                                                        >
+                                                                                                            <i className="fa-solid fa-play" />
+                                                                                                        </a>
+                                                                                                        <h5>
+                                                                                                            <span className="title mt-0">
+                                                                                                                {movie.title || movie.name}
+                                                                                                            </span>
+                                                                                                        </h5>
+                                                                                                    </div>
+                                                                                                    <div className="share-info">
+                                                                                                        <a href="#" className="add-icon" onClick={e => e.preventDefault()} />
+                                                                                                        <div className="share-box">
+                                                                                                            <a href="#" onClick={e => e.preventDefault()}>
+                                                                                                                <i className="fas fa-share-alt" />
+                                                                                                            </a>
+                                                                                                            <ul className="list-unstyled share-box-social">
+                                                                                                                <li>
+                                                                                                                    <a href="#" onClick={e => e.preventDefault()}>
+                                                                                                                        <i className="fab fa-facebook-f" />
+                                                                                                                    </a>
+                                                                                                                </li>
+                                                                                                                <li>
+                                                                                                                    <a href="#" onClick={e => e.preventDefault()}>
+                                                                                                                        <i className="fab fa-twitter" />
+                                                                                                                    </a>
+                                                                                                                </li>
+                                                                                                                <li>
+                                                                                                                    <a href="#" onClick={e => e.preventDefault()}>
+                                                                                                                        <i className="fab fa-instagram" />
+                                                                                                                    </a>
+                                                                                                                </li>
+                                                                                                            </ul>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </Link>
                                                                         </div>
+                                                                    ))}
+                                                                </div>
+                                                                {profile.data.favorite_movies.length > 6 && (
+                                                                    <div className="text-center mt-3">
+                                                                        <button className="btn btn-primary">
+                                                                            View All Favorite Movies ({profile.data.favorite_movies.length})
+                                                                        </button>
                                                                     </div>
-                                                                ))}
-                                                            </div>
+                                                                )}
+                                                            </>
                                                         ) : (
                                                             <p className="text-muted">No favorite movies yet.</p>
                                                         )}
@@ -348,20 +422,93 @@ export default function Account() {
                                                             Favorite TV Series ({profile?.data?.favorite_tv_series?.length || 0})
                                                         </h5>
                                                         {profile?.data?.favorite_tv_series?.length > 0 ? (
-                                                            <div className="row">
-                                                                {profile.data.favorite_tv_series.map((series, index) => (
-                                                                    <div key={index} className="col-md-4 mb-3">
-                                                                        <div className="favorite-item bg-secondary p-3 rounded">
-                                                                            <h6 className="text-white mb-2">{series.title || series.name || 'Unknown Series'}</h6>
-                                                                            <small className="text-muted">
-                                                                                {series.release_date || series.first_air_date ?
-                                                                                    new Date(series.release_date || series.first_air_date).getFullYear() : 'N/A'
-                                                                                }
-                                                                            </small>
+                                                            <>
+                                                                <div className="row">
+                                                                    {profile.data.favorite_tv_series.slice(0, 6).map((series, index) => (
+                                                                        <div key={series.id || index} className="col-lg-2 col-md-3 col-sm-4 mb-3">
+                                                                            <Link to={`/series/details/${series.api_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                                                                <div className="movies-categories br-20">
+                                                                                    <div className="movies-img">
+                                                                                        <img
+                                                                                            className="img-fluid"
+                                                                                            src={series.poster_path ? `https://image.tmdb.org/t/p/w500/${series.poster_path}` : 'images/movie/movie-01.jpg'}
+                                                                                            alt={series.title || series.name}
+                                                                                        />
+                                                                                        <div className="info-top">
+                                                                                            {series.genre && (
+                                                                                                <span className="tag">{series.genre}</span>
+                                                                                            )}
+                                                                                            <div className="ms-auto">
+                                                                                                <span className="views">
+                                                                                                    <i className="far fa-eye" /> {series.vote_average ? `${series.vote_average.toFixed(1)}★` : 'N/A'}
+                                                                                                </span>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div className="movies-info">
+                                                                                            <div className="content">
+                                                                                                <span className="time">
+                                                                                                    <i className="far fa-clock me-2" />
+                                                                                                    {series.runtime ? `${Math.floor(series.runtime / 60)}hr : ${series.runtime % 60}mins` : 'N/A'}
+                                                                                                </span>
+                                                                                                <div className="info-content">
+                                                                                                    <div className="movies-title">
+                                                                                                        <a
+                                                                                                            className="play-btn popup-youtube"
+                                                                                                            href={series.trailer ? `https://www.youtube.com/watch?v=${series.trailer}` : "#"}
+                                                                                                            onClick={(e) => e.stopPropagation()}
+                                                                                                            target="_blank"
+                                                                                                            rel="noopener noreferrer"
+                                                                                                        >
+                                                                                                            <i className="fa-solid fa-play" />
+                                                                                                        </a>
+                                                                                                        <h5>
+                                                                                                            <span className="title mt-0">
+                                                                                                                {series.title || series.name}
+                                                                                                            </span>
+                                                                                                        </h5>
+                                                                                                    </div>
+                                                                                                    <div className="share-info">
+                                                                                                        <a href="#" className="add-icon" onClick={e => e.preventDefault()} />
+                                                                                                        <div className="share-box">
+                                                                                                            <a href="#" onClick={e => e.preventDefault()}>
+                                                                                                                <i className="fas fa-share-alt" />
+                                                                                                            </a>
+                                                                                                            <ul className="list-unstyled share-box-social">
+                                                                                                                <li>
+                                                                                                                    <a href="#" onClick={e => e.preventDefault()}>
+                                                                                                                        <i className="fab fa-facebook-f" />
+                                                                                                                    </a>
+                                                                                                                </li>
+                                                                                                                <li>
+                                                                                                                    <a href="#" onClick={e => e.preventDefault()}>
+                                                                                                                        <i className="fab fa-twitter" />
+                                                                                                                    </a>
+                                                                                                                </li>
+                                                                                                                <li>
+                                                                                                                    <a href="#" onClick={e => e.preventDefault()}>
+                                                                                                                        <i className="fab fa-instagram" />
+                                                                                                                    </a>
+                                                                                                                </li>
+                                                                                                            </ul>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </Link>
                                                                         </div>
+                                                                    ))}
+                                                                </div>
+                                                                {profile.data.favorite_tv_series.length > 6 && (
+                                                                    <div className="text-center mt-3">
+                                                                        <button className="btn btn-primary">
+                                                                            View All Favorite TV Series ({profile.data.favorite_tv_series.length})
+                                                                        </button>
                                                                     </div>
-                                                                ))}
-                                                            </div>
+                                                                )}
+                                                            </>
                                                         ) : (
                                                             <p className="text-muted">No favorite TV series yet.</p>
                                                         )}
