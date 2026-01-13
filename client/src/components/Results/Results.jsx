@@ -1148,7 +1148,7 @@ export default function Results() {
                             alt={item.name || item.title}
                           />
                           <div className="info-top">
-                            <a href="javascript:void(0)" className="like" onClick={(e) => e.preventDefault()} style={mode === 'favorites' ? { backgroundColor: '#f6be00', color: '#0a0a0a' } : {}} />
+                            <a href="javascript:void(0)" className={`like ${mode === 'favorites' ? 'active' : ''}`} onClick={(e) => e.preventDefault()} />
                             <a className="views" href="#" onClick={(e) => e.preventDefault()}>
                               <i className="fa-solid fa-star" /> {item.vote_average ? (typeof item.vote_average === 'number' ? item.vote_average.toFixed(1) : item.vote_average) : '0'}
                             </a>
@@ -1214,7 +1214,7 @@ export default function Results() {
                               <a className="views" href="#" onClick={(e) => e.preventDefault()}>
                                 <i className="far fa-eye" />
                               </a>
-                              <a href="#" className="like" onClick={(e) => e.preventDefault()} style={mode === 'favorites' ? { backgroundColor: '#f6be00', color: '#0a0a0a' } : {}} />
+                              <a href="#" className={`like ${mode === 'favorites' ? 'active' : ''}`} onClick={(e) => e.preventDefault()} />
                               <a className="rating" href="#" onClick={(e) => e.preventDefault()}>
                                 <i className="fa-solid fa-star" /> {item.vote_average ? (item.vote_average.toFixed(1)) : "0"}
                               </a>
