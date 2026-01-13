@@ -327,7 +327,7 @@ export default function Account() {
                                                             <>
                                                                 <div className="row">
                                                                     {profile.data.favorite_movies.slice(0, 6).map((movie, index) => (
-                                                                        <div key={movie.id || index} className="col-lg-2 col-md-3 col-sm-4 mb-3">
+                                                                        <div key={movie.id || index} className="col-lg-4 col-md-6 col-sm-6 mb-3">
                                                                             <Link to={`/movie/details/${movie.api_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                                                                                 <div className="movies-categories br-20">
                                                                                     <div className="movies-img">
@@ -338,7 +338,7 @@ export default function Account() {
                                                                                         />
                                                                                         <div className="info-top">
                                                                                             {movie.genre && (
-                                                                                                <span className="tag">{movie.genre}</span>
+                                                                                                <a className="tag" href="#">{movie.genre}</a>
                                                                                             )}
                                                                                             <div className="ms-auto">
                                                                                                 <span className="views">
@@ -363,11 +363,11 @@ export default function Account() {
                                                                                                         >
                                                                                                             <i className="fa-solid fa-play" />
                                                                                                         </a>
-                                                                                                        <h5>
+                                                                                                        <h6 style={{ fontSize: '18px' }}>
                                                                                                             <span className="title mt-0">
                                                                                                                 {movie.title || movie.name}
                                                                                                             </span>
-                                                                                                        </h5>
+                                                                                                        </h6>
                                                                                                     </div>
                                                                                                     <div className="share-info">
                                                                                                         <a href="#" className="add-icon" onClick={e => e.preventDefault()} />
@@ -425,7 +425,7 @@ export default function Account() {
                                                             <>
                                                                 <div className="row">
                                                                     {profile.data.favorite_tv_series.slice(0, 6).map((series, index) => (
-                                                                        <div key={series.id || index} className="col-lg-2 col-md-3 col-sm-4 mb-3">
+                                                                        <div key={series.id || index} className="col-lg-4 col-md-6 col-sm-6 mb-3">
                                                                             <Link to={`/series/details/${series.api_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                                                                                 <div className="movies-categories br-20">
                                                                                     <div className="movies-img">
@@ -436,7 +436,7 @@ export default function Account() {
                                                                                         />
                                                                                         <div className="info-top">
                                                                                             {series.genre && (
-                                                                                                <span className="tag">{series.genre}</span>
+                                                                                                <a className="tag" href="#">{series.genre}</a>
                                                                                             )}
                                                                                             <div className="ms-auto">
                                                                                                 <span className="views">
@@ -461,11 +461,11 @@ export default function Account() {
                                                                                                         >
                                                                                                             <i className="fa-solid fa-play" />
                                                                                                         </a>
-                                                                                                        <h5>
+                                                                                                        <h6 style={{ fontSize: '18px' }}>
                                                                                                             <span className="title mt-0">
                                                                                                                 {series.title || series.name}
                                                                                                             </span>
-                                                                                                        </h5>
+                                                                                                        </h6>
                                                                                                     </div>
                                                                                                     <div className="share-info">
                                                                                                         <a href="#" className="add-icon" onClick={e => e.preventDefault()} />
