@@ -421,7 +421,8 @@ export default function Account() {
                                                                                         </div>
                                                                                         <div className="movies-info">
                                                                                             <div className="content">
-                                                                                                <span className="time" style={{ fontSize: '14px' }}>
+                                                                                                <span className="time" style={{ fontSize: '14px', flexDirection: "column", justifyContent: "center" }}>
+                                                                                                    <span className="year">{movie.year}</span>{" "}
                                                                                                     <span>SS {series.seasons} <span className="dot"></span> EPS {series.episodes}</span>
                                                                                                 </span>
                                                                                                 <div className="info-content">
