@@ -172,6 +172,7 @@ export default function Results() {
 
   const [genreChanged, setGenreChanged] = useState(false);
   const [forceRefetch, setForceRefetch] = useState(0); // New state for forcing refetch
+  const [favoritesUpdateTrigger, setFavoritesUpdateTrigger] = useState(0); // Trigger for favorites updates
   const [filtersExpanded, setFiltersExpanded] = useState(false);
 
   const handleGenreToggle = (genreId) => {
@@ -319,29 +320,11 @@ export default function Results() {
         showNotification(response.message, 'remove');
       }
 
-      // Re-fetch favorites data to update the display
-      setLoading(true);
-      const profileData = await getUserProfile();
-      if (favorites === 'movies') {
-        const updatedData = {
-          results: profileData.data.favorite_movies || [],
-          total_pages: 1,
-          total_results: (profileData.data.favorite_movies || []).length
-        };
-        setApiData(updatedData);
-      } else if (favorites === 'series') {
-        const updatedData = {
-          results: profileData.data.favorite_tv_series || [],
-          total_pages: 1,
-          total_results: (profileData.data.favorite_tv_series || []).length
-        };
-        setApiData(updatedData);
-      }
-      setLoading(false);
+      // Trigger re-fetch of favorites data
+      setFavoritesUpdateTrigger(prev => prev + 1);
     } catch (error) {
       console.error('Error removing from favorites:', error);
       showNotification('Failed to remove from favorites', 'error');
-      setLoading(false);
     }
   };
 
@@ -470,7 +453,7 @@ export default function Results() {
     };
 
     fetchResults();
-  }, [mode, query, collectionQuery, genre, media, category, types, currentPage, setLoading, forceRefetch, actorMediaType, crewId, crewName, prodId, prodName]);
+  }, [mode, query, collectionQuery, genre, media, category, types, currentPage, setLoading, forceRefetch, favoritesUpdateTrigger, actorMediaType, crewId, crewName, prodId, prodName]);
 
   // Reset to first page when primary criteria changes — update URL page to 1
   useEffect(() => {
