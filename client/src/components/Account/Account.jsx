@@ -1,11 +1,12 @@
 import { useContext, useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import AuthContext from '../../contexts/AuthProvider';
 import { getUserProfile } from '../../services/authService';
 import Loader from '../Loader/Loader';
 
 export default function Account() {
     const { user, logoutHandler } = useContext(AuthContext);
+    const navigate = useNavigate();
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -380,7 +381,10 @@ export default function Account() {
                                                                 </div>
                                                                 {profile.data.favorite_movies.length > 8 && (
                                                                     <div className="text-center mt-3">
-                                                                        <button className="btn btn-primary">
+                                                                        <button
+                                                                            className="btn btn-primary"
+                                                                            onClick={() => navigate('/results?favorites=movies')}
+                                                                        >
                                                                             View All Favorite Movies ({profile.data.favorite_movies.length})
                                                                         </button>
                                                                     </div>
@@ -459,6 +463,16 @@ export default function Account() {
                                                             </>
                                                         ) : (
                                                             <p className="text-muted">No favorite TV series yet.</p>
+                                                        )}
+                                                        {profile.data.favorite_tv_series.length > 8 && (
+                                                            <div className="text-center mt-3">
+                                                                <button
+                                                                    className="btn btn-primary"
+                                                                    onClick={() => navigate('/results?favorites=series')}
+                                                                >
+                                                                    View All Favorite TV Series ({profile.data.favorite_tv_series.length})
+                                                                </button>
+                                                            </div>
                                                         )}
                                                     </div>
                                                 </div>

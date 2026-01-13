@@ -4,6 +4,7 @@ import { search, getGenres, getPopularMovies, getTrendingMovies, getLatestMovies
 import { getPopularSeries, getTrendingSeries, getLatestSeries, getTopRatedSeries } from '../../services/seriesService';
 import { useLoading } from '../../contexts/LoadingContext';
 import { getActorsMedia, getCrewMedia, getProductionCompanies } from '../../services/castService';
+import { getUserProfile } from '../../services/authService';
 
 export default function Results() {
   // NOTE: we now get setSearchParams so we can read/write the page in the URL
@@ -32,6 +33,9 @@ export default function Results() {
   // Add collection search query parameter
   const collectionQuery = searchParams.get('cq');
 
+  // Add favorites parameter for user's favorites
+  const favorites = searchParams.get('favorites');
+
   // Add actor ID parameter for actor media
   const actorId = searchParams.get('actorId');
 
@@ -57,6 +61,7 @@ export default function Results() {
   const mode = (prodId && prodId.trim()) ? 'production_company_media' :
                (crewId && crewId.trim()) ? 'crew_media' :
                (actorId && actorId.trim()) ? 'actor_media' :
+               (favorites && favorites.trim()) ? 'favorites' :
                (query && query.trim()) ? 'search' :
                (genre && genre.trim()) ? 'genre' :
                (collectionQuery && collectionQuery.trim()) ? 'collection_search' :
@@ -288,6 +293,23 @@ export default function Results() {
           // Fetch production company's movies and series
           data = await getProductionCompanies(prodId, currentPage, 30, actorMediaType);
           console.log('Production company media results:', data);
+        } else if (mode === 'favorites') {
+          // Fetch user's favorite movies or series
+          const profileData = await getUserProfile();
+          if (favorites === 'movies') {
+            data = {
+              results: profileData.data.favorite_movies || [],
+              total_pages: 1,
+              total_results: (profileData.data.favorite_movies || []).length
+            };
+          } else if (favorites === 'series') {
+            data = {
+              results: profileData.data.favorite_tv_series || [],
+              total_pages: 1,
+              total_results: (profileData.data.favorite_tv_series || []).length
+            };
+          }
+          console.log('Favorites results:', data);
         } else if (mode === 'search') {
           // Note: current moviesService.search may ignore page/size; backend can be updated later.
           data = await search(media, query, currentPage, 30);
