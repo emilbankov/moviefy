@@ -1205,7 +1205,7 @@ export default function Results() {
                             alt={item.name || item.title}
                           />
                           <div className="info-top">
-                            <a href="javascript:void(0)" className={`like ${mode === 'favorites' ? 'active' : ''}`} onClick={(e) => mode === 'favorites' ? toggleFavorite('movie', item.api_id, e) : e.preventDefault()} />
+                            <a href="javascript:void(0)" className={`like ${mode === 'favorites' ? 'active' : ''}`} onClick={(e) => mode === 'favorites' ? toggleFavorite('movie', item.id, e) : e.preventDefault()} />
                             <a className="views" href="#" onClick={(e) => e.preventDefault()}>
                               <i className="fa-solid fa-star" /> {item.vote_average ? (typeof item.vote_average === 'number' ? item.vote_average.toFixed(1) : item.vote_average) : '0'}
                             </a>
@@ -1271,7 +1271,7 @@ export default function Results() {
                               <a className="views" href="#" onClick={(e) => e.preventDefault()}>
                                 <i className="far fa-eye" />
                               </a>
-                              <a href="#" className={`like ${mode === 'favorites' ? 'active' : ''}`} onClick={(e) => mode === 'favorites' ? toggleFavorite(isSeriesItem(item) ? 'series' : 'movie', item.api_id, e) : e.preventDefault()} />
+                              <a href="#" className={`like ${mode === 'favorites' ? 'active' : ''}`} onClick={(e) => mode === 'favorites' ? toggleFavorite(isSeriesItem(item) ? 'series' : 'movie', item.id, e) : e.preventDefault()} />
                               <a className="rating" href="#" onClick={(e) => e.preventDefault()}>
                                 <i className="fa-solid fa-star" /> {item.vote_average ? (item.vote_average.toFixed(1)) : "0"}
                               </a>
