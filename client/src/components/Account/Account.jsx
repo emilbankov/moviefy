@@ -365,8 +365,8 @@ export default function Account() {
                                                                                                         >
                                                                                                             <i className="fa-solid fa-play" />
                                                                                                         </a>
-                                                                                                        <h6 className="title mt-0">
-                                                                                                            {movie?.title?.length > 10 ? movie.title.substring(0, 10) + '...' : movie.title}
+                                                                                                        <h6 style={{ fontSize: "16px" }}>
+                                                                                                            {(movie.title || movie.name).length > 10 ? (movie.title || movie.name).substring(0, 10) + '...' : (movie.title || movie.name)}
                                                                                                         </h6>
                                                                                                     </div>
                                                                                                 </div>
@@ -424,7 +424,7 @@ export default function Account() {
                                                                                                 <span className="time" style={{ fontSize: '13px' }}>
                                                                                                     <span className="year">{series.year}</span>{" "}
                                                                                                     <i className="far fa-clock me-2" style={{ marginLeft: "8px" }} />
-                                                                                                    {Math.floor(series.runtime / 60)}hr : {series.runtime % 60}min
+                                                                                                    SS {series.seasons} <span className="dot"></span> EPS {series.episodes}
                                                                                                 </span>
                                                                                                 <div className="info-content">
                                                                                                     <div className="movies-title">
@@ -439,7 +439,7 @@ export default function Account() {
                                                                                                             <i className="fa-solid fa-play" />
                                                                                                         </a>
                                                                                                         <h6 style={{ fontSize: '16px' }}>
-                                                                                                            {series?.title?.length > 10 ? series.title.substring(0, 10) + '...' : series.title}
+                                                                                                            {(series.title || series.name).length > 10 ? (series.title || series.name).substring(0, 10) + '...' : (series.title || series.name)}
                                                                                                         </h6>
                                                                                                     </div>
                                                                                                 </div>
@@ -532,8 +532,8 @@ export default function Account() {
                             </div>
                         </div>
                     </div>
-                </div>
-            </section>
+                </div >
+            </section >
         </>
     )
 }
