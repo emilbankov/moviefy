@@ -983,7 +983,7 @@ export default function SeriesDetails() {
                         mediaType: 'series',
                         title: series.series.name,
                         subtitle: 'Added to favorites',
-                        meta: `${year} • SS ${seasonCount} • EPS ${episodeCount}`,
+                        meta: `${year} | SS ${seasonCount} • EPS ${episodeCount}`,
                         imageUrl: series.series.poster_path ? `https://image.tmdb.org/t/p/w92${series.series.poster_path}` : '/images/no-image.jpg',
                         thumbnail: series.series.backdrop_path ? `https://image.tmdb.org/t/p/w185${series.series.backdrop_path}` : undefined,
                     });

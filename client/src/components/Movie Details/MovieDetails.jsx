@@ -110,7 +110,7 @@ export default function MovieDetails() {
                         mediaType: 'movie',
                         title: movie.movies.title,
                         subtitle: 'Added to favorites',
-                        meta: `${year} • ${runtime}`,
+                        meta: `${year} | ${runtime}`,
                         imageUrl: movie.movies.poster_path ? `https://image.tmdb.org/t/p/w92${movie.movies.poster_path}` : '/images/no-image.jpg',
                         thumbnail: movie.movies.backdrop_path ? `https://image.tmdb.org/t/p/w185${movie.movies.backdrop_path}` : undefined,
                     });

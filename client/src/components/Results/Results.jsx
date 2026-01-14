@@ -346,7 +346,7 @@ export default function Results() {
               mediaType: 'movie',
               title: item.title || item.name,
               subtitle: 'Added to favorites',
-              meta: `${year} • ${runtime}`,
+              meta: `${year} | ${runtime}`,
               imageUrl: item.poster_path ? `https://image.tmdb.org/t/p/w92${item.poster_path}` : '/images/no-image.jpg',
               thumbnail: item.backdrop_path ? `https://image.tmdb.org/t/p/w185${item.backdrop_path}` : undefined,
             });
@@ -366,7 +366,7 @@ export default function Results() {
               mediaType: 'series',
               title: item.name || item.title,
               subtitle: 'Added to favorites',
-              meta: `${year} • SS ${seasonCount} • EPS ${episodeCount}`,
+              meta: `${year} | SS ${seasonCount} • EPS ${episodeCount}`,
               imageUrl: item.poster_path ? `https://image.tmdb.org/t/p/w92${item.poster_path}` : '/images/no-image.jpg',
               thumbnail: item.backdrop_path ? `https://image.tmdb.org/t/p/w185${item.backdrop_path}` : undefined,
             });
