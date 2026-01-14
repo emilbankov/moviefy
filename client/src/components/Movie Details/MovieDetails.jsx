@@ -297,32 +297,32 @@ export default function MovieDetails() {
             />
             {/* Notification */}
             <div
-                 key={notification.id}
-                 style={{
-                     position: 'fixed',
-                     top: notification.show ? '20px' : '-120px',
-                     left: '50%',
-                     transform: 'translateX(-50%)',
-                     zIndex: 9999,
-                     backgroundColor: notification.type === 'add' ? '#28a745' : notification.type === 'auth' ? '#17a2b8' : '#dc3545',
-                     color: 'white',
-                     padding: notification.type === 'auth' ? '20px 32px' : '16px 32px',
-                     borderRadius: '8px',
-                     boxShadow: '0 6px 20px rgba(0,0,0,0.4)',
-                     border: '2px solid rgba(255,255,255,0.2)',
-                     transition: 'all 0.4s ease-in-out',
-                     opacity: notification.show ? 1 : 0,
-                     fontWeight: '600',
-                     fontSize: '16px',
-                     whiteSpace: 'nowrap',
-                     minWidth: notification.type === 'auth' ? '400px' : '300px',
-                     textAlign: 'center',
-                     pointerEvents: notification.show ? 'auto' : 'none',
-                     display: 'flex',
-                     flexDirection: 'column',
-                     alignItems: 'center',
-                     gap: notification.type === 'auth' ? '12px' : '0'
-                 }}>
+                key={notification.id}
+                style={{
+                    position: 'fixed',
+                    top: notification.show ? '20px' : '-120px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    zIndex: 9999,
+                    backgroundColor: notification.type === 'add' ? '#28a745' : notification.type === 'auth' ? '#17a2b8' : '#dc3545',
+                    color: 'white',
+                    padding: notification.type === 'auth' ? '20px 32px' : '16px 32px',
+                    borderRadius: '8px',
+                    boxShadow: '0 6px 20px rgba(0,0,0,0.4)',
+                    border: '2px solid rgba(255,255,255,0.2)',
+                    transition: 'all 0.4s ease-in-out',
+                    opacity: notification.show ? 1 : 0,
+                    fontWeight: '600',
+                    fontSize: '16px',
+                    whiteSpace: 'nowrap',
+                    minWidth: notification.type === 'auth' ? '400px' : '300px',
+                    textAlign: 'center',
+                    pointerEvents: notification.show ? 'auto' : 'none',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: notification.type === 'auth' ? '12px' : '0'
+                }}>
                 {notification.show && (
                     <>
                         <div>{notification.message}</div>
@@ -448,6 +448,14 @@ export default function MovieDetails() {
                                                                 <img className="img-fluid" src="/images/tmdb-logo.svg" alt="#" />{movie.movies.vote_average}
                                                             </a>
                                                         </span>
+                                                        <span
+                                                            className={`like ${favoriteMovieIds.has(movie.movies.id) ? 'active' : ''}`}
+                                                            data-bs-toggle="tooltip"
+                                                            data-bs-placement="top"
+                                                            data-bs-title="Like"
+                                                            onClick={(e) => toggleFavorite('movie', movie.movies.id, e)}
+                                                            style={{ cursor: 'pointer' }}
+                                                        />
                                                     </div>
                                                 </div>
                                                 <div className="movies-language">
