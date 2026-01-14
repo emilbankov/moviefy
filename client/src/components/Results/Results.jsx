@@ -8,6 +8,7 @@ import { getUserProfile } from '../../services/authService';
 import * as userService from '../../services/userService';
 import { useContext } from 'react';
 import AuthContext from '../../contexts/AuthProvider';
+import { useNotifications } from '../../contexts/NotificationContext';
 import MetaTags from '../Meta Tags/MetaTags';
 
 export default function Results() {
@@ -16,6 +17,7 @@ export default function Results() {
   const navigate = useNavigate();
   const { setLoading } = useLoading();
   const { user } = useContext(AuthContext);
+  const { addNotification } = useNotifications();
 
   const [apiData, setApiData] = useState(null);
 
@@ -353,10 +355,36 @@ export default function Results() {
           const response = await userService.addMovieToFavorites(id);
           setFavoriteMovieIds(prev => new Set([...prev, id]));
           showNotification(response.message, 'add');
+
+          const item = results.find((r) => r.id === id);
+          if (item) {
+            addNotification({
+              type: 'favorite_add',
+              mediaType: 'movie',
+              title: item.title || item.name,
+              subtitle: 'Added to favorites',
+              meta: `${item.release_date ? new Date(item.release_date).getFullYear() : (item.year || '')}${item.runtime ? ` • ${Math.floor(item.runtime / 60)}hr ${item.runtime % 60}min` : ''}`,
+              imageUrl: item.poster_path ? `https://image.tmdb.org/t/p/w92${item.poster_path}` : '/images/no-image.jpg',
+              thumbnail: item.backdrop_path ? `https://image.tmdb.org/t/p/w185${item.backdrop_path}` : undefined,
+            });
+          }
         } else {
           const response = await userService.addSeriesToFavorites(id);
           setFavoriteSeriesIds(prev => new Set([...prev, id]));
           showNotification(response.message, 'add');
+
+          const item = results.find((r) => r.id === id);
+          if (item) {
+            addNotification({
+              type: 'favorite_add',
+              mediaType: 'series',
+              title: item.name || item.title,
+              subtitle: 'Added to favorites',
+              meta: `${item.first_air_date ? new Date(item.first_air_date).getFullYear() : ''} • SS ${item.seasons ?? 'N/A'} • EPS ${item.episodes ?? 'N/A'}`,
+              imageUrl: item.poster_path ? `https://image.tmdb.org/t/p/w92${item.poster_path}` : '/images/no-image.jpg',
+              thumbnail: item.backdrop_path ? `https://image.tmdb.org/t/p/w185${item.backdrop_path}` : undefined,
+            });
+          }
         }
       }
     } catch (error) {

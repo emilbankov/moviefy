@@ -867,6 +867,7 @@ import * as seriesService from '../../services/seriesService';
 import * as reviewsService from '../../services/reviewsService';
 import * as userService from '../../services/userService';
 import { useLoading } from '../../contexts/LoadingContext';
+import { useNotifications } from '../../contexts/NotificationContext';
 import MetaTags from '../Meta Tags/MetaTags';
 
 // Helper function to convert genre display name to database name
@@ -930,6 +931,7 @@ export default function SeriesDetails() {
 
     // Notification state
     const [notification, setNotification] = useState({ show: false, message: '', type: 'success', id: null });
+    const { addNotification } = useNotifications();
 
     const reviewsPerPage = 20;
 
@@ -997,6 +999,19 @@ export default function SeriesDetails() {
                 const response = await userService.addSeriesToFavorites(id);
                 setFavoriteSeriesIds(prev => new Set([...prev, id]));
                 showNotification(response.message, 'add');
+
+                // Header dropdown notification
+                if (series?.series) {
+                    addNotification({
+                        type: 'favorite_add',
+                        mediaType: 'series',
+                        title: series.series.name,
+                        subtitle: 'Added to favorites',
+                        meta: `${series.series.first_air_date ? new Date(series.series.first_air_date).getFullYear() : ''} • SS ${series.series.seasons?.length ?? 'N/A'} • EPS ${series.series.number_of_episodes ?? 'N/A'}`,
+                        imageUrl: series.series.poster_path ? `https://image.tmdb.org/t/p/w92${series.series.poster_path}` : '/images/no-image.jpg',
+                        thumbnail: series.series.backdrop_path ? `https://image.tmdb.org/t/p/w185${series.series.backdrop_path}` : undefined,
+                    });
+                }
             }
         } catch (error) {
             console.error('Error toggling favorite series:', error);

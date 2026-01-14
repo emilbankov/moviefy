@@ -5,6 +5,7 @@ import * as reviewsService from '../../services/reviewsService'
 import * as userService from '../../services/userService'
 import { useLoading } from '../../contexts/LoadingContext';
 import MetaTags from '../Meta Tags/MetaTags';
+import { useNotifications } from '../../contexts/NotificationContext';
 
 // Helper function to convert genre display name to database name
 const getGenreParam = (genreName) => {
@@ -54,6 +55,7 @@ export default function MovieDetails() {
 
     // Notification state
     const [notification, setNotification] = useState({ show: false, message: '', type: 'success', id: null });
+    const { addNotification } = useNotifications();
 
     const { movieId } = useParams();
     const location = useLocation();
@@ -121,6 +123,19 @@ export default function MovieDetails() {
                 const response = await userService.addMovieToFavorites(id);
                 setFavoriteMovieIds(prev => new Set([...prev, id]));
                 showNotification(response.message, 'add');
+
+                // Header dropdown notification
+                if (movie?.movies) {
+                    addNotification({
+                        type: 'favorite_add',
+                        mediaType: 'movie',
+                        title: movie.movies.title,
+                        subtitle: 'Added to favorites',
+                        meta: `${new Date(movie.movies.release_date).getFullYear()} • ${Math.floor(movie.movies.runtime / 60)}hr ${movie.movies.runtime % 60}min`,
+                        imageUrl: movie.movies.poster_path ? `https://image.tmdb.org/t/p/w92${movie.movies.poster_path}` : '/images/no-image.jpg',
+                        thumbnail: movie.movies.backdrop_path ? `https://image.tmdb.org/t/p/w185${movie.movies.backdrop_path}` : undefined,
+                    });
+                }
             }
         } catch (error) {
             console.error('Error toggling favorite:', error);
