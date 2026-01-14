@@ -1384,10 +1384,10 @@ export default function Results() {
                               <a className="views" href="#" onClick={(e) => e.preventDefault()}>
                                 <i className="far fa-eye" />
                               </a>
-                              <a 
-                                href="#" 
-                                className={`like ${isSeriesItem(item) ? favoriteSeriesIds.has(item.id) : favoriteMovieIds.has(item.id) ? 'active' : ''}`} 
-                                onClick={(e) => toggleFavorite(isSeriesItem(item) ? 'series' : 'movie', item.id, e)} 
+                              <a
+                                href="#"
+                                className={`like ${(isSeriesItem(item) ? favoriteSeriesIds : favoriteMovieIds).has(item.id) ? 'active' : ''}`}
+                                onClick={(e) => toggleFavorite(isSeriesItem(item) ? 'series' : 'movie', item.id, e)}
                                 style={{ cursor: 'pointer' }}
                               />
                               <a className="rating" href="#" onClick={(e) => e.preventDefault()}>
