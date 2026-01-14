@@ -151,12 +151,13 @@ const Header = ({ onSearchOpen }) => {
                                             notifications.slice(0, 5).map((n) => (
                                                 <div className="notifications-list" key={n.id}>
                                                     <div className="notifications-info">
-                                                        <div className="notifications-author">
+                                                        <div className="notifications-author" style={{ display:"flex", alignItems:"center", justifyContent:"center"}}>
                                                             <img
                                                                 className="img-fluid"
                                                                 src={n.imageUrl || '/images/no-image.jpg'}
                                                                 alt={n.title}
                                                                 onError={(e) => { e.target.src = '/images/no-image.jpg'; }}
+                                                                style={{ borderRadius: '0' }}
                                                             />
                                                         </div>
                                                         <div className="notifications-details">
@@ -170,16 +171,6 @@ const Header = ({ onSearchOpen }) => {
                                                                 {n.meta}
                                                             </p>
                                                         </div>
-                                                        {n.thumbnail && (
-                                                            <div className="movie-img">
-                                                                <img
-                                                                    className="img-fluid"
-                                                                    src={n.thumbnail}
-                                                                    alt={n.title}
-                                                                    onError={(e) => { e.target.src = '/images/no-image.jpg'; }}
-                                                                />
-                                                            </div>
-                                                        )}
                                                     </div>
                                                 </div>
                                             ))
