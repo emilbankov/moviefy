@@ -19,6 +19,10 @@ export default function Results() {
 
   const [apiData, setApiData] = useState(null);
 
+  // Favorites state
+  const [favoriteMovieIds, setFavoriteMovieIds] = useState(new Set());
+  const [favoriteSeriesIds, setFavoriteSeriesIds] = useState(new Set());
+
   // Notification state
   const [notification, setNotification] = useState({ show: false, message: '', type: 'success', id: null });
 
@@ -302,32 +306,100 @@ export default function Results() {
     setSearchParams(paramsObj);
   };
 
-  // Toggle favorite function for favorites mode
+  // Toggle favorite function - works on all pages
   const toggleFavorite = async (mediaType, id, e) => {
-    if (!user) return;
+    if (!user) {
+      e.preventDefault();
+      e.stopPropagation();
+      showNotification('You need to be logged in to add favorites', 'auth');
+      return;
+    }
 
     e.preventDefault();
     e.stopPropagation();
 
     const isMovie = mediaType === 'movie';
+    const currentFavorites = isMovie ? favoriteMovieIds : favoriteSeriesIds;
+    const isFavorited = currentFavorites.has(id);
 
     try {
-      if (isMovie) {
-        const response = await userService.removeMovieFromFavorites(id);
-        showNotification(response.message, 'remove');
+      if (isFavorited) {
+        // Remove from favorites
+        if (isMovie) {
+          const response = await userService.removeMovieFromFavorites(id);
+          setFavoriteMovieIds(prev => {
+            const newSet = new Set(prev);
+            newSet.delete(id);
+            return newSet;
+          });
+          showNotification(response.message, 'remove');
+        } else {
+          const response = await userService.removeSeriesFromFavorites(id);
+          setFavoriteSeriesIds(prev => {
+            const newSet = new Set(prev);
+            newSet.delete(id);
+            return newSet;
+          });
+          showNotification(response.message, 'remove');
+        }
+
+        // Trigger re-fetch of favorites data if on favorites page
+        if (mode === 'favorites') {
+          setFavoritesUpdateTrigger(prev => prev + 1);
+        }
       } else {
-        const response = await userService.removeSeriesFromFavorites(id);
-        showNotification(response.message, 'remove');
+        // Add to favorites
+        if (isMovie) {
+          const response = await userService.addMovieToFavorites(id);
+          setFavoriteMovieIds(prev => new Set([...prev, id]));
+          showNotification(response.message, 'add');
+        } else {
+          const response = await userService.addSeriesToFavorites(id);
+          setFavoriteSeriesIds(prev => new Set([...prev, id]));
+          showNotification(response.message, 'add');
+        }
+      }
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+
+      // Handle authentication errors
+      if (error.status === 401 || error.status === 403 || error.status === 302) {
+        showNotification('You need to be logged in to add favorites', 'auth');
+      } else {
+        showNotification('Failed to update favorite', 'remove');
       }
 
-      // Trigger re-fetch of favorites data
-      setFavoritesUpdateTrigger(prev => prev + 1);
-    } catch (error) {
-      console.error('Error removing from favorites:', error);
-      showNotification('Failed to remove from favorites', 'error');
+      // Don't update UI on error - heart stays in current state
     }
   };
 
+
+  // Load user's favorite IDs on mount
+  useEffect(() => {
+    if (user) {
+      // Load favorite movies IDs
+      userService.getFavoriteMoviesIds()
+        .then(favoriteMovies => {
+          if (favoriteMovies?.data) {
+            setFavoriteMovieIds(new Set(favoriteMovies.data));
+          }
+        })
+        .catch(err => {
+          console.error('Error loading favorite movies IDs:', err);
+        });
+
+      // Load favorite series IDs
+      userService.getFavoriteSeriesIds()
+        .then(favoriteSeries => {
+          if (favoriteSeries?.data) {
+            setFavoriteSeriesIds(new Set(favoriteSeries.data));
+          }
+        })
+        .catch(err => {
+          console.error('Error loading favorite series IDs:', err);
+        });
+    }
+  }, [user]);
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -351,16 +423,22 @@ export default function Results() {
           // Fetch user's favorite movies or series
           const profileData = await getUserProfile();
           if (favorites === 'movies') {
+            const favoriteMovies = profileData.data.favorite_movies || [];
+            // Update favorite IDs state
+            setFavoriteMovieIds(new Set(favoriteMovies.map(m => m.id)));
             data = {
-              results: profileData.data.favorite_movies || [],
+              results: favoriteMovies,
               total_pages: 1,
-              total_results: (profileData.data.favorite_movies || []).length
+              total_results: favoriteMovies.length
             };
           } else if (favorites === 'series') {
+            const favoriteSeries = profileData.data.favorite_tv_series || [];
+            // Update favorite IDs state
+            setFavoriteSeriesIds(new Set(favoriteSeries.map(s => s.id)));
             data = {
-              results: profileData.data.favorite_tv_series || [],
+              results: favoriteSeries,
               total_pages: 1,
-              total_results: (profileData.data.favorite_tv_series || []).length
+              total_results: favoriteSeries.length
             };
           }
         } else if (mode === 'search') {
@@ -1240,7 +1318,7 @@ export default function Results() {
                             alt={item.name || item.title}
                           />
                           <div className="info-top">
-                            <a href="javascript:void(0)" className={`like ${mode === 'favorites' ? 'active' : ''}`} onClick={(e) => mode === 'favorites' ? toggleFavorite('movie', item.id, e) : e.preventDefault()} />
+                            <a href="javascript:void(0)" className={`like ${favoriteMovieIds.has(item.id) ? 'active' : ''}`} onClick={(e) => toggleFavorite('movie', item.id, e)} style={{ cursor: 'pointer' }} />
                             <a className="views" href="#" onClick={(e) => e.preventDefault()}>
                               <i className="fa-solid fa-star" /> {item.vote_average ? (typeof item.vote_average === 'number' ? item.vote_average.toFixed(1) : item.vote_average) : '0'}
                             </a>
@@ -1306,7 +1384,12 @@ export default function Results() {
                               <a className="views" href="#" onClick={(e) => e.preventDefault()}>
                                 <i className="far fa-eye" />
                               </a>
-                              <a href="#" className={`like ${mode === 'favorites' ? 'active' : ''}`} onClick={(e) => mode === 'favorites' ? toggleFavorite(isSeriesItem(item) ? 'series' : 'movie', item.id, e) : e.preventDefault()} />
+                              <a 
+                                href="#" 
+                                className={`like ${isSeriesItem(item) ? favoriteSeriesIds.has(item.id) : favoriteMovieIds.has(item.id) ? 'active' : ''}`} 
+                                onClick={(e) => toggleFavorite(isSeriesItem(item) ? 'series' : 'movie', item.id, e)} 
+                                style={{ cursor: 'pointer' }}
+                              />
                               <a className="rating" href="#" onClick={(e) => e.preventDefault()}>
                                 <i className="fa-solid fa-star" /> {item.vote_average ? (item.vote_average.toFixed(1)) : "0"}
                               </a>
@@ -1541,9 +1624,25 @@ export default function Results() {
           <>
             <div>{notification.message}</div>
             {notification.type === 'auth' && (
-              <div style={{ fontSize: '14px', fontWeight: '400', marginTop: '8px' }}>
-                Redirecting to login...
-              </div>
+              <Link
+                to="/login-register"
+                style={{
+                  backgroundColor: 'rgba(255,255,255,0.2)',
+                  color: 'white',
+                  padding: '8px 16px',
+                  borderRadius: '4px',
+                  textDecoration: 'none',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  border: '1px solid rgba(255,255,255,0.3)',
+                  transition: 'background-color 0.2s ease',
+                  marginTop: '8px'
+                }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.3)'}
+                onMouseLeave={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.2)'}
+              >
+                Login to Add Favorites
+              </Link>
             )}
           </>
         )}
