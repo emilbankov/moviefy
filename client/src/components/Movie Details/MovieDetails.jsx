@@ -468,19 +468,23 @@ export default function MovieDetails() {
                                                         </Link>
                                                     ))}
                                                 </div>
-                                                <div className="movies-genre">
-                                                    Studio: {movie.movies.production_companies.map((company, index) => (
-                                                        <span key={index}>
-                                                            <Link
-                                                                to={`/production-company-media?prodId=${company.id}&prodName=${encodeURIComponent(company.name)}&prodImage=${encodeURIComponent(company.logo_path || '')}&mediaType=all`}
-                                                                style={{ textDecoration: 'none' }}
-                                                            >
-                                                                {company.name}
-                                                            </Link>
-                                                            {index < movie.movies.production_companies.length - 1 && ", "}
-                                                        </span>
-                                                    ))}
-                                                </div>
+                                                {movie.movies.production_companies.length > 0 && (
+                                                    <div className="movies-genre">
+                                                        Studio: {" "}
+                                                        {movie.movies.production_companies.map((company, index) => (
+                                                            <span key={index}>
+                                                                <Link
+                                                                    to={`/production-company-media?prodId=${company.id}&prodName=${encodeURIComponent(company.name)}&prodImage=${encodeURIComponent(company.logo_path || '')}&mediaType=all`}
+                                                                    style={{ textDecoration: 'none' }}
+                                                                >
+                                                                    {company.name}
+                                                                </Link>
+                                                                {index < movie.movies.production_companies.length - 1 && ", "}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                )}
+
                                                 <div className="d-sm-flex">
                                                     <span className="year">{new Date(movie.movies.release_date).toLocaleDateString('en-GB')}</span>
                                                     <a className="time" href="#"><i className="far fa-clock me-2" />{Math.floor(movie.movies.runtime / 60)}hr : {movie.movies.runtime % 60}mins</a>

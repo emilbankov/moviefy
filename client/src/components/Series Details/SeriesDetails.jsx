@@ -927,10 +927,10 @@ export default function SeriesDetails() {
         return localStorage.getItem('preferredPlayer') || 'vidsrc';
     });
     const [favoriteSeriesIds, setFavoriteSeriesIds] = useState(new Set());
-    
+
     // Notification state
     const [notification, setNotification] = useState({ show: false, message: '', type: 'success', id: null });
-    
+
     const reviewsPerPage = 20;
 
     const players = {
@@ -1434,20 +1434,22 @@ export default function SeriesDetails() {
                                                                 Type: {series.series.type}
                                                             </div>
                                                         </div>
-                                                        <div className="movies-genre">
-                                                            Studio:{" "}
-                                                            {series.series.production_companies.map((company, index) => (
-                                                                <span key={index}>
-                                                                    <Link
-                                                                        to={`/production-company-media?prodId=${company.id}&prodName=${encodeURIComponent(company.name)}&prodImage=${encodeURIComponent(company.logo_path || '')}&mediaType=all`}
-                                                                        style={{ textDecoration: 'none' }}
-                                                                    >
-                                                                        {company.name}
-                                                                    </Link>
-                                                                    {index < series.series.production_companies.length - 1 && ", "}
-                                                                </span>
-                                                            ))}
-                                                        </div>
+                                                        {series.series.production_companies.length > 0 && (
+                                                            <div className="movies-genre">
+                                                                Studio:{" "}
+                                                                {series.series.production_companies.map((company, index) => (
+                                                                    <span key={index}>
+                                                                        <Link
+                                                                            to={`/production-company-media?prodId=${company.id}&prodName=${encodeURIComponent(company.name)}&prodImage=${encodeURIComponent(company.logo_path || '')}&mediaType=all`}
+                                                                            style={{ textDecoration: 'none' }}
+                                                                        >
+                                                                            {company.name}
+                                                                        </Link>
+                                                                        {index < series.series.production_companies.length - 1 && ", "}
+                                                                    </span>
+                                                                ))}
+                                                            </div>
+                                                        )}
                                                         <div className="d-sm-flex">
                                                             <span className="year">{new Date(series.series.first_air_date).toLocaleDateString('en-GB')}</span>
                                                             <a className="time" href="#">
