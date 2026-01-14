@@ -976,8 +976,8 @@ export default function SeriesDetails() {
                 if (series?.series) {
                     const year = series.series.first_air_date ? new Date(series.series.first_air_date).getFullYear() : 'N/A';
                     const seasonCount = series.series.seasons?.length ?? series.series.number_of_seasons ?? 'N/A';
-                    const episodeCount = series.series.number_of_episodes ?? 'N/A';
-                    
+                    const episodeCount = series.series.seasons[series.series.seasons.length - 1].episode_count ?? 'N/A';
+
                     addNotification({
                         type: 'favorite_add',
                         mediaType: 'series',
