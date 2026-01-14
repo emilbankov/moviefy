@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useNotifications } from "../../contexts/NotificationContext";
 
 const Header = ({ onSearchOpen }) => {
     const location = useLocation();
+    const { notifications, clearAllNotifications } = useNotifications();
     const [headerClass, setHeaderClass] = useState("header header-sticky");
     const [containerClass, setContainerClass] = useState("container main-header position-relative");
 
@@ -108,51 +110,80 @@ const Header = ({ onSearchOpen }) => {
                                 <li className="search"><a href="#search" onClick={(e) => { e.preventDefault(); onSearchOpen(); }}><i className="fa fa-search"></i></a></li>
                                 <li><Link to="/account"><i className="fa-regular fa-user"></i></Link></li>
                                 <li className="dropdown">
-                                    <a href="#" className="notifications dropdown-toggle" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <a
+                                        href="#"
+                                        className="notifications dropdown-toggle"
+                                        id="dropdownMenuButton2"
+                                        data-bs-toggle="dropdown"
+                                        aria-haspopup="true"
+                                        aria-expanded="false"
+                                        onClick={(e) => e.preventDefault()}
+                                    >
                                         <i className="fa-regular fa-bell"></i>
-                                        <span className="count">3</span>
+                                        {notifications.length > 0 && (
+                                            <span className="count">{notifications.length}</span>
+                                        )}
                                     </a>
                                     <div className="dropdown-menu mt-0 notifications-menu" aria-labelledby="dropdownMenuButton2">
-                                        <h6 className="notifications-title">Notifications</h6>
-                                        <div className="notifications-list">
-                                            <a href="#" className="notifications-info">
-                                                <div className="notifications-author">
-                                                    <img className="img-fluid" src="/images/avatar/01.jpg" alt="" />
-                                                </div>
-                                                <div className="notifications-details">
-                                                    <p>sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                                                </div>
-                                                <div className="movie-img">
-                                                    <img className="img-fluid" src="/images/movie/single-categories/17.jpg" alt="" />
-                                                </div>
-                                            </a>
+                                        <div className="d-flex justify-content-between align-items-center px-3 pt-2 pb-1">
+                                            <h6 className="notifications-title mb-0">Notifications</h6>
+                                            {notifications.length > 0 && (
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-link p-0 text-muted"
+                                                    style={{ fontSize: '12px' }}
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        clearAllNotifications();
+                                                    }}
+                                                >
+                                                    Clear all
+                                                </button>
+                                            )}
                                         </div>
-                                        <div className="notifications-list">
-                                            <a href="#" className="notifications-info">
-                                                <div className="notifications-author">
-                                                    <img className="img-fluid" src="/images/avatar/02.jpg" alt="" />
+                                        {notifications.length === 0 ? (
+                                            <div className="px-3 pb-2">
+                                                <p className="mb-0 text-muted" style={{ fontSize: '13px' }}>
+                                                    No notifications yet.
+                                                </p>
+                                            </div>
+                                        ) : (
+                                            notifications.slice(0, 5).map((n) => (
+                                                <div className="notifications-list" key={n.id}>
+                                                    <div className="notifications-info">
+                                                        <div className="notifications-author">
+                                                            <img
+                                                                className="img-fluid"
+                                                                src={n.imageUrl || '/images/no-image.jpg'}
+                                                                alt={n.title}
+                                                                onError={(e) => { e.target.src = '/images/no-image.jpg'; }}
+                                                            />
+                                                        </div>
+                                                        <div className="notifications-details">
+                                                            <p className="mb-1">
+                                                                <strong>{n.title}</strong>
+                                                            </p>
+                                                            <p className="mb-0" style={{ fontSize: '12px' }}>
+                                                                {n.subtitle}
+                                                            </p>
+                                                            <p className="mb-0 text-muted" style={{ fontSize: '11px' }}>
+                                                                {n.meta}
+                                                            </p>
+                                                        </div>
+                                                        {n.thumbnail && (
+                                                            <div className="movie-img">
+                                                                <img
+                                                                    className="img-fluid"
+                                                                    src={n.thumbnail}
+                                                                    alt={n.title}
+                                                                    onError={(e) => { e.target.src = '/images/no-image.jpg'; }}
+                                                                />
+                                                            </div>
+                                                        )}
+                                                    </div>
                                                 </div>
-                                                <div className="notifications-details">
-                                                    <p>sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                                                </div>
-                                                <div className="movie-img">
-                                                    <img className="img-fluid" src="/images/movie/single-categories/18.jpg" alt="" />
-                                                </div>
-                                            </a>
-                                        </div>
-                                        <div className="notifications-list">
-                                            <a href="#" className="notifications-info">
-                                                <div className="notifications-author">
-                                                    <img className="img-fluid" src="/images/avatar/03.jpg" alt="" />
-                                                </div>
-                                                <div className="notifications-details">
-                                                    <p>sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                                                </div>
-                                                <div className="movie-img">
-                                                    <img className="img-fluid" src="/images/movie/single-categories/19.jpg" alt="" />
-                                                </div>
-                                            </a>
-                                        </div>
+                                            ))
+                                        )}
                                     </div>
                                 </li>
                             </ul>
