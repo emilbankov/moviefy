@@ -53,8 +53,6 @@ export default function MovieDetails() {
     // Favorites state
     const [favoriteMovieIds, setFavoriteMovieIds] = useState(new Set());
 
-    // Notification state
-    const [notification, setNotification] = useState({ show: false, message: '', type: 'success', id: null });
     const { addNotification } = useNotifications();
 
     const { movieId } = useParams();
@@ -77,28 +75,6 @@ export default function MovieDetails() {
         localStorage.setItem('preferredPlayer', playerId);
     };
 
-    // Notification function
-    const showNotification = (message, type = 'add') => {
-        const notificationId = Date.now();
-
-        // If there's a notification currently showing, hide it first
-        if (notification.show) {
-            setNotification(prev => ({ ...prev, show: false }));
-            // Wait for hide animation, then show new one
-            setTimeout(() => {
-                setNotification({ show: true, message, type, id: notificationId });
-                setTimeout(() => {
-                    setNotification(prev => ({ ...prev, show: false }));
-                }, 2000); // 2 seconds as requested
-            }, 200); // Brief pause for hide animation
-        } else {
-            // No current notification, show immediately
-            setNotification({ show: true, message, type, id: notificationId });
-            setTimeout(() => {
-                setNotification(prev => ({ ...prev, show: false }));
-            }, 2000); // 2 seconds as requested
-        }
-    };
 
     const toggleFavorite = async (mediaType, id, e) => {
         e.preventDefault();
@@ -117,24 +93,29 @@ export default function MovieDetails() {
                     newSet.delete(id);
                     return newSet;
                 });
-                showNotification(response.message, 'remove');
             } else {
                 // Add to favorites - wait for API success
                 const response = await userService.addMovieToFavorites(id);
                 setFavoriteMovieIds(prev => new Set([...prev, id]));
-                showNotification(response.message, 'add');
 
                 // Header dropdown notification
-                if (movie?.movies) {
+                if (movie && movie.movies) {
+                    const year = movie.movies.release_date ? new Date(movie.movies.release_date).getFullYear() : movie.movies.year || 'N/A';
+                    const runtime = movie.movies.runtime 
+                        ? `${Math.floor(movie.movies.runtime / 60)}hr ${movie.movies.runtime % 60}min`
+                        : 'N/A';
+                    
                     addNotification({
                         type: 'favorite_add',
                         mediaType: 'movie',
                         title: movie.movies.title,
                         subtitle: 'Added to favorites',
-                        meta: `${new Date(movie.movies.release_date).getFullYear()} • ${Math.floor(movie.movies.runtime / 60)}hr ${movie.movies.runtime % 60}min`,
+                        meta: `${year} • ${runtime}`,
                         imageUrl: movie.movies.poster_path ? `https://image.tmdb.org/t/p/w92${movie.movies.poster_path}` : '/images/no-image.jpg',
                         thumbnail: movie.movies.backdrop_path ? `https://image.tmdb.org/t/p/w185${movie.movies.backdrop_path}` : undefined,
                     });
+                } else {
+                    console.log('Movie data not available for notification:', movie);
                 }
             }
         } catch (error) {
@@ -142,9 +123,14 @@ export default function MovieDetails() {
 
             // Handle authentication errors (including redirects to login)
             if (error.status === 401 || error.status === 403 || error.status === 302) {
-                showNotification('You need to be logged in to add favorites', 'auth');
-            } else {
-                showNotification('Failed to update favorite', 'remove');
+                addNotification({
+                    type: 'error',
+                    mediaType: 'movie',
+                    title: 'Authentication Required',
+                    subtitle: 'You need to be logged in to add favorites',
+                    meta: '',
+                    imageUrl: '/images/no-image.jpg',
+                });
             }
 
             // Don't update UI on error - heart stays in current state
@@ -310,61 +296,6 @@ export default function MovieDetails() {
                 description={movie.movies ? `${movie.movies.overview || ''} Разгледайте ${movie.movies.title} на Moviefy - вашият източник за филми онлайн.` : 'Разгледайте филми на Moviefy'}
                 keywords={movie.movies ? `${movie.movies.title}, филми, ${movie.movies.genres?.map(g => g.name).join(', ') || ''}, ${movie.movies.year || ''}, ревюта, рейтинг, гледане онлайн` : 'филми, кино, онлайн'}
             />
-            {/* Notification */}
-            <div
-                key={notification.id}
-                style={{
-                    position: 'fixed',
-                    top: notification.show ? '20px' : '-120px',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    zIndex: 9999,
-                    backgroundColor: notification.type === 'add' ? '#28a745' : notification.type === 'auth' ? '#17a2b8' : '#dc3545',
-                    color: 'white',
-                    padding: notification.type === 'auth' ? '20px 32px' : '16px 32px',
-                    borderRadius: '8px',
-                    boxShadow: '0 6px 20px rgba(0,0,0,0.4)',
-                    border: '2px solid rgba(255,255,255,0.2)',
-                    transition: 'all 0.4s ease-in-out',
-                    opacity: notification.show ? 1 : 0,
-                    fontWeight: '600',
-                    fontSize: '16px',
-                    whiteSpace: 'nowrap',
-                    minWidth: notification.type === 'auth' ? '400px' : '300px',
-                    textAlign: 'center',
-                    pointerEvents: notification.show ? 'auto' : 'none',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: notification.type === 'auth' ? '12px' : '0'
-                }}>
-                {notification.show && (
-                    <>
-                        <div>{notification.message}</div>
-                        {notification.type === 'auth' && (
-                            <Link
-                                to="/login-register"
-                                style={{
-                                    backgroundColor: 'rgba(255,255,255,0.2)',
-                                    color: 'white',
-                                    padding: '8px 16px',
-                                    borderRadius: '4px',
-                                    textDecoration: 'none',
-                                    fontSize: '14px',
-                                    fontWeight: '500',
-                                    border: '1px solid rgba(255,255,255,0.3)',
-                                    transition: 'background-color 0.2s ease'
-                                }}
-                                onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.3)'}
-                                onMouseLeave={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.2)'}
-                            >
-                                Login to Add Favorites
-                            </Link>
-                        )}
-                    </>
-                )}
-            </div>
-
             {movie.movies && (
                 <section className="single-movie-details space-pb bg-holder bg-overlay-dark-99" style={{ backgroundImage: "url(/images/bg/03.jpg)" }}>
                     <div className="container position-relative">

@@ -928,9 +928,6 @@ export default function SeriesDetails() {
         return localStorage.getItem('preferredPlayer') || 'vidsrc';
     });
     const [favoriteSeriesIds, setFavoriteSeriesIds] = useState(new Set());
-
-    // Notification state
-    const [notification, setNotification] = useState({ show: false, message: '', type: 'success', id: null });
     const { addNotification } = useNotifications();
 
     const reviewsPerPage = 20;
@@ -955,29 +952,6 @@ export default function SeriesDetails() {
         localStorage.setItem('preferredPlayer', playerId);
     };
 
-    // Notification function
-    const showNotification = (message, type = 'add') => {
-        const notificationId = Date.now();
-
-        // If there's a notification currently showing, hide it first
-        if (notification.show) {
-            setNotification(prev => ({ ...prev, show: false }));
-            // Wait for hide animation, then show new one
-            setTimeout(() => {
-                setNotification({ show: true, message, type, id: notificationId });
-                setTimeout(() => {
-                    setNotification(prev => ({ ...prev, show: false }));
-                }, 2000); // 2 seconds as requested
-            }, 200); // Brief pause for hide animation
-        } else {
-            // No current notification, show immediately
-            setNotification({ show: true, message, type, id: notificationId });
-            setTimeout(() => {
-                setNotification(prev => ({ ...prev, show: false }));
-            }, 2000); // 2 seconds as requested
-        }
-    };
-
     const toggleFavorite = async (id, e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -993,21 +967,23 @@ export default function SeriesDetails() {
                     newSet.delete(id);
                     return newSet;
                 });
-                showNotification(response.message, 'remove');
             } else {
                 // Add to favorites - wait for API success
                 const response = await userService.addSeriesToFavorites(id);
                 setFavoriteSeriesIds(prev => new Set([...prev, id]));
-                showNotification(response.message, 'add');
 
                 // Header dropdown notification
                 if (series?.series) {
+                    const year = series.series.first_air_date ? new Date(series.series.first_air_date).getFullYear() : 'N/A';
+                    const seasonCount = series.series.seasons?.length ?? series.series.number_of_seasons ?? 'N/A';
+                    const episodeCount = series.series.number_of_episodes ?? 'N/A';
+                    
                     addNotification({
                         type: 'favorite_add',
                         mediaType: 'series',
                         title: series.series.name,
                         subtitle: 'Added to favorites',
-                        meta: `${series.series.first_air_date ? new Date(series.series.first_air_date).getFullYear() : ''} • SS ${series.series.seasons?.length ?? 'N/A'} • EPS ${series.series.number_of_episodes ?? 'N/A'}`,
+                        meta: `${year} • SS ${seasonCount} • EPS ${episodeCount}`,
                         imageUrl: series.series.poster_path ? `https://image.tmdb.org/t/p/w92${series.series.poster_path}` : '/images/no-image.jpg',
                         thumbnail: series.series.backdrop_path ? `https://image.tmdb.org/t/p/w185${series.series.backdrop_path}` : undefined,
                     });
@@ -1018,9 +994,14 @@ export default function SeriesDetails() {
 
             // Handle authentication errors (including redirects to login)
             if (error.status === 401 || error.status === 403 || error.status === 302) {
-                showNotification('You need to be logged in to add favorites', 'auth');
-            } else {
-                showNotification('Failed to update favorite', 'remove');
+                addNotification({
+                    type: 'error',
+                    mediaType: 'series',
+                    title: 'Authentication Required',
+                    subtitle: 'You need to be logged in to add favorites',
+                    meta: '',
+                    imageUrl: '/images/no-image.jpg',
+                });
             }
 
             // Don't update UI on error - heart stays in current state
@@ -1269,60 +1250,6 @@ export default function SeriesDetails() {
                 description={series.series ? `${series.series.overview || ''} Разгледайте ${series.series.name} на Moviefy - вашият източник за сериали онлайн.` : 'Разгледайте сериали на Moviefy'}
                 keywords={series.series ? `${series.series.name}, сериали, ${series.series.genres?.map(g => g.name).join(', ') || ''}, ${series.series.first_air_date ? new Date(series.series.first_air_date).getFullYear() : ''}, ревюта, рейтинг, гледане онлайн` : 'сериали, телевизия, онлайн'}
             />
-            {/* Notification */}
-            <div
-                key={notification.id}
-                style={{
-                    position: 'fixed',
-                    top: notification.show ? '20px' : '-120px',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    zIndex: 9999,
-                    backgroundColor: notification.type === 'add' ? '#28a745' : notification.type === 'auth' ? '#17a2b8' : '#dc3545',
-                    color: 'white',
-                    padding: notification.type === 'auth' ? '20px 32px' : '16px 32px',
-                    borderRadius: '8px',
-                    boxShadow: '0 6px 20px rgba(0,0,0,0.4)',
-                    border: '2px solid rgba(255,255,255,0.2)',
-                    transition: 'all 0.4s ease-in-out',
-                    opacity: notification.show ? 1 : 0,
-                    fontWeight: '600',
-                    fontSize: '16px',
-                    whiteSpace: 'nowrap',
-                    minWidth: notification.type === 'auth' ? '400px' : '300px',
-                    textAlign: 'center',
-                    pointerEvents: notification.show ? 'auto' : 'none',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: notification.type === 'auth' ? '12px' : '0'
-                }}>
-                {notification.show && (
-                    <>
-                        <div>{notification.message}</div>
-                        {notification.type === 'auth' && (
-                            <Link
-                                to="/login-register"
-                                style={{
-                                    backgroundColor: 'rgba(255,255,255,0.2)',
-                                    color: 'white',
-                                    padding: '8px 16px',
-                                    borderRadius: '4px',
-                                    textDecoration: 'none',
-                                    fontSize: '14px',
-                                    fontWeight: '500',
-                                    border: '1px solid rgba(255,255,255,0.3)',
-                                    transition: 'background-color 0.2s ease'
-                                }}
-                                onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.3)'}
-                                onMouseLeave={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.2)'}
-                            >
-                                Login to Add Favorites
-                            </Link>
-                        )}
-                    </>
-                )}
-            </div>
             {series.series && (
                 <section className="single-movie-details space-pb bg-holder bg-overlay-dark-99 overflow-hidden" style={{ backgroundImage: "url(/images/bg/03.jpg)" }}>
                     <div className="container position-relative">

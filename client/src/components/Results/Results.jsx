@@ -25,32 +25,6 @@ export default function Results() {
   const [favoriteMovieIds, setFavoriteMovieIds] = useState(new Set());
   const [favoriteSeriesIds, setFavoriteSeriesIds] = useState(new Set());
 
-  // Notification state
-  const [notification, setNotification] = useState({ show: false, message: '', type: 'success', id: null });
-
-  // Notification function
-  const showNotification = (message, type = 'add') => {
-    const notificationId = Date.now();
-
-    // If there's a notification currently showing, hide it first
-    if (notification.show) {
-      setNotification(prev => ({ ...prev, show: false }));
-      // Wait for hide animation, then show new one
-      setTimeout(() => {
-        setNotification({ show: true, message, type, id: notificationId });
-        setTimeout(() => {
-          setNotification(prev => ({ ...prev, show: false }));
-        }, 2000); // 2 seconds as requested
-      }, 200);
-    } else {
-      // No current notification, show immediately
-      setNotification({ show: true, message, type, id: notificationId });
-      setTimeout(() => {
-        setNotification(prev => ({ ...prev, show: false }));
-      }, 2000);
-    }
-  };
-
   // page is *derived* from URL params — this keeps browser history correct
   const currentPage = searchParams.get('page') ? parseInt(searchParams.get('page'), 10) : 1;
 
@@ -313,7 +287,14 @@ export default function Results() {
     if (!user) {
       e.preventDefault();
       e.stopPropagation();
-      showNotification('You need to be logged in to add favorites', 'auth');
+      addNotification({
+        type: 'error',
+        mediaType: mediaType,
+        title: 'Authentication Required',
+        subtitle: 'You need to be logged in to add favorites',
+        meta: '',
+        imageUrl: '/images/no-image.jpg',
+      });
       return;
     }
 
@@ -334,7 +315,6 @@ export default function Results() {
             newSet.delete(id);
             return newSet;
           });
-          showNotification(response.message, 'remove');
         } else {
           const response = await userService.removeSeriesFromFavorites(id);
           setFavoriteSeriesIds(prev => {
@@ -342,7 +322,6 @@ export default function Results() {
             newSet.delete(id);
             return newSet;
           });
-          showNotification(response.message, 'remove');
         }
 
         // Trigger re-fetch of favorites data if on favorites page
@@ -354,16 +333,20 @@ export default function Results() {
         if (isMovie) {
           const response = await userService.addMovieToFavorites(id);
           setFavoriteMovieIds(prev => new Set([...prev, id]));
-          showNotification(response.message, 'add');
 
           const item = results.find((r) => r.id === id);
           if (item) {
+            const year = item.release_date ? new Date(item.release_date).getFullYear() : item.year || 'N/A';
+            const runtime = item.runtime 
+              ? `${Math.floor(item.runtime / 60)}hr ${item.runtime % 60}min`
+              : 'N/A';
+            
             addNotification({
               type: 'favorite_add',
               mediaType: 'movie',
               title: item.title || item.name,
               subtitle: 'Added to favorites',
-              meta: `${item.release_date ? new Date(item.release_date).getFullYear() : (item.year || '')}${item.runtime ? ` • ${Math.floor(item.runtime / 60)}hr ${item.runtime % 60}min` : ''}`,
+              meta: `${year} • ${runtime}`,
               imageUrl: item.poster_path ? `https://image.tmdb.org/t/p/w92${item.poster_path}` : '/images/no-image.jpg',
               thumbnail: item.backdrop_path ? `https://image.tmdb.org/t/p/w185${item.backdrop_path}` : undefined,
             });
@@ -371,16 +354,19 @@ export default function Results() {
         } else {
           const response = await userService.addSeriesToFavorites(id);
           setFavoriteSeriesIds(prev => new Set([...prev, id]));
-          showNotification(response.message, 'add');
 
           const item = results.find((r) => r.id === id);
           if (item) {
+            const year = item.first_air_date ? new Date(item.first_air_date).getFullYear() : 'N/A';
+            const seasonCount = item.seasons ?? item.number_of_seasons ?? 'N/A';
+            const episodeCount = item.episodes ?? item.number_of_episodes ?? 'N/A';
+            
             addNotification({
               type: 'favorite_add',
               mediaType: 'series',
               title: item.name || item.title,
               subtitle: 'Added to favorites',
-              meta: `${item.first_air_date ? new Date(item.first_air_date).getFullYear() : ''} • SS ${item.seasons ?? 'N/A'} • EPS ${item.episodes ?? 'N/A'}`,
+              meta: `${year} • SS ${seasonCount} • EPS ${episodeCount}`,
               imageUrl: item.poster_path ? `https://image.tmdb.org/t/p/w92${item.poster_path}` : '/images/no-image.jpg',
               thumbnail: item.backdrop_path ? `https://image.tmdb.org/t/p/w185${item.backdrop_path}` : undefined,
             });
@@ -392,9 +378,14 @@ export default function Results() {
 
       // Handle authentication errors
       if (error.status === 401 || error.status === 403 || error.status === 302) {
-        showNotification('You need to be logged in to add favorites', 'auth');
-      } else {
-        showNotification('Failed to update favorite', 'remove');
+        addNotification({
+          type: 'error',
+          mediaType: mediaType,
+          title: 'Authentication Required',
+          subtitle: 'You need to be logged in to add favorites',
+          meta: '',
+          imageUrl: '/images/no-image.jpg',
+        });
       }
 
       // Don't update UI on error - heart stays in current state
@@ -1619,62 +1610,6 @@ export default function Results() {
           )}
         </div>
       </section>
-
-      {/* Notification */}
-      <div
-        key={notification.id}
-        style={{
-          position: 'fixed',
-          top: notification.show ? '20px' : '-120px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          zIndex: 9999,
-          backgroundColor: notification.type === 'add' ? '#28a745' : notification.type === 'auth' ? '#17a2b8' : '#dc3545',
-          color: 'white',
-          padding: notification.type === 'auth' ? '20px 32px' : '16px 32px',
-          borderRadius: '8px',
-          boxShadow: '0 6px 20px rgba(0,0,0,0.4)',
-          border: '2px solid rgba(255,255,255,0.2)',
-          transition: 'all 0.4s ease-in-out',
-          opacity: notification.show ? 1 : 0,
-          fontWeight: '600',
-          fontSize: '16px',
-          whiteSpace: 'nowrap',
-          minWidth: notification.type === 'auth' ? '400px' : '300px',
-          textAlign: 'center',
-          pointerEvents: notification.show ? 'auto' : 'none',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: notification.type === 'auth' ? '12px' : '0'
-        }}>
-        {notification.show && (
-          <>
-            <div>{notification.message}</div>
-            {notification.type === 'auth' && (
-              <Link
-                to="/login-register"
-                style={{
-                  backgroundColor: 'rgba(255,255,255,0.2)',
-                  color: 'white',
-                  padding: '8px 16px',
-                  borderRadius: '4px',
-                  textDecoration: 'none',
-                  fontSize: '14px',
-                  fontWeight: '500',
-                  border: '1px solid rgba(255,255,255,0.3)',
-                  transition: 'background-color 0.2s ease',
-                  marginTop: '8px'
-                }}
-                onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.3)'}
-                onMouseLeave={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.2)'}
-              >
-                Login to Add Favorites
-              </Link>
-            )}
-          </>
-        )}
-      </div>
     </>
   );
 }
