@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useNotifications } from "../../contexts/NotificationContext";
 
 const Header = ({ onSearchOpen }) => {
     const location = useLocation();
-    const { notifications, clearAllNotifications } = useNotifications();
+    const navigate = useNavigate();
+    const { notifications, clearAllNotifications, clearNotification } = useNotifications();
     const [headerClass, setHeaderClass] = useState("header header-sticky");
     const [containerClass, setContainerClass] = useState("container main-header position-relative");
 
@@ -149,7 +150,27 @@ const Header = ({ onSearchOpen }) => {
                                             </div>
                                         ) : (
                                             notifications.slice(0, 5).map((n) => (
-                                                <div className="notifications-list" key={n.id}>
+                                                <div 
+                                                    className="notifications-list" 
+                                                    key={n.id}
+                                                    style={{ 
+                                                        cursor: 'pointer',
+                                                        position: 'relative',
+                                                        transition: 'background-color 0.2s ease'
+                                                    }}
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        e.stopPropagation();
+                                                        clearNotification(n.id);
+                                                        navigate(`/results?favorites=${n.mediaType === 'series' ? 'series' : 'movies'}`);
+                                                    }}
+                                                    onMouseEnter={(e) => {
+                                                        e.currentTarget.style.backgroundColor = 'rgba(246, 190, 0, 0.1)';
+                                                    }}
+                                                    onMouseLeave={(e) => {
+                                                        e.currentTarget.style.backgroundColor = 'transparent';
+                                                    }}
+                                                >
                                                     <div className="notifications-info">
                                                         <div className="notifications-author" style={{ display:"flex", alignItems:"center", justifyContent:"center"}}>
                                                             <img
@@ -172,6 +193,27 @@ const Header = ({ onSearchOpen }) => {
                                                             </p>
                                                         </div>
                                                     </div>
+                                                    <button
+                                                        type="button"
+                                                        className="btn btn-sm btn-link p-0"
+                                                        style={{
+                                                            position: 'absolute',
+                                                            top: '8px',
+                                                            right: '8px',
+                                                            color: '#f6be00',
+                                                            fontSize: '16px',
+                                                            lineHeight: '1',
+                                                            zIndex: 10
+                                                        }}
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            e.stopPropagation();
+                                                            clearNotification(n.id);
+                                                        }}
+                                                        title="Clear notification"
+                                                    >
+                                                        <i className="fa-solid fa-xmark"></i>
+                                                    </button>
                                                 </div>
                                             ))
                                         )}
