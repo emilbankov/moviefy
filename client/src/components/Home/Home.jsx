@@ -4,6 +4,7 @@ import * as moviesService from '../../services/moviesService'
 import * as seriesService from '../../services/seriesService'
 import * as userService from '../../services/userService'
 import { useLoading } from '../../contexts/LoadingContext';
+import { useNotifications } from '../../contexts/NotificationContext';
 import MetaTags from '../Meta Tags/MetaTags';
 
 // Helper function to convert genre display name to database name
@@ -31,33 +32,8 @@ export default function Home() {
     const [favoriteMovieIds, setFavoriteMovieIds] = useState(new Set());
     const [favoriteSeriesIds, setFavoriteSeriesIds] = useState(new Set());
 
-    // Notification state
-    const [notification, setNotification] = useState({ show: false, message: '', type: 'success', id: null });
-
     const { setLoading } = useLoading();
-
-    // Notification function
-    const showNotification = (message, type = 'add') => {
-        const notificationId = Date.now();
-
-        // If there's a notification currently showing, hide it first
-        if (notification.show) {
-            setNotification(prev => ({ ...prev, show: false }));
-            // Wait for hide animation, then show new one
-            setTimeout(() => {
-                setNotification({ show: true, message, type, id: notificationId });
-                setTimeout(() => {
-                    setNotification(prev => ({ ...prev, show: false }));
-                }, 2000); // 2 seconds as requested
-            }, 200); // Brief pause for hide animation
-        } else {
-            // No current notification, show immediately
-            setNotification({ show: true, message, type, id: notificationId });
-            setTimeout(() => {
-                setNotification(prev => ({ ...prev, show: false }));
-            }, 2000); // 2 seconds as requested
-        }
-    };
+    const { addNotification } = useNotifications();
 
     useEffect(() => {
         setLoading(true);
@@ -190,7 +166,7 @@ export default function Home() {
         };
     }, [bannerMovies.rest_movies, latestMovies.movies, trendingMovies.movies, popularMovies.movies, topRatedMovies.movies, popularCollections.collections, latestSeries.series, bannerSeries.series, trendingSeries.series, popularSeries.series, topRatedSeries.series]);
 
-    const toggleFavorite = async (mediaType, id, e) => {
+    const toggleFavorite = async (mediaType, id, item, e) => {
         e.preventDefault();
         e.stopPropagation();
 
@@ -208,7 +184,23 @@ export default function Home() {
                         newSet.delete(id);
                         return newSet;
                     });
-                    showNotification(response.message, 'remove');
+
+                    if (item) {
+                        const year = item.release_date ? new Date(item.release_date).getFullYear() : item.year || 'N/A';
+                        const runtime = item.runtime 
+                            ? `${Math.floor(item.runtime / 60)}hr ${item.runtime % 60}min`
+                            : 'N/A';
+                        
+                        addNotification({
+                            type: 'favorite_remove',
+                            mediaType: 'movie',
+                            title: item.title || item.name,
+                            subtitle: 'Removed from favorites',
+                            meta: `${year} | ${runtime}`,
+                            imageUrl: item.poster_path ? `https://image.tmdb.org/t/p/w92${item.poster_path}` : '/images/no-image.jpg',
+                            thumbnail: item.backdrop_path ? `https://image.tmdb.org/t/p/w185${item.backdrop_path}` : undefined,
+                        });
+                    }
                 } else {
                     const response = await userService.removeSeriesFromFavorites(id);
                     setFavoriteSeriesIds(prev => {
@@ -216,18 +208,64 @@ export default function Home() {
                         newSet.delete(id);
                         return newSet;
                     });
-                    showNotification(response.message, 'remove');
+
+                    if (item) {
+                        const year = item.first_air_date ? new Date(item.first_air_date).getFullYear() : 'N/A';
+                        const seasonCount = item.seasons ?? item.number_of_seasons ?? 'N/A';
+                        const episodeCount = item.episodes ?? item.number_of_episodes ?? 'N/A';
+                        
+                        addNotification({
+                            type: 'favorite_remove',
+                            mediaType: 'series',
+                            title: item.name || item.title,
+                            subtitle: 'Removed from favorites',
+                            meta: `${year} | SS ${seasonCount} • EPS ${episodeCount}`,
+                            imageUrl: item.poster_path ? `https://image.tmdb.org/t/p/w92${item.poster_path}` : '/images/no-image.jpg',
+                            thumbnail: item.backdrop_path ? `https://image.tmdb.org/t/p/w185${item.backdrop_path}` : undefined,
+                        });
+                    }
                 }
             } else {
                 // Add to favorites - wait for API success
                 if (isMovie) {
                     const response = await userService.addMovieToFavorites(id);
                     setFavoriteMovieIds(prev => new Set([...prev, id]));
-                    showNotification(response.message, 'add');
+
+                    if (item) {
+                        const year = item.release_date ? new Date(item.release_date).getFullYear() : item.year || 'N/A';
+                        const runtime = item.runtime 
+                            ? `${Math.floor(item.runtime / 60)}hr ${item.runtime % 60}min`
+                            : 'N/A';
+                        
+                        addNotification({
+                            type: 'favorite_add',
+                            mediaType: 'movie',
+                            title: item.title || item.name,
+                            subtitle: 'Added to favorites',
+                            meta: `${year} | ${runtime}`,
+                            imageUrl: item.poster_path ? `https://image.tmdb.org/t/p/w92${item.poster_path}` : '/images/no-image.jpg',
+                            thumbnail: item.backdrop_path ? `https://image.tmdb.org/t/p/w185${item.backdrop_path}` : undefined,
+                        });
+                    }
                 } else {
                     const response = await userService.addSeriesToFavorites(id);
                     setFavoriteSeriesIds(prev => new Set([...prev, id]));
-                    showNotification(response.message, 'add');
+
+                    if (item) {
+                        const year = item.first_air_date ? new Date(item.first_air_date).getFullYear() : 'N/A';
+                        const seasonCount = item.seasons ?? item.number_of_seasons ?? 'N/A';
+                        const episodeCount = item.episodes ?? item.number_of_episodes ?? 'N/A';
+                        
+                        addNotification({
+                            type: 'favorite_add',
+                            mediaType: 'series',
+                            title: item.name || item.title,
+                            subtitle: 'Added to favorites',
+                            meta: `${year} | SS ${seasonCount} • EPS ${episodeCount}`,
+                            imageUrl: item.poster_path ? `https://image.tmdb.org/t/p/w92${item.poster_path}` : '/images/no-image.jpg',
+                            thumbnail: item.backdrop_path ? `https://image.tmdb.org/t/p/w185${item.backdrop_path}` : undefined,
+                        });
+                    }
                 }
             }
         } catch (error) {
@@ -235,9 +273,14 @@ export default function Home() {
 
             // Handle authentication errors (including redirects to login)
             if (error.status === 401 || error.status === 403 || error.status === 302) {
-                showNotification('You need to be logged in to add favorites', 'auth');
-            } else {
-                showNotification('Failed to update favorite', 'remove');
+                addNotification({
+                    type: 'error',
+                    mediaType: mediaType,
+                    title: 'Authentication Required',
+                    subtitle: 'You need to be logged in to add favorites',
+                    meta: '',
+                    imageUrl: '/images/no-image.jpg',
+                });
             }
 
             // Don't update UI on error - heart stays in current state
@@ -251,60 +294,6 @@ export default function Home() {
                 description="Открийте най-новите филми и сериали в Moviefy. Разгледайте тенденциите, популярните и топ рейтинговите заглавия. Вашият източник за развлечения онлайн."
                 keywords="филми, кино, сериали, телевизия, стрийминг, развлечения, филми онлайн, гледане на филми, сериали онлайн, гледане на сериали, най-нови филми, тенденции във филмите, популярни сериали, ревюта на филми, ревюта на сериали, база данни с филми, база данни със сериали, развлекателна платформа"
             />
-            {/* Notification */}
-            <div
-                 key={notification.id}
-                 style={{
-                     position: 'fixed',
-                     top: notification.show ? '20px' : '-120px',
-                     left: '50%',
-                     transform: 'translateX(-50%)',
-                     zIndex: 9999,
-                     backgroundColor: notification.type === 'add' ? '#28a745' : notification.type === 'auth' ? '#17a2b8' : '#dc3545',
-                     color: 'white',
-                     padding: notification.type === 'auth' ? '20px 32px' : '16px 32px',
-                     borderRadius: '8px',
-                     boxShadow: '0 6px 20px rgba(0,0,0,0.4)',
-                     border: '2px solid rgba(255,255,255,0.2)',
-                     transition: 'all 0.4s ease-in-out',
-                     opacity: notification.show ? 1 : 0,
-                     fontWeight: '600',
-                     fontSize: '16px',
-                     whiteSpace: 'nowrap',
-                     minWidth: notification.type === 'auth' ? '400px' : '300px',
-                     textAlign: 'center',
-                     pointerEvents: notification.show ? 'auto' : 'none',
-                     display: 'flex',
-                     flexDirection: 'column',
-                     alignItems: 'center',
-                     gap: notification.type === 'auth' ? '12px' : '0'
-                 }}>
-                {notification.show && (
-                    <>
-                        <div>{notification.message}</div>
-                        {notification.type === 'auth' && (
-                            <Link
-                                to="/login-register"
-                                style={{
-                                    backgroundColor: 'rgba(255,255,255,0.2)',
-                                    color: 'white',
-                                    padding: '8px 16px',
-                                    borderRadius: '4px',
-                                    textDecoration: 'none',
-                                    fontSize: '14px',
-                                    fontWeight: '500',
-                                    border: '1px solid rgba(255,255,255,0.3)',
-                                    transition: 'background-color 0.2s ease'
-                                }}
-                                onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.3)'}
-                                onMouseLeave={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.2)'}
-                            >
-                                Login to Add Favorites
-                            </Link>
-                        )}
-                    </>
-                )}
-            </div>
 
             <section className="banner banner-1 position-relative">
                 <div className="shape-01"><img className="img-fluid" src="images/banner/home-01/shape-01.png" alt="#" /></div>
@@ -333,7 +322,7 @@ export default function Home() {
                                                 <img className="img-fluid" src="/images/tmdb-logo.svg" alt="#" />{bannerMovies.first_movie.vote_average}
                                             </a>
                                         </span>
-                                        <span className={`like ${favoriteMovieIds.has(bannerMovies.first_movie.id) ? 'active' : ''}`} data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Like" onClick={(e) => toggleFavorite('movie', bannerMovies.first_movie.id, e)} style={{ cursor: 'pointer' }} />
+                                        <span className={`like ${favoriteMovieIds.has(bannerMovies.first_movie.id) ? 'active' : ''}`} data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Like" onClick={(e) => toggleFavorite('movie', bannerMovies.first_movie.id, bannerMovies.first_movie, e)} style={{ cursor: 'pointer' }} />
                                     </div>
                                     <p>{bannerMovies.first_movie.overview.length > 140 ? `${bannerMovies.first_movie.overview.substring(0, 140)}...` : bannerMovies.first_movie.overview}</p>
                                     <div className="author-info">
@@ -406,7 +395,7 @@ export default function Home() {
                                                         />
                                                         <div className="info-top">
                                                             <div className="ms-auto">
-                                                                <a href="javascript:void(0)" className={`like ${favoriteMovieIds.has(movie.id) ? 'active' : ''}`} onClick={(e) => toggleFavorite('movie', movie.id, e)} style={{ color: favoriteMovieIds.has(movie.id) ? '#ffc107' : 'inherit' }} />
+                                                                <a href="javascript:void(0)" className={`like ${favoriteMovieIds.has(movie.id) ? 'active' : ''}`} onClick={(e) => toggleFavorite('movie', movie.id, movie, e)} style={{ color: favoriteMovieIds.has(movie.id) ? '#ffc107' : 'inherit' }} />
                                                                 <a className="views" href="#" onClick={(e) => e.preventDefault()}><i className="fa-solid fa-star" />{movie.vote_average}</a>
                                                             </div>
                                                         </div>
@@ -473,7 +462,7 @@ export default function Home() {
                                                     <a className="views" href="#">
                                                         <i className="far fa-eye" />
                                                     </a>
-                                                    <a href="javascript:void(0)" className={`like ${favoriteMovieIds.has(latest.id) ? 'active' : ''}`} onClick={(e) => toggleFavorite('movie', latest.id, e)} style={{ color: favoriteMovieIds.has(latest.id) ? '#ffc107' : 'inherit' }} />
+                                                    <a href="javascript:void(0)" className={`like ${favoriteMovieIds.has(latest.id) ? 'active' : ''}`} onClick={(e) => toggleFavorite('movie', latest.id, latest, e)} style={{ color: favoriteMovieIds.has(latest.id) ? '#ffc107' : 'inherit' }} />
                                                     <a className="rating" href="#">
                                                         <i className="fa-solid fa-star" /> {latest.vote_average}/10
                                                     </a>
@@ -536,7 +525,7 @@ export default function Home() {
                                                                 {trending.genre}
                                                             </Link>
                                                             <div className="ms-auto">
-                                                                <a href="javascript:void(0)" className={`like ${favoriteMovieIds.has(trending.id) ? 'active' : ''}`} onClick={(e) => toggleFavorite('movie', trending.id, e)} style={{ color: favoriteMovieIds.has(trending.id) ? '#ffc107' : 'inherit' }} />
+                                                                <a href="javascript:void(0)" className={`like ${favoriteMovieIds.has(trending.id) ? 'active' : ''}`} onClick={(e) => toggleFavorite('movie', trending.id, trending, e)} style={{ color: favoriteMovieIds.has(trending.id) ? '#ffc107' : 'inherit' }} />
                                                                 <a className="views" href="#" onClick={(e) => e.preventDefault()}>
                                                                     <i className="fa-solid fa-star" /> {trending.vote_average}
                                                                 </a>
@@ -951,7 +940,7 @@ export default function Home() {
                                                                 {popular.genre}
                                                             </Link>
                                                             <div className="ms-auto">
-                                                                <a href="javascript:void(0)" className={`like ${favoriteMovieIds.has(popular.id) ? 'active' : ''}`} onClick={(e) => toggleFavorite('movie', popular.id, e)} style={{ color: favoriteMovieIds.has(popular.id) ? '#ffc107' : 'inherit' }} />
+                                                                <a href="javascript:void(0)" className={`like ${favoriteMovieIds.has(popular.id) ? 'active' : ''}`} onClick={(e) => toggleFavorite('movie', popular.id, popular, e)} style={{ color: favoriteMovieIds.has(popular.id) ? '#ffc107' : 'inherit' }} />
                                                                 <a className="views" href="#" onClick={(e) => e.preventDefault()}>
                                                                     <i className="fa-solid fa-star" /> {popular.vote_average}
                                                                 </a>
@@ -1043,7 +1032,7 @@ export default function Home() {
                                                                 {topRated.genre}
                                                             </Link>
                                                             <div className="ms-auto">
-                                                                <a href="javascript:void(0)" className={`like ${favoriteMovieIds.has(topRated.id) ? 'active' : ''}`} onClick={(e) => toggleFavorite('movie', topRated.id, e)} style={{ color: favoriteMovieIds.has(topRated.id) ? '#ffc107' : 'inherit' }} />
+                                                                <a href="javascript:void(0)" className={`like ${favoriteMovieIds.has(topRated.id) ? 'active' : ''}`} onClick={(e) => toggleFavorite('movie', topRated.id, topRated, e)} style={{ color: favoriteMovieIds.has(topRated.id) ? '#ffc107' : 'inherit' }} />
                                                                 <a className="views" href="#" onClick={(e) => e.preventDefault()}>
                                                                     <i className="fa-solid fa-star" /> {topRated.score.toFixed(1)}
                                                                 </a>
@@ -1110,7 +1099,7 @@ export default function Home() {
                                                 alt={collection.name}
                                             />
                                             <div className="info-top">
-                                                <a href="javascript:void(0)" className={`like ${favoriteMovieIds.has(collection.id) ? 'active' : ''}`} onClick={(e) => toggleFavorite('movie', collection.id, e)} style={{ color: favoriteMovieIds.has(collection.id) ? '#ffc107' : 'inherit' }} />
+                                                <a href="javascript:void(0)" className={`like ${favoriteMovieIds.has(collection.id) ? 'active' : ''}`} onClick={(e) => toggleFavorite('movie', collection.id, collection, e)} style={{ color: favoriteMovieIds.has(collection.id) ? '#ffc107' : 'inherit' }} />
                                                 <a className="views" href="#" onClick={(e) => e.preventDefault()}>
                                                     <i className="fa-solid fa-star" /> {collection.vote_average.toFixed(1)}
                                                 </a>
@@ -1242,7 +1231,7 @@ export default function Home() {
                                                         />
                                                         <div className="info-top">
                                                             <div className="ms-auto">
-                                                                <a href="javascript:void(0)" className={`like ${favoriteSeriesIds.has(series.id) ? 'active' : ''}`} onClick={(e) => toggleFavorite('series', series.id, e)} style={{ color: favoriteSeriesIds.has(series.id) ? '#ffc107' : 'inherit' }} />
+                                                                <a href="javascript:void(0)" className={`like ${favoriteSeriesIds.has(series.id) ? 'active' : ''}`} onClick={(e) => toggleFavorite('series', series.id, series, e)} style={{ color: favoriteSeriesIds.has(series.id) ? '#ffc107' : 'inherit' }} />
                                                                 <a className="rating" href="#"><i className="fa-solid fa-star" /> {series.vote_average}/10</a>
                                                             </div>
                                                         </div>
@@ -1316,7 +1305,7 @@ export default function Home() {
                                                                 {trending.genre}
                                                             </Link>
                                                             <div className="ms-auto">
-                                                                <a href="javascript:void(0)" className={`like ${favoriteSeriesIds.has(trending.id) ? 'active' : ''}`} onClick={(e) => toggleFavorite('series', trending.id, e)} style={{ color: favoriteSeriesIds.has(trending.id) ? '#ffc107' : 'inherit' }} />
+                                                                <a href="javascript:void(0)" className={`like ${favoriteSeriesIds.has(trending.id) ? 'active' : ''}`} onClick={(e) => toggleFavorite('series', trending.id, trending, e)} style={{ color: favoriteSeriesIds.has(trending.id) ? '#ffc107' : 'inherit' }} />
                                                                 <a className="views" href="#" onClick={(e) => e.preventDefault()}>
                                                                     <i className="fa-solid fa-star" /> {trending.vote_average}
                                                                 </a>
@@ -1399,7 +1388,7 @@ export default function Home() {
                                                     <a className="views" href="#">
                                                         <i className="far fa-eye" />
                                                     </a>
-                                                    <a href="javascript:void(0)" className={`like ${favoriteSeriesIds.has(latest.id) ? 'active' : ''}`} onClick={(e) => toggleFavorite('series', latest.id, e)} style={{ color: favoriteSeriesIds.has(latest.id) ? '#ffc107' : 'inherit' }} />
+                                                    <a href="javascript:void(0)" className={`like ${favoriteSeriesIds.has(latest.id) ? 'active' : ''}`} onClick={(e) => toggleFavorite('series', latest.id, latest, e)} style={{ color: favoriteSeriesIds.has(latest.id) ? '#ffc107' : 'inherit' }} />
                                                     <a className="rating" href="#">
                                                         <i className="fa-solid fa-star" /> {latest.vote_average}/10
                                                     </a>
@@ -1462,7 +1451,7 @@ export default function Home() {
                                                                 {popular.genre}
                                                             </Link>
                                                             <div className="ms-auto">
-                                                                <a href="javascript:void(0)" className={`like ${favoriteSeriesIds.has(popular.id) ? 'active' : ''}`} onClick={(e) => toggleFavorite('series', popular.id, e)} style={{ color: favoriteSeriesIds.has(popular.id) ? '#ffc107' : 'inherit' }} />
+                                                                <a href="javascript:void(0)" className={`like ${favoriteSeriesIds.has(popular.id) ? 'active' : ''}`} onClick={(e) => toggleFavorite('series', popular.id, popular, e)} style={{ color: favoriteSeriesIds.has(popular.id) ? '#ffc107' : 'inherit' }} />
                                                                 <a className="views" href="#" onClick={(e) => e.preventDefault()}>
                                                                     <i className="fa-solid fa-star" /> {popular.vote_average}
                                                                 </a>
@@ -1554,7 +1543,7 @@ export default function Home() {
                                                                 {topRated.genre}
                                                             </Link>
                                                             <div className="ms-auto">
-                                                                <a href="javascript:void(0)" className={`like ${favoriteSeriesIds.has(topRated.id) ? 'active' : ''}`} onClick={(e) => toggleFavorite('series', topRated.id, e)} style={{ color: favoriteSeriesIds.has(topRated.id) ? '#ffc107' : 'inherit' }} />
+                                                                <a href="javascript:void(0)" className={`like ${favoriteSeriesIds.has(topRated.id) ? 'active' : ''}`} onClick={(e) => toggleFavorite('series', topRated.id, topRated, e)} style={{ color: favoriteSeriesIds.has(topRated.id) ? '#ffc107' : 'inherit' }} />
                                                                 <a className="views" href="#" onClick={(e) => e.preventDefault()}>
                                                                     <i className="fa-solid fa-star" /> {topRated.score.toFixed(1)}
                                                                 </a>
