@@ -162,7 +162,7 @@ const Header = ({ onSearchOpen }) => {
                                                         e.preventDefault();
                                                         e.stopPropagation();
                                                         clearNotification(n.id);
-                                                        navigate(`/results?favorites=${n.mediaType === 'series' ? 'series' : 'movies'}`);
+                                                        navigate(`/favorites?favorites=${n.mediaType === 'series' ? 'series' : 'movies'}`);
                                                     }}
                                                     onMouseEnter={(e) => {
                                                         e.currentTarget.style.backgroundColor = 'rgba(246, 190, 0, 0.1)';
