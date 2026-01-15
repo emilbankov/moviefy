@@ -632,6 +632,9 @@ export default function Results() {
     if (mode === 'collection_search') {
       return apiData.results || apiData.collections || [];
     }
+    if (mode === 'favorites') {
+      return apiData.results || [];
+    }
     if (mode === 'genre') {
       return apiData[media] || apiData.results || [];
     }
