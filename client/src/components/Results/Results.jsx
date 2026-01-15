@@ -575,7 +575,7 @@ export default function Results() {
     };
 
     fetchResults();
-  }, [mode, query, collectionQuery, genre, media, category, types, currentPage, setLoading, forceRefetch, favoritesUpdateTrigger, actorMediaType, crewId, crewName, prodId, prodName]);
+  }, [mode, query, collectionQuery, genre, media, category, types, currentPage, setLoading, forceRefetch, favoritesUpdateTrigger, actorMediaType, crewId, crewName, prodId, prodName, favorites]);
 
   // Reset to first page when primary criteria changes — update URL page to 1
   useEffect(() => {
