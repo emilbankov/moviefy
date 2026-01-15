@@ -315,6 +315,24 @@ export default function Results() {
             newSet.delete(id);
             return newSet;
           });
+
+          const item = results.find((r) => r.id === id);
+          if (item) {
+            const year = item.release_date ? new Date(item.release_date).getFullYear() : item.year || 'N/A';
+            const runtime = item.runtime 
+              ? `${Math.floor(item.runtime / 60)}hr ${item.runtime % 60}min`
+              : 'N/A';
+            
+            addNotification({
+              type: 'favorite_remove',
+              mediaType: 'movie',
+              title: item.title || item.name,
+              subtitle: 'Removed from favorites',
+              meta: `${year} | ${runtime}`,
+              imageUrl: item.poster_path ? `https://image.tmdb.org/t/p/w92${item.poster_path}` : '/images/no-image.jpg',
+              thumbnail: item.backdrop_path ? `https://image.tmdb.org/t/p/w185${item.backdrop_path}` : undefined,
+            });
+          }
         } else {
           const response = await userService.removeSeriesFromFavorites(id);
           setFavoriteSeriesIds(prev => {
@@ -322,6 +340,23 @@ export default function Results() {
             newSet.delete(id);
             return newSet;
           });
+
+          const item = results.find((r) => r.id === id);
+          if (item) {
+            const year = item.first_air_date ? new Date(item.first_air_date).getFullYear() : 'N/A';
+            const seasonCount = item.seasons ?? item.number_of_seasons ?? 'N/A';
+            const episodeCount = item.episodes ?? item.number_of_episodes ?? 'N/A';
+            
+            addNotification({
+              type: 'favorite_remove',
+              mediaType: 'series',
+              title: item.name || item.title,
+              subtitle: 'Removed from favorites',
+              meta: `${year} | SS ${seasonCount} • EPS ${episodeCount}`,
+              imageUrl: item.poster_path ? `https://image.tmdb.org/t/p/w92${item.poster_path}` : '/images/no-image.jpg',
+              thumbnail: item.backdrop_path ? `https://image.tmdb.org/t/p/w185${item.backdrop_path}` : undefined,
+            });
+          }
         }
 
         // Trigger re-fetch of favorites data if on favorites page

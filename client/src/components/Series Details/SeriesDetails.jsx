@@ -967,6 +967,23 @@ export default function SeriesDetails() {
                     newSet.delete(id);
                     return newSet;
                 });
+
+                // Header dropdown notification
+                if (series?.series) {
+                    const year = series.series.first_air_date ? new Date(series.series.first_air_date).getFullYear() : 'N/A';
+                    const seasonCount = series.series.seasons?.length ?? series.series.number_of_seasons ?? 'N/A';
+                    const episodeCount = series.series.seasons[series.series.seasons.length - 1].episode_count ?? 'N/A';
+                    
+                    addNotification({
+                        type: 'favorite_remove',
+                        mediaType: 'series',
+                        title: series.series.name,
+                        subtitle: 'Removed from favorites',
+                        meta: `${year} | SS ${seasonCount} • EPS ${episodeCount}`,
+                        imageUrl: series.series.poster_path ? `https://image.tmdb.org/t/p/w92${series.series.poster_path}` : '/images/no-image.jpg',
+                        thumbnail: series.series.backdrop_path ? `https://image.tmdb.org/t/p/w185${series.series.backdrop_path}` : undefined,
+                    });
+                }
             } else {
                 // Add to favorites - wait for API success
                 const response = await userService.addSeriesToFavorites(id);
@@ -977,7 +994,7 @@ export default function SeriesDetails() {
                     const year = series.series.first_air_date ? new Date(series.series.first_air_date).getFullYear() : 'N/A';
                     const seasonCount = series.series.seasons?.length ?? series.series.number_of_seasons ?? 'N/A';
                     const episodeCount = series.series.seasons[series.series.seasons.length - 1].episode_count ?? 'N/A';
-
+                    
                     addNotification({
                         type: 'favorite_add',
                         mediaType: 'series',
