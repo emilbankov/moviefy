@@ -343,7 +343,7 @@ export default function Results() {
 
           const item = results.find((r) => r.id === id);
           if (item) {
-            const year = item.first_air_date ? new Date(item.first_air_date).getFullYear() : 'N/A';
+            const year = item.first_air_date ? new Date(item.first_air_date).getFullYear() : item.release_date ? new Date(item.release_date).getFullYear() : item.year || 'N/A';
             const seasonCount = item.seasons ?? item.number_of_seasons ?? 'N/A';
             const episodeCount = item.episodes ?? item.number_of_episodes ?? 'N/A';
             
@@ -392,7 +392,7 @@ export default function Results() {
 
           const item = results.find((r) => r.id === id);
           if (item) {
-            const year = item.first_air_date ? new Date(item.first_air_date).getFullYear() : 'N/A';
+            const year = item.first_air_date ? new Date(item.first_air_date).getFullYear() : item.release_date ? new Date(item.release_date).getFullYear() : item.year || 'N/A';
             const seasonCount = item.seasons ?? item.number_of_seasons ?? 'N/A';
             const episodeCount = item.episodes ?? item.number_of_episodes ?? 'N/A';
             
