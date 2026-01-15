@@ -1,11 +1,28 @@
-import { createContext, useContext, useState, useCallback } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect } from 'react';
 
 const NotificationContext = createContext();
+const STORAGE_KEY = 'moviefy_notifications';
 
 NotificationContext.displayName = 'NotificationContext';
 
 export const NotificationProvider = ({ children }) => {
-    const [notifications, setNotifications] = useState([]);
+    const [notifications, setNotifications] = useState(() => {
+        try {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            return stored ? JSON.parse(stored) : [];
+        } catch (e) {
+            console.error('Failed to load notifications from localStorage:', e);
+            return [];
+        }
+    });
+
+    useEffect(() => {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(notifications));
+        } catch (e) {
+            console.error('Failed to save notifications to localStorage:', e);
+        }
+    }, [notifications]);
 
     const addNotification = useCallback((payload) => {
         const id = Date.now();
