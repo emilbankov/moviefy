@@ -93,6 +93,26 @@ export default function MovieDetails() {
                     newSet.delete(id);
                     return newSet;
                 });
+
+                // Header dropdown notification
+                if (movie && movie.movies) {
+                    const year = movie.movies.release_date ? new Date(movie.movies.release_date).getFullYear() : movie.movies.year || 'N/A';
+                    const runtime = movie.movies.runtime
+                        ? `${Math.floor(movie.movies.runtime / 60)}hr ${movie.movies.runtime % 60}min`
+                        : 'N/A';
+
+                    addNotification({
+                        type: 'favorite_remove',
+                        mediaType: 'movie',
+                        title: movie.movies.title,
+                        subtitle: 'Removed from favorites',
+                        meta: `${year} | ${runtime}`,
+                        imageUrl: movie.movies.poster_path ? `https://image.tmdb.org/t/p/w92${movie.movies.poster_path}` : '/images/no-image.jpg',
+                        thumbnail: movie.movies.backdrop_path ? `https://image.tmdb.org/t/p/w185${movie.movies.backdrop_path}` : undefined,
+                    });
+                } else {
+                    console.log('Movie data not available for notification:', movie);
+                }
             } else {
                 // Add to favorites - wait for API success
                 const response = await userService.addMovieToFavorites(id);
@@ -101,10 +121,10 @@ export default function MovieDetails() {
                 // Header dropdown notification
                 if (movie && movie.movies) {
                     const year = movie.movies.release_date ? new Date(movie.movies.release_date).getFullYear() : movie.movies.year || 'N/A';
-                    const runtime = movie.movies.runtime 
+                    const runtime = movie.movies.runtime
                         ? `${Math.floor(movie.movies.runtime / 60)}hr ${movie.movies.runtime % 60}min`
                         : 'N/A';
-                    
+
                     addNotification({
                         type: 'favorite_add',
                         mediaType: 'movie',
@@ -840,5 +860,3 @@ export default function MovieDetails() {
         </>
     )
 }
-
-
