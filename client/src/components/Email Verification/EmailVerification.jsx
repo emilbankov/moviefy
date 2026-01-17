@@ -138,7 +138,7 @@ export default function EmailVerification() {
                                             <i className="fas fa-times-circle fa-4x"></i>
                                         </div>
                                         <h3 className="text-white mb-3">Verification Failed</h3>
-                                        <p className="text-muted mb-4">{error}</p>
+                                        <p className="text-muted mb-4">{error.message}</p>
 
                                         {canResend ? (
                                             <div>
