@@ -33,7 +33,12 @@ const request = async (method, url, data) => {
 
   if (!response.ok) {
     const error = await response.text();
-    throw new Error(error || response.status);
+    try {
+      const parsed = JSON.parse(error);
+      throw new Error(parsed.message || error || response.status);
+    } catch (e) {
+      throw new Error(error || response.status);
+    }
   }
 
   return response.json();

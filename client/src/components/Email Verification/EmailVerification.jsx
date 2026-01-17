@@ -48,8 +48,6 @@ export default function EmailVerification() {
             setIsVerified(true);
         } catch (err) {
             const errorMessage = err.message || 'Verification failed. The link may be expired or invalid.';
-            console.log(err);
-            
             setError(errorMessage);
             // If verification fails due to expired token, enable resend
             if (errorMessage?.includes('expired') || errorMessage?.includes('15 minutes')) {
@@ -77,7 +75,6 @@ export default function EmailVerification() {
             setError('Verification email sent successfully! Please check your inbox.');
         } catch (err) {
             const errorMessage = err.message || 'Failed to resend verification email.';
-            console.log(err);  
             setError(errorMessage);
         } finally {
             setIsResending(false);
