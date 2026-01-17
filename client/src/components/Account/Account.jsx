@@ -2,6 +2,7 @@ import { useContext, useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthContext from '../../contexts/AuthProvider';
 import { getUserProfile } from '../../services/authService';
+import { addMovieToFavorites, removeMovieFromFavorites, addSeriesToFavorites, removeSeriesFromFavorites } from '../../services/userService';
 import Loader from '../Loader/Loader';
 import MetaTags from '../Meta Tags/MetaTags';
 
@@ -82,30 +83,42 @@ export default function Account() {
         }));
     };
 
-    const toggleFavorite = (type, id, item, e) => {
+    const toggleFavorite = async (type, id, item, e) => {
         e.preventDefault();
         e.stopPropagation();
         
-        if (type === 'movie') {
-            setFavoriteMovieIds(prev => {
-                const newSet = new Set(prev);
-                if (newSet.has(id)) {
-                    newSet.delete(id);
+        try {
+            const isFavorite = type === 'movie' ? favoriteMovieIds.has(id) : favoriteSeriesIds.has(id);
+            
+            if (isFavorite) {
+                // Remove from favorites
+                if (type === 'movie') {
+                    await removeMovieFromFavorites(id);
+                    setFavoriteMovieIds(prev => {
+                        const newSet = new Set(prev);
+                        newSet.delete(id);
+                        return newSet;
+                    });
                 } else {
-                    newSet.add(id);
+                    await removeSeriesFromFavorites(id);
+                    setFavoriteSeriesIds(prev => {
+                        const newSet = new Set(prev);
+                        newSet.delete(id);
+                        return newSet;
+                    });
                 }
-                return newSet;
-            });
-        } else if (type === 'series') {
-            setFavoriteSeriesIds(prev => {
-                const newSet = new Set(prev);
-                if (newSet.has(id)) {
-                    newSet.delete(id);
+            } else {
+                // Add to favorites
+                if (type === 'movie') {
+                    await addMovieToFavorites(id);
+                    setFavoriteMovieIds(prev => new Set(prev).add(id));
                 } else {
-                    newSet.add(id);
+                    await addSeriesToFavorites(id);
+                    setFavoriteSeriesIds(prev => new Set(prev).add(id));
                 }
-                return newSet;
-            });
+            }
+        } catch (error) {
+            console.error('Failed to toggle favorite:', error);
         }
     };
 
