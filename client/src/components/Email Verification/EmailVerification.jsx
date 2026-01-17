@@ -47,6 +47,9 @@ export default function EmailVerification() {
             const response = await verifyEmail(token);
             setIsVerified(true);
         } catch (err) {
+            console.log('Full error object:', err);
+            console.log('Error message:', err.message);
+            console.log('Error response:', err.response);
             const errorMessage = err.message || 'Verification failed. The link may be expired or invalid.';
             setError(errorMessage);
             // If verification fails due to expired token, enable resend
