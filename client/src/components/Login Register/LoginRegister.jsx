@@ -247,9 +247,9 @@ export default function LoginRegister() {
                                         role="tabpanel"
                                         aria-labelledby="login-tab"
                                     >
-                                        {error && (
+                                        {(error || authError) && (
                                             <div className="alert alert-danger mt-3" role="alert">
-                                                {error}
+                                                {error || authError}
                                             </div>
                                         )}
                                         {success && (
@@ -496,8 +496,8 @@ export default function LoginRegister() {
                                                 </ul>
                                             </div>
                                             <div className="col-md-6">
-                                                <button type="submit" className="btn btn-primary" disabled={isLoading}>
-                                                    {isLoading ? 'Registering...' : 'Register'}
+                                                <button type="submit" className="btn btn-primary" disabled={authLoading || isLoading}>
+                                                    {authLoading || isLoading ? 'Registering...' : 'Register'}
                                                 </button>
                                             </div>
                                         </form>
