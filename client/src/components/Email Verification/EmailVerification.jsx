@@ -47,9 +47,10 @@ export default function EmailVerification() {
             const response = await verifyEmail(token);
             setIsVerified(true);
         } catch (err) {
-            setError(err.message || 'Verification failed. The link may be expired or invalid.');
+            const errorMessage = err?.response?.data?.message || err?.message || 'Verification failed. The link may be expired or invalid.';
+            setError(errorMessage);
             // If verification fails due to expired token, enable resend
-            if (err.message?.includes('expired') || err.message?.includes('15 minutes')) {
+            if (errorMessage?.includes('expired') || errorMessage?.includes('15 minutes')) {
                 setCanResend(true);
             }
         } finally {
@@ -73,7 +74,8 @@ export default function EmailVerification() {
             // Show success message
             setError('Verification email sent successfully! Please check your inbox.');
         } catch (err) {
-            setError(err.message || 'Failed to resend verification email.');
+            const errorMessage = err?.response?.data?.message || err?.message || 'Failed to resend verification email.';
+            setError(errorMessage);
         } finally {
             setIsResending(false);
         }
@@ -138,7 +140,7 @@ export default function EmailVerification() {
                                             <i className="fas fa-times-circle fa-4x"></i>
                                         </div>
                                         <h3 className="text-white mb-3">Verification Failed</h3>
-                                        <p className="text-muted mb-4">{error.message}</p>
+                                        <p className="text-muted mb-4">{error}</p>
 
                                         {canResend ? (
                                             <div>

@@ -18,6 +18,7 @@ export default function LoginRegister() {
         password: ''
     });
     const [isLoading, setIsLoading] = useState(false);
+    const [registerLoading, setRegisterLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [activeTab, setActiveTab] = useState('login');
@@ -82,10 +83,12 @@ export default function LoginRegister() {
         e.preventDefault();
         setError('');
         setSuccess('');
+        setRegisterLoading(true);
 
         // Validate password match
         if (registerForm.password !== registerForm.confirm_password) {
             setError('Passwords do not match');
+            setRegisterLoading(false);
             return;
         }
 
@@ -93,6 +96,7 @@ export default function LoginRegister() {
         if (!registerForm.email || !registerForm.first_name ||
             !registerForm.last_name || !registerForm.password) {
             setError('Please fill in all required fields');
+            setRegisterLoading(false);
             return;
         }
 
@@ -118,6 +122,8 @@ export default function LoginRegister() {
         } catch (error) {
             // Error is handled by AuthProvider
             setError(authError || 'Registration failed. Please try again.');
+        } finally {
+            setRegisterLoading(false);
         }
     };
 
@@ -496,8 +502,8 @@ export default function LoginRegister() {
                                                 </ul>
                                             </div>
                                             <div className="col-md-6">
-                                                <button type="submit" className="btn btn-primary" disabled={authLoading || isLoading}>
-                                                    {authLoading || isLoading ? 'Registering...' : 'Register'}
+                                                <button type="submit" className="btn btn-primary" disabled={registerLoading || authLoading}>
+                                                    {registerLoading || authLoading ? 'Registering...' : 'Register'}
                                                 </button>
                                             </div>
                                         </form>
