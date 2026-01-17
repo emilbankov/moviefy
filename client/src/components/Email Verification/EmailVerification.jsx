@@ -47,7 +47,7 @@ export default function EmailVerification() {
             const response = await verifyEmail(token);
             setIsVerified(true);
         } catch (err) {
-            const errorMessage = err?.response?.data?.message || 'Verification failed. The link may be expired or invalid.';
+            const errorMessage = err.message || 'Verification failed. The link may be expired or invalid.';
             setError(errorMessage);
             // If verification fails due to expired token, enable resend
             if (errorMessage?.includes('expired') || errorMessage?.includes('15 minutes')) {
@@ -74,7 +74,7 @@ export default function EmailVerification() {
             // Show success message
             setError('Verification email sent successfully! Please check your inbox.');
         } catch (err) {
-            const errorMessage = err?.response?.data?.message || 'Failed to resend verification email.';
+            const errorMessage = err.message || 'Failed to resend verification email.';
             setError(errorMessage);
         } finally {
             setIsResending(false);
