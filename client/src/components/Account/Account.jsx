@@ -10,6 +10,8 @@ export default function Account() {
     const navigate = useNavigate();
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [favoriteMovieIds, setFavoriteMovieIds] = useState(new Set());
+    const [favoriteSeriesIds, setFavoriteSeriesIds] = useState(new Set());
 
     // Form state for edit profile
     const [editForm, setEditForm] = useState({
@@ -25,6 +27,13 @@ export default function Account() {
                 setProfile(profileData);
                 console.log(profileData);
 
+                // Populate favorite IDs
+                if (profileData?.data?.favorite_movies) {
+                    setFavoriteMovieIds(new Set(profileData.data.favorite_movies.map(m => m.id)));
+                }
+                if (profileData?.data?.favorite_tv_series) {
+                    setFavoriteSeriesIds(new Set(profileData.data.favorite_tv_series.map(s => s.id)));
+                }
             } catch (error) {
                 console.error('Failed to fetch profile:', error);
                 // Fallback to AuthContext user data if profile fetch fails
@@ -71,6 +80,33 @@ export default function Account() {
             ...prev,
             [name]: value
         }));
+    };
+
+    const toggleFavorite = (type, id, item, e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        if (type === 'movie') {
+            setFavoriteMovieIds(prev => {
+                const newSet = new Set(prev);
+                if (newSet.has(id)) {
+                    newSet.delete(id);
+                } else {
+                    newSet.add(id);
+                }
+                return newSet;
+            });
+        } else if (type === 'series') {
+            setFavoriteSeriesIds(prev => {
+                const newSet = new Set(prev);
+                if (newSet.has(id)) {
+                    newSet.delete(id);
+                } else {
+                    newSet.add(id);
+                }
+                return newSet;
+            });
+        }
     };
 
     if (loading) {
