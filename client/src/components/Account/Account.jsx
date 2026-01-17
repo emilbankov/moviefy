@@ -5,10 +5,12 @@ import { getUserProfile } from '../../services/authService';
 import { addMovieToFavorites, removeMovieFromFavorites, addSeriesToFavorites, removeSeriesFromFavorites } from '../../services/userService';
 import Loader from '../Loader/Loader';
 import MetaTags from '../Meta Tags/MetaTags';
+import useNotifications from '../../contexts/NotificationContext';
 
 export default function Account() {
     const { user, logoutHandler } = useContext(AuthContext);
     const navigate = useNavigate();
+    const { addNotification } = useNotifications();
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
     const [favoriteMovieIds, setFavoriteMovieIds] = useState(new Set());
@@ -99,6 +101,7 @@ export default function Account() {
                         newSet.delete(id);
                         return newSet;
                     });
+                    addNotification('Removed from favorites', 'success');
                 } else {
                     await removeSeriesFromFavorites(id);
                     setFavoriteSeriesIds(prev => {
@@ -106,19 +109,27 @@ export default function Account() {
                         newSet.delete(id);
                         return newSet;
                     });
+                    addNotification('Removed from favorites', 'success');
                 }
             } else {
                 // Add to favorites
                 if (type === 'movie') {
                     await addMovieToFavorites(id);
                     setFavoriteMovieIds(prev => new Set(prev).add(id));
+                    addNotification('Added to favorites', 'success');
                 } else {
                     await addSeriesToFavorites(id);
                     setFavoriteSeriesIds(prev => new Set(prev).add(id));
+                    addNotification('Added to favorites', 'success');
                 }
             }
+            
+            // Refresh profile to get updated favorites
+            const updatedProfile = await getUserProfile();
+            setProfile(updatedProfile);
         } catch (error) {
             console.error('Failed to toggle favorite:', error);
+            addNotification('Failed to update favorite', 'error');
         }
     };
 
