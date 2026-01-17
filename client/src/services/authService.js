@@ -33,12 +33,14 @@ export const login = async ({ email, password }) => {
 
   if (!response.ok) {
     const message = await response.text();
+    let errorMessage;
     try {
       const parsed = JSON.parse(message);
-      throw new Error(parsed.message || message || 'Login failed');
+      errorMessage = parsed.message || message || 'Login failed';
     } catch (e) {
-      throw new Error(message || 'Login failed');
+      errorMessage = message || 'Login failed';
     }
+    throw new Error(errorMessage);
   }
 
   return response.json();
