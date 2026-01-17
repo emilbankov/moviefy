@@ -343,6 +343,7 @@ export default function Account() {
                                                                                                 <a className="tag" href="#">{movie.genre.length > 11 ? movie.genre.substring(0, 11) + '...' : movie.genre}</a>
                                                                                             )}
                                                                                             <div className="ms-auto">
+                                                                                                <a href="javascript:void(0)" className={`like ${favoriteMovieIds.has(movie.id) ? 'active' : ''}`} onClick={(e) => toggleFavorite('movie', movie.id, movie, e)} style={{ color: favoriteMovieIds.has(movie.id) ? '#ffc107' : 'inherit' }} />
                                                                                                 <a className="views" href="#" onClick={e => e.preventDefault()}>
                                                                                                     <i className="fa-solid fa-star" /> {movie.vote_average.toFixed(1)}
                                                                                                 </a>
@@ -419,6 +420,7 @@ export default function Account() {
                                                                                                 <a className="tag" href="#">{series.genre.length > 11 ? series.genre.substring(0, 11) + '...' : series.genre}</a>
                                                                                             )}
                                                                                             <div className="ms-auto">
+                                                                                                <a href="javascript:void(0)" className={`like ${favoriteSeriesIds.has(series.id) ? 'active' : ''}`} onClick={(e) => toggleFavorite('series', series.id, series, e)} style={{ color: favoriteSeriesIds.has(series.id) ? '#ffc107' : 'inherit' }} />
                                                                                                 <a className="views" href="#" onClick={e => e.preventDefault()}>
                                                                                                     <i className="fa-solid fa-star" /> {series.vote_average.toFixed(1)}
                                                                                                 </a>
