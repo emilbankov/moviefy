@@ -936,16 +936,20 @@ export default function SeriesDetails() {
         vidsrc: {
             name: 'VidSrc',
             url: series.series?.api_id && playingEpisode.season && playingEpisode.episode
-                ? `https://vidsrc.net/embed/tv?tmdb=${series.series.api_id}&season=${playingEpisode.season}&episode=${playingEpisode.episode}`
-                : `https://vidsrc.net/embed/tv?tmdb=${series.series?.api_id || ''}`
+                ? `https://vidsrc.net/embed/tv?tmdb=${series.series.api_id}&season=${playingEpisode.season}&episode=${playingEpisode.episode}` : ''
         },
         vidlink: {
             name: 'VidLink',
             url: series.series?.api_id && playingEpisode.season && playingEpisode.episode
-                ? `https://vidlink.pro/tv/${series.series.api_id}/${playingEpisode.season}/${playingEpisode.episode}?primaryColor=f6be00&secondaryColor=f6be00&iconColor=f6be00&icons=default&player=default&title=true&poster=true&autoplay=true&nextbutton=true`
-                : `https://vidlink.pro/tv/${series.series?.api_id || ''}/1/1?primaryColor=f6be00&secondaryColor=f6be00&iconColor=f6be00&icons=default&player=default&title=true&poster=true&autoplay=true&nextbutton=true`
+                ? `https://vidlink.pro/tv/${series.series.api_id}/${playingEpisode.season}/${playingEpisode.episode}?primaryColor=f6be00&secondaryColor=f6be00&iconColor=f6be00&icons=default&player=jw&title=true&poster=true&autoplay=true&nextbutton=true` : ''
+        },
+        moviesapi: {
+            name: 'MoviesAPI',
+            url: series.series?.api_id && playingEpisode.season && playingEpisode.episode
+                ? `https://moviesapi.club/tv/${series.series.api_id}-${playingEpisode.season}-${playingEpisode.episode}` : ''
         }
     };
+
 
     const handlePlayerChange = (playerId) => {
         setSelectedPlayer(playerId);
@@ -973,7 +977,7 @@ export default function SeriesDetails() {
                     const year = series.series.first_air_date ? new Date(series.series.first_air_date).getFullYear() : 'N/A';
                     const seasonCount = series.series.seasons?.length ?? series.series.number_of_seasons ?? 'N/A';
                     const episodeCount = series.series.seasons[series.series.seasons.length - 1].episode_count ?? 'N/A';
-                    
+
                     addNotification({
                         type: 'favorite_remove',
                         mediaType: 'series',
@@ -994,7 +998,7 @@ export default function SeriesDetails() {
                     const year = series.series.first_air_date ? new Date(series.series.first_air_date).getFullYear() : 'N/A';
                     const seasonCount = series.series.seasons?.length ?? series.series.number_of_seasons ?? 'N/A';
                     const episodeCount = series.series.seasons[series.series.seasons.length - 1].episode_count ?? 'N/A';
-                    
+
                     addNotification({
                         type: 'favorite_add',
                         mediaType: 'series',

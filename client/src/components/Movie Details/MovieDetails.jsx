@@ -66,7 +66,11 @@ export default function MovieDetails() {
         },
         vidlink: {
             name: 'VidLink',
-            url: movie.movies?.api_id ? `https://vidlink.pro/movie/${movie.movies.api_id}?primaryColor=f6be00&secondaryColor=f6be00&iconColor=f6be00&icons=default&player=default&title=true&poster=true` : ''
+            url: movie.movies?.api_id ? `https://vidlink.pro/movie/${movie.movies.api_id}?primaryColor=f6be00&secondaryColor=f6be00&iconColor=f6be00&icons=default&player=jw&title=true&poster=true` : ''
+        },
+        moviesapi: {
+            name: 'MoviesAPI',
+            url: movie.movies?.api_id ? `https://moviesapi.club/movie/${movie.movies.api_id}` : ''
         }
     };
 
