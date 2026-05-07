@@ -936,7 +936,12 @@ export default function SeriesDetails() {
         vidsrc: {
             name: 'VidSrc',
             url: series.series?.api_id && playingEpisode.season && playingEpisode.episode
-                ? `https://vidsrc.net/embed/tv?tmdb=${series.series.api_id}&season=${playingEpisode.season}&episode=${playingEpisode.episode}` : ''
+                ? `https://vidsrc-me.ru/embed/tv?tmdb=${series.series.api_id}&season=${playingEpisode.season}&episode=${playingEpisode.episode}` : ''
+        },
+        embedmaster: {
+            name: 'EmbedMaster',
+            url: series.series?.api_id && playingEpisode.season && playingEpisode.episode
+                ? `https://embedmaster.link/9i1c9iugot3uk0yc/tv/${series.series.api_id}/${playingEpisode.season}/${playingEpisode.episode}` : ''
         },
         vidlink: {
             name: 'VidLink',
@@ -947,6 +952,21 @@ export default function SeriesDetails() {
             name: 'MoviesAPI',
             url: series.series?.api_id && playingEpisode.season && playingEpisode.episode
                 ? `https://moviesapi.club/tv/${series.series.api_id}-${playingEpisode.season}-${playingEpisode.episode}` : ''
+        },
+        vidapi: {
+            name: 'VidAPI',
+            url: series.series?.api_id && playingEpisode.season && playingEpisode.episode
+                ? `https://vidapi.xyz/embed/tv/${series.series.api_id}/${playingEpisode.season}/${playingEpisode.episode}` : ''
+        },
+        vidfast: {
+            name: 'VidFast',
+            url: series.series?.api_id && playingEpisode.season && playingEpisode.episode
+                ? `https://vidfast.pro/tv/${series.series.api_id}/${playingEpisode.season}/${playingEpisode.episode}` : ''
+        },
+        movies111: {
+            name: '111Movies',
+            url: series.series?.api_id && playingEpisode.season && playingEpisode.episode
+                ? `https://111movies.net/tv/${series.series.api_id}/${playingEpisode.season}/${playingEpisode.episode}` : ''
         }
     };
 

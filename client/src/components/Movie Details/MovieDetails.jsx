@@ -62,7 +62,11 @@ export default function MovieDetails() {
     const players = {
         vidsrc: {
             name: 'VidSrc',
-            url: movie.movies?.api_id ? `https://vidsrc.net/embed/movie?tmdb=${movie.movies.api_id}` : ''
+            url: movie.movies?.api_id ? `https://vidsrc-me.ru/embed/movie?tmdb=${movie.movies.api_id}` : ''
+        },
+        embedmaster: {
+            name: 'EmbedMaster',
+            url: movie.movies?.api_id ? `https://embedmaster.link/9i1c9iugot3uk0yc/movie/${movie.movies.api_id}` : ''
         },
         vidlink: {
             name: 'VidLink',
@@ -71,6 +75,18 @@ export default function MovieDetails() {
         moviesapi: {
             name: 'MoviesAPI',
             url: movie.movies?.api_id ? `https://moviesapi.club/movie/${movie.movies.api_id}` : ''
+        },
+        vidapi: {
+            name: 'VidAPI',
+            url: movie.movies?.api_id ? `https://vidapi.xyz/embed/movie/${movie.movies.api_id}` : ''
+        },
+        vidfast: {
+            name: 'VidFast',
+            url: movie.movies?.api_id ? `https://vidfast.pro/movie/${movie.movies.api_id}` : ''
+        },
+        movies111: {
+            name: '111Movies',
+            url: movie.movies?.api_id ? `https://111movies.net/movie/${movie.movies.api_id}` : ''
         }
     };
 
