@@ -10,3 +10,4 @@ export const getPopularSeries = async (types, page, size, genres) => await get(`
 export const getTopRatedSeries = async (types, page, size, genres) => await get(`${baseUrl}/series/top_rated?types=${types}&page=${page}&size=${size}&genres=${genres || ''}`);
 export const getSeriesDetails = async (seriesId) => await get(`${baseUrl}/series/${seriesId}`);
 export const getEpisodes = async (seasonId) => await get(`${baseUrl}/series/season/${seasonId}`);
+export const refreshSeries = async (apiId) => await post(`${baseUrl}/admin/series/${apiId}/refresh`);

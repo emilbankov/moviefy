@@ -862,13 +862,14 @@
 // }
 
 import { Link, useLocation, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import * as seriesService from '../../services/seriesService';
 import * as reviewsService from '../../services/reviewsService';
 import * as userService from '../../services/userService';
 import { useLoading } from '../../contexts/LoadingContext';
 import { useNotifications } from '../../contexts/NotificationContext';
 import MetaTags from '../Meta Tags/MetaTags';
+import AuthContext from '../../contexts/AuthProvider';
 
 // Helper function to convert genre display name to database name
 const getGenreParam = (genreName) => {
@@ -928,7 +929,10 @@ export default function SeriesDetails() {
         return localStorage.getItem('preferredPlayer') || 'vidsrc';
     });
     const [favoriteSeriesIds, setFavoriteSeriesIds] = useState(new Set());
+    const [isRefreshing, setIsRefreshing] = useState(false);
     const { addNotification } = useNotifications();
+    const { user } = useContext(AuthContext);
+    const isAdmin = user?.roles?.includes('ROLE_ADMIN');
 
     const reviewsPerPage = 20;
 
@@ -974,6 +978,20 @@ export default function SeriesDetails() {
     const handlePlayerChange = (playerId) => {
         setSelectedPlayer(playerId);
         localStorage.setItem('preferredPlayer', playerId);
+    };
+
+    const handleRefresh = async () => {
+        setIsRefreshing(true);
+        try {
+            await seriesService.refreshSeries(series.series.api_id);
+            const updated = await seriesService.getSeriesDetails(seriesId);
+            setSeries(updated);
+            addNotification({ type: 'success', title: 'Series refreshed', subtitle: 'Details updated successfully', meta: '', imageUrl: '/images/no-image.jpg' });
+        } catch (err) {
+            addNotification({ type: 'error', title: 'Refresh failed', subtitle: err.message || 'Something went wrong', meta: '', imageUrl: '/images/no-image.jpg' });
+        } finally {
+            setIsRefreshing(false);
+        }
     };
 
     const toggleFavorite = async (id, e) => {
@@ -1376,7 +1394,20 @@ export default function SeriesDetails() {
                                             <div className="col-xxl-6 col-xl-7 col-lg-6 col-md-8 col-sm-12 order-md-1 order-2">
                                                 <div className="movie-details">
                                                     <div className="movie-info">
-                                                        <h2 className="title">{series.series.name}</h2>
+                                                        <div className="d-flex align-items-center gap-3">
+                                                            <h2 className="title mb-0">{series.series.name}</h2>
+                                                            {isAdmin && (
+                                                                <button
+                                                                    type="button"
+                                                                    className="btn btn-sm btn-outline-warning"
+                                                                    onClick={handleRefresh}
+                                                                    disabled={isRefreshing}
+                                                                >
+                                                                    <i className={`fa-solid fa-rotate-right${isRefreshing ? ' fa-spin' : ''}`} />
+                                                                    {isRefreshing ? ' Refreshing...' : ' Refresh'}
+                                                                </button>
+                                                            )}
+                                                        </div>
                                                         <div className="movie-details-info movies-info">
                                                             <div className="features">
                                                                 <span className="imdb">

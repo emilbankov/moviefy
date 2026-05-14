@@ -14,3 +14,4 @@ export const searchPopularCollections = async (query, page, size) => await get(`
 export const getMovieDetails = async (movieId) => await get(`${baseUrl}/movies/${movieId}`);
 export const search = async (media, query) => await get(`${baseUrl}/${media}/search?query=${query}`);
 export const getCollectionById = async (collectionId) => await get(`${baseUrl}/movies/collection/${collectionId}`);
+export const refreshMovie = async (apiId) => await post(`${baseUrl}/admin/movies/${apiId}/refresh`);

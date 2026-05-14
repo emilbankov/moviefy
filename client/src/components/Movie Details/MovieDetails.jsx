@@ -1,11 +1,12 @@
 import { Link, useLocation, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import * as moviesService from '../../services/moviesService'
 import * as reviewsService from '../../services/reviewsService'
 import * as userService from '../../services/userService'
 import { useLoading } from '../../contexts/LoadingContext';
 import MetaTags from '../Meta Tags/MetaTags';
 import { useNotifications } from '../../contexts/NotificationContext';
+import AuthContext from '../../contexts/AuthProvider';
 
 // Helper function to convert genre display name to database name
 const getGenreParam = (genreName) => {
@@ -52,8 +53,11 @@ export default function MovieDetails() {
 
     // Favorites state
     const [favoriteMovieIds, setFavoriteMovieIds] = useState(new Set());
+    const [isRefreshing, setIsRefreshing] = useState(false);
 
     const { addNotification } = useNotifications();
+    const { user } = useContext(AuthContext);
+    const isAdmin = user?.roles?.includes('ROLE_ADMIN');
 
     const { movieId } = useParams();
     const location = useLocation();
@@ -93,6 +97,20 @@ export default function MovieDetails() {
     const handlePlayerChange = (playerId) => {
         setSelectedPlayer(playerId);
         localStorage.setItem('preferredPlayer', playerId);
+    };
+
+    const handleRefresh = async () => {
+        setIsRefreshing(true);
+        try {
+            await moviesService.refreshMovie(movie.movies.api_id);
+            const updated = await moviesService.getMovieDetails(movieId);
+            setMovie(updated);
+            addNotification({ type: 'success', title: 'Movie refreshed', subtitle: 'Details updated successfully', meta: '', imageUrl: '/images/no-image.jpg' });
+        } catch (err) {
+            addNotification({ type: 'error', title: 'Refresh failed', subtitle: err.message || 'Something went wrong', meta: '', imageUrl: '/images/no-image.jpg' });
+        } finally {
+            setIsRefreshing(false);
+        }
     };
 
 
@@ -250,8 +268,6 @@ export default function MovieDetails() {
             }
         }
     }, [currentPage, showAllReviews]);
-
-    console.log(movie);
 
     useEffect(() => {
         // Wait for all images to load before initializing carousel
@@ -421,7 +437,20 @@ export default function MovieDetails() {
                                     <div className="col-xxl-6 col-xl-7 col-lg-6 col-md-8 col-sm-12 order-md-1 order-2">
                                         <div className="movie-details">
                                             <div className="movie-info">
-                                                <h2 className="title">{movie.movies.title}</h2>
+                                                <div className="d-flex align-items-center gap-3">
+                                                    <h2 className="title mb-0">{movie.movies.title}</h2>
+                                                    {isAdmin && (
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-sm btn-outline-warning"
+                                                            onClick={handleRefresh}
+                                                            disabled={isRefreshing}
+                                                        >
+                                                            <i className={`fa-solid fa-rotate-right${isRefreshing ? ' fa-spin' : ''}`} />
+                                                            {isRefreshing ? ' Refreshing...' : ' Refresh'}
+                                                        </button>
+                                                    )}
+                                                </div>
                                                 <div className="movie-details-info movies-info">
                                                     <div className="features">
                                                         <span className="imdb">
