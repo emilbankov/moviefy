@@ -932,7 +932,7 @@ export default function SeriesDetails() {
     const [isRefreshing, setIsRefreshing] = useState(false);
     const { addNotification } = useNotifications();
     const { user } = useContext(AuthContext);
-    const isAdmin = user?.roles?.includes('ROLE_ADMIN');
+    const isAdmin = user?.data?.roles?.includes('ADMIN');
 
     const reviewsPerPage = 20;
 

@@ -57,7 +57,7 @@ export default function MovieDetails() {
 
     const { addNotification } = useNotifications();
     const { user } = useContext(AuthContext);
-    const isAdmin = user?.roles?.includes('ROLE_ADMIN');
+    const isAdmin = user?.data?.roles?.includes('ADMIN');
 
     const { movieId } = useParams();
     const location = useLocation();
