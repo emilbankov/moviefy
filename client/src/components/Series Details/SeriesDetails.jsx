@@ -984,12 +984,9 @@ export default function SeriesDetails() {
         setIsRefreshing(true);
         try {
             await seriesService.refreshSeries(series.series.api_id);
-            const updated = await seriesService.getSeriesDetails(seriesId);
-            setSeries(updated);
-            addNotification({ type: 'success', title: 'Series refreshed', subtitle: 'Details updated successfully', meta: '', imageUrl: '/images/no-image.jpg' });
+            window.location.reload();
         } catch (err) {
             addNotification({ type: 'error', title: 'Refresh failed', subtitle: err.message || 'Something went wrong', meta: '', imageUrl: '/images/no-image.jpg' });
-        } finally {
             setIsRefreshing(false);
         }
     };
@@ -1049,8 +1046,6 @@ export default function SeriesDetails() {
                 }
             }
         } catch (error) {
-            console.error('Error toggling favorite series:', error);
-
             // Handle authentication errors (including redirects to login)
             if (error.status === 401 || error.status === 403 || error.status === 302) {
                 addNotification({
@@ -1080,9 +1075,7 @@ export default function SeriesDetails() {
                     setReviews(reviewsResult);
                 }
             })
-            .catch(err => {
-                console.log(err);
-            })
+            .catch(() => {})
             .finally(() => {
                 setLoading(false);
             });
@@ -1104,9 +1097,7 @@ export default function SeriesDetails() {
                     setFavoriteSeriesIds(new Set(favoriteSeries.data));
                 }
             })
-            .catch(err => {
-                console.error('Error loading favorite series IDs:', err);
-            });
+            .catch(() => {});
     }, []);
 
     const handleSeasonClick = (seasonId, seasonNumber) => {
@@ -1124,7 +1115,6 @@ export default function SeriesDetails() {
             setEpisodes(fetchedEpisodes);
         });
     };
-    console.log(series);
 
     // Handle URL parameter changes
     useEffect(() => {
@@ -1154,7 +1144,6 @@ export default function SeriesDetails() {
         // Only update playing episode and open player if we have an episode parameter
         // Don't close the player if episode param is removed
         if (newUrlEpisode && newEpisodeNum !== playingEpisode.episode) {
-            console.log('Setting playing episode to:', newEpisodeNum);
             setPlayingEpisode(prev => ({ ...prev, season: newSeasonNum, episode: newEpisodeNum }));
             setShowMoviePlayer(true); // Keep player open when navigating via URL
         }
@@ -1399,7 +1388,7 @@ export default function SeriesDetails() {
                                                             {isAdmin && (
                                                                 <button
                                                                     type="button"
-                                                                    className="btn btn-sm btn-outline-warning"
+                                                                    className="btn btn-sm btn-warning"
                                                                     onClick={handleRefresh}
                                                                     disabled={isRefreshing}
                                                                 >

@@ -103,12 +103,9 @@ export default function MovieDetails() {
         setIsRefreshing(true);
         try {
             await moviesService.refreshMovie(movie.movies.api_id);
-            const updated = await moviesService.getMovieDetails(movieId);
-            setMovie(updated);
-            addNotification({ type: 'success', title: 'Movie refreshed', subtitle: 'Details updated successfully', meta: '', imageUrl: '/images/no-image.jpg' });
+            window.location.reload();
         } catch (err) {
             addNotification({ type: 'error', title: 'Refresh failed', subtitle: err.message || 'Something went wrong', meta: '', imageUrl: '/images/no-image.jpg' });
-        } finally {
             setIsRefreshing(false);
         }
     };
@@ -148,8 +145,6 @@ export default function MovieDetails() {
                         imageUrl: movie.movies.poster_path ? `https://image.tmdb.org/t/p/w92${movie.movies.poster_path}` : '/images/no-image.jpg',
                         thumbnail: movie.movies.backdrop_path ? `https://image.tmdb.org/t/p/w185${movie.movies.backdrop_path}` : undefined,
                     });
-                } else {
-                    console.log('Movie data not available for notification:', movie);
                 }
             } else {
                 // Add to favorites - wait for API success
@@ -172,13 +167,9 @@ export default function MovieDetails() {
                         imageUrl: movie.movies.poster_path ? `https://image.tmdb.org/t/p/w92${movie.movies.poster_path}` : '/images/no-image.jpg',
                         thumbnail: movie.movies.backdrop_path ? `https://image.tmdb.org/t/p/w185${movie.movies.backdrop_path}` : undefined,
                     });
-                } else {
-                    console.log('Movie data not available for notification:', movie);
                 }
             }
         } catch (error) {
-            console.error('Error toggling favorite:', error);
-
             // Handle authentication errors (including redirects to login)
             if (error.status === 401 || error.status === 403 || error.status === 302) {
                 addNotification({
@@ -213,9 +204,7 @@ export default function MovieDetails() {
             .then(favoriteMovies => {
                 setFavoriteMovieIds(new Set(favoriteMovies.data));
             })
-            .catch(err => {
-                console.log(err);
-            })
+            .catch(() => {})
             .finally(() => {
                 setLoading(false);
             });
@@ -442,7 +431,7 @@ export default function MovieDetails() {
                                                     {isAdmin && (
                                                         <button
                                                             type="button"
-                                                            className="btn btn-sm btn-outline-warning"
+                                                            className="btn btn-sm btn-warning"
                                                             onClick={handleRefresh}
                                                             disabled={isRefreshing}
                                                         >

@@ -56,9 +56,7 @@ export const logout = async () => {
 
 export const getCurrentUser = async () => {
   try {
-    const user = await get(`${baseUrl}/auth/me`);
-    console.log('[getCurrentUser]', user);
-    return user;
+    return await get(`${baseUrl}/auth/me`);
   } catch {
     return null;
   }
