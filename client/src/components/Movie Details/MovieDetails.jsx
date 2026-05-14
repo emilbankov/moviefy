@@ -431,7 +431,8 @@ export default function MovieDetails() {
                                                     {isAdmin && (
                                                         <button
                                                             type="button"
-                                                            className="btn btn-sm btn-warning"
+                                                            className="btn btn-sm"
+                                                            style={{ backgroundColor: '#f6be00', color: '#000', border: 'none' }}
                                                             onClick={handleRefresh}
                                                             disabled={isRefreshing}
                                                         >
