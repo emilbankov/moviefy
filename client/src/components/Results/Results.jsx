@@ -1,3 +1,4 @@
+import { handleImageError } from '../../lib/imageFallback';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { search, getGenres, getPopularMovies, getTrendingMovies, getLatestMovies, getTopRatedMovies, getPopularCollections, searchPopularCollections } from '../../services/moviesService';
@@ -986,7 +987,7 @@ export default function Results() {
                           alt={crewName}
                           className="img-fluid rounded"
                           style={{ width: '100px', height: 'auto' }}
-                          onError={(e) => { e.target.src = '/images/no-image.jpg'; }}
+                          onError={handleImageError}
                         />
                       </div>
                     )}
@@ -1010,7 +1011,7 @@ export default function Results() {
                           alt={actorName}
                           className="img-fluid rounded"
                           style={{ width: '100px', height: 'auto' }}
-                          onError={(e) => { e.target.src = '/images/no-image.jpg'; }}
+                          onError={handleImageError}
                         />
                       </div>
                     )}
@@ -1034,7 +1035,7 @@ export default function Results() {
                           alt={prodName}
                           className="img-fluid rounded"
                           style={{ width: '120px', height: 'auto', maxHeight: '80px', objectFit: 'contain' }}
-                          onError={(e) => { e.target.src = '/images/no-image.jpg'; }}
+                          onError={handleImageError}
                         />
                       </div>
                     )}

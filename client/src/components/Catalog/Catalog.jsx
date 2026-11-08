@@ -1,3 +1,4 @@
+import { handleImageError } from '../../lib/imageFallback';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getLatestMovies, getPopularMovies, getTrendingMovies } from '../../services/moviesService';
@@ -167,7 +168,7 @@ export default function Catalog() {
                                                 className="img-fluid"
                                                 src={posterUrl}
                                                 alt={movie.title || movie.name}
-                                                onError={(e) => { e.target.src = '/images/no-image.jpg'; }}
+                                                onError={handleImageError}
                                             />
                                             <div className="info-top">
                                                 {genre && (

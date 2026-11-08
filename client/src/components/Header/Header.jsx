@@ -1,3 +1,4 @@
+import { handleImageError } from '../../lib/imageFallback';
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useNotifications } from "../../contexts/NotificationContext";
@@ -177,7 +178,7 @@ const Header = ({ onSearchOpen }) => {
                                                                 className="img-fluid"
                                                                 src={n.imageUrl || '/images/no-image.jpg'}
                                                                 alt={n.title}
-                                                                onError={(e) => { e.target.src = '/images/no-image.jpg'; }}
+                                                                onError={handleImageError}
                                                                 style={{ borderRadius: '0' }}
                                                             />
                                                         </div>

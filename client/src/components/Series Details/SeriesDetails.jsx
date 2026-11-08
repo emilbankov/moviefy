@@ -462,7 +462,7 @@
 //                                                                     ? `https://image.tmdb.org/t/p/w500${season.poster_path}`
 //                                                                     : '/images/no-image-seasons.png'}
 //                                                                 alt="#"
-//                                                                 onError={(e) => { e.target.src = '/images/no-image-seasons.png'; }}
+//                                                                 onError={(e) => handleImageError(e, '/images/no-image-seasons.png')}
 //                                                             />
 //                                                             <div className="episode-info">
 //                                                                 <span className="play-btn"><i className="fa-solid fa-play" /></span>
@@ -529,7 +529,7 @@
 //                                                                 ? `https://image.tmdb.org/t/p/w500${episode.still_path}`
 //                                                                 : '/images/no-image-episodes.png'}
 //                                                             alt="#"
-//                                                             onError={(e) => { e.target.src = '/images/no-image-episodes.png'; }}
+//                                                             onError={(e) => handleImageError(e, '/images/no-image-episodes.png')}
 //                                                         />
 //                                                         <div className="episode-info">
 //                                                             <h6 className="title">
@@ -573,7 +573,7 @@
 //                                                             ? `https://image.tmdb.org/t/p/w138_and_h175_face${crew.profilePath}`
 //                                                             : '/images/no-image.jpg'}
 //                                                         alt={crew.name}
-//                                                         onError={(e) => { e.target.src = '/images/no-image.jpg'; }}
+//                                                         onError={handleImageError}
 //                                                     />
 //                                                 </div>
 //                                                 <div className="author-details">
@@ -597,7 +597,7 @@
 //                                                                 ? `https://media.themoviedb.org/t/p/w138_and_h175_face${actor.profilePath}`
 //                                                                 : '/images/no-image.jpg'}
 //                                                             alt={actor.name}
-//                                                             onError={(e) => { e.target.src = '/images/no-image.jpg'; }}
+//                                                             onError={handleImageError}
 //                                                         />
 //                                                     </div>
 //                                                     <div className="author-details">
@@ -710,7 +710,7 @@
 //                                                                             objectFit: 'contain',
 //                                                                             borderRadius: "0"
 //                                                                         }}
-//                                                                         onError={(e) => { e.target.src = '/images/no-image.jpg'; }}
+//                                                                         onError={handleImageError}
 //                                                                     />
 //                                                                 </div>
 //                                                                 <div className="author-details">
@@ -749,7 +749,7 @@
 //                                                                                 className="img-fluid"
 //                                                                                 src={review.author_path ? `https://image.tmdb.org/t/p/w45${review.author_path}` : '/images/no-image.jpg'}
 //                                                                                 alt={review.author}
-//                                                                                 onError={(e) => { e.target.src = '/images/no-image.jpg'; }}
+//                                                                                 onError={handleImageError}
 //                                                                                 style={{ minWidth: '70px', minHeight: '70px', width: '70px', height: '70px', objectFit: 'cover' }}
 //                                                                             />
 //                                                                         </div>
@@ -861,6 +861,7 @@
 //     );
 // }
 
+import { handleImageError } from '../../lib/imageFallback';
 import { Link, useLocation, useParams } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import * as seriesService from '../../services/seriesService';
@@ -1529,7 +1530,7 @@ export default function SeriesDetails() {
                                                                     ? `https://image.tmdb.org/t/p/w500${season.poster_path}`
                                                                     : '/images/no-image-seasons.png'}
                                                                 alt="#"
-                                                                onError={(e) => { e.target.src = '/images/no-image-seasons.png'; }}
+                                                                onError={(e) => handleImageError(e, '/images/no-image-seasons.png')}
                                                             />
                                                             <div className="episode-info">
                                                                 <span className="play-btn"><i className="fa-solid fa-play" /></span>
@@ -1612,7 +1613,7 @@ export default function SeriesDetails() {
                                                                 ? `https://image.tmdb.org/t/p/w500${episode.still_path}`
                                                                 : '/images/no-image-episodes.png'}
                                                             alt="#"
-                                                            onError={(e) => { e.target.src = '/images/no-image-episodes.png'; }}
+                                                            onError={(e) => handleImageError(e, '/images/no-image-episodes.png')}
                                                         />
                                                         <div className="episode-info">
                                                             <h6 className="title">
@@ -1656,7 +1657,7 @@ export default function SeriesDetails() {
                                                             ? `https://image.tmdb.org/t/p/w138_and_h175_face${crew.profilePath}`
                                                             : '/images/no-image.jpg'}
                                                         alt={crew.name}
-                                                        onError={(e) => { e.target.src = '/images/no-image.jpg'; }}
+                                                        onError={handleImageError}
                                                     />
                                                 </div>
                                                 <div className="author-details">
@@ -1680,7 +1681,7 @@ export default function SeriesDetails() {
                                                                 ? `https://media.themoviedb.org/t/p/w138_and_h175_face${actor.profilePath}`
                                                                 : '/images/no-image.jpg'}
                                                             alt={actor.name}
-                                                            onError={(e) => { e.target.src = '/images/no-image.jpg'; }}
+                                                            onError={handleImageError}
                                                         />
                                                     </div>
                                                     <div className="author-details">
@@ -1793,7 +1794,7 @@ export default function SeriesDetails() {
                                                                             objectFit: 'contain',
                                                                             borderRadius: "0"
                                                                         }}
-                                                                        onError={(e) => { e.target.src = '/images/no-image.jpg'; }}
+                                                                        onError={handleImageError}
                                                                     />
                                                                 </div>
                                                                 <div className="author-details">
@@ -1832,7 +1833,7 @@ export default function SeriesDetails() {
                                                                                 className="img-fluid"
                                                                                 src={review.author_path ? `https://image.tmdb.org/t/p/w45${review.author_path}` : '/images/no-image.jpg'}
                                                                                 alt={review.author}
-                                                                                onError={(e) => { e.target.src = '/images/no-image.jpg'; }}
+                                                                                onError={handleImageError}
                                                                                 style={{ minWidth: '70px', minHeight: '70px', width: '70px', height: '70px', objectFit: 'cover' }}
                                                                             />
                                                                         </div>

@@ -1,3 +1,4 @@
+import { handleImageError } from '../../lib/imageFallback';
 import { Link, useLocation, useParams } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import * as moviesService from '../../services/moviesService'
@@ -536,7 +537,7 @@ export default function MovieDetails() {
                                                             ? `https://image.tmdb.org/t/p/w138_and_h175_face${crew.profilePath}`
                                                             : '/images/no-image.jpg'}
                                                         alt={crew.name}
-                                                        onError={(e) => { e.target.src = '/images/no-image.jpg'; }}
+                                                        onError={handleImageError}
                                                     />
                                                 </div>
                                                 <div className="author-details">
@@ -560,7 +561,7 @@ export default function MovieDetails() {
                                                                 ? `https://media.themoviedb.org/t/p/w138_and_h175_face${actor.profilePath}`
                                                                 : '/images/no-image.jpg'}
                                                             alt={actor.name}
-                                                            onError={(e) => { e.target.src = '/images/no-image.jpg'; }}
+                                                            onError={handleImageError}
                                                         />
                                                     </div>
                                                     <div className="author-details">
@@ -675,7 +676,7 @@ export default function MovieDetails() {
                                                                             objectFit: 'contain',
                                                                             borderRadius: "0"
                                                                         }}
-                                                                        onError={(e) => { e.target.src = '/images/no-image.jpg'; }}
+                                                                        onError={handleImageError}
                                                                     />
                                                                 </div>
                                                                 <div className="author-details">
@@ -714,7 +715,7 @@ export default function MovieDetails() {
                                                                                 className="img-fluid"
                                                                                 src={review.author_path ? `https://image.tmdb.org/t/p/w45${review.author_path}` : '/images/no-image.jpg'}
                                                                                 alt={review.author}
-                                                                                onError={(e) => { e.target.src = '/images/no-image.jpg'; }}
+                                                                                onError={handleImageError}
                                                                                 style={{ minWidth: '70px', minHeight: '70px', width: '70px', height: '70px', objectFit: 'cover' }}
                                                                             />
                                                                         </div>
